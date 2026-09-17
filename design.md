@@ -1,156 +1,141 @@
-﻿# Design & Interaction Architecture (`design.md`)
+# Design & Interaction Architecture (`design.md`)
 
-> **Scope**: Structural layout, navigation flow, component contracts, and information architecture. (CSS and visual styling are intentionally separated for subsequent design phases).
+> **Ground Truth Reference**: Layout hierarchy, navigation contracts, component schemas, styling tokens, and backend security architecture for Vincent Yuann's interactive systems portfolio.
 
 ---
 
-## 1. Interaction Hierarchy & Information Architecture
+## 1. Interaction Hierarchy & Routing Model
 
-The website uses a **3-tier progressive disclosure model** with uniform data shapes across both public consumption and the Supabase Admin editor.
+The application uses client-side hash routing (`HashRouter`) for seamless static hosting compatibility with GitHub Pages:
 
 ```
-Landing Page (Hero, Featured Flagships, Timeline Stream, Standard Footer)
-   │
-   ├─► Click "View All Projects" / Section Action ──► Level 1: "View More" Index Gallery
-   │                                                        │
-   └─► Direct Click on Featured Project Card ───────────────┼──► Level 2: Detail Page
-                                                            │    (Deep Architecture, Metrics,
-                                                            │     Screenshots, Live/Repo Links)
-                                                            ▼
-                              Admin Panel (Protected by Supabase GitHub OAuth)
-                              (Uniform Editor Form matching Level 2 schema)
+                          ┌──────────────────────────┐
+                          │   Persistent Navbar      │
+                          │ (Sticky Top Across All)  │
+                          └─────────────┬────────────┘
+                                        │
+     ┌──────────────────────────────────┼──────────────────────────────────┐
+     │                                  │                                  │
+     ▼                                  ▼                                  ▼
+Level 0: Home Page             Level 1: Projects Gallery         Level 2: Detail Deep-Dive
+Route: `#/`                    Route: `#/projects`               Route: `#/projects/:id`
+• Sticky Navbar                • Breadcrumbs (`Home / Projects`) • Hero metadata & status
+• Hero Narrative & Metrics     • Category filter tabs            • Live Demo & GitHub CTAs
+• Interactive River Timeline   • Instant fuzzy search            • 4-point Architecture Metrics
+• Chronological Pebble Stream  • Uniform project cards           • Brand TechBadges
+• Standard Protected Footer    • Tags & highlight metrics        • Markdown Engineering Log
+     │                                  │                                  │
+     └──────────────────────────────────┼──────────────────────────────────┘
+                                        │
+     ┌──────────────────────────────────┴──────────────────────────────────┐
+     │                                                                     │
+     ▼                                                                     ▼
+Protected Reach-Out Page                                       Admin CMS & Settings
+Route: `#/contact`                                             Route: `#/admin` & `#/login`
+• Direct inquiry form with attachments (up to 5MB)             • GitHub OAuth authenticated
+• Supabase Edge Function (`send-contact-email`)                • PostgreSQL Row-Level Security (RLS)
+• IP Rate-limiting (3/hr) & honeypot anti-spam                 • Projects & Systems editor
+• Dispatches to Resend API (`vincentyuan1020@gmail.com`)       • Profile & Bio editor + Storage Upload
 ```
 
 ---
 
-## 2. Page & Layout Breakdown
+## 2. Persistent Sticky Navbar Layout
 
-### Level 0: The Landing Page
+The `<Navbar />` is rendered across all routes (`sticky top-0 z-30 bg-white/95 backdrop-blur-md`):
 
-Designed as a scannable executive summary for recruiters, hiring managers, and engineers.
-
-1. **Hero Banner Introduction**:
-   - **Identity**: Name (`Vincent Yuann`), avatar, primary title (`Software & AI Engineer`).
-   - **Value Proposition**: 1-2 sentence high-impact statement on distributed systems and applied AI.
-   - **Quick Proof-Points**: 3 key metric highlights (e.g. `<30ms WebSocket sync`, `Dual-LLM RAG pipeline`, `3+ Production Systems`).
-   - **Primary Action Row**:
-     - Quick Spotlight Search button (`⌘K` / `Ctrl+K`).
-     - Availability pill (`Available for Full-Stack & Applied AI Roles`).
-     - Direct profile links (GitHub, LinkedIn, Mail).
-
-2. **Major Display Sections (Scroll Sequence)**:
-   - **Section 1: Flagship Systems (Curated Showcase)**:
-     - Displays top 3 flagship projects as comprehensive cards.
-     - Section action header: `Flagship Systems` + `[View All Projects →]`.
-   - **Section 2: Exploratory Stream & DevOps (River Pebbles)**:
-     - Lightweight cards / list displaying tools, sandboxes, bots, and DevOps pipelines.
-     - Section action header: `Exploratory & Micro-Projects` + `[View All Experiments →]`.
-   - **Section 3: Architecture Journey & Experience**:
-     - Chronological path highlighting milestones, roles, and open-source contributions.
-
-3. **Standard Website Footer Content**:
-   - **Column 1 (Brand & Bio)**: Summary of focus areas, current location, open-to-work status.
-   - **Column 2 (Navigation)**: Quick links to `Home`, `All Projects`, `Experiments`, `About`.
-   - **Column 3 (Connect)**: Direct clickable links for GitHub (`VincentYuann`), LinkedIn, and Email.
-   - **Column 4 (Colophon & Tech Stack)**: Notice of static deployment (React 19 + Vite + GitHub Pages + Supabase).
-   - **Bottom Bar**: Copyright notice (`© 2026 Vincent Yuann. All rights reserved.`) + Admin login trigger.
+1. **Brand Identity (Left)**:
+   - Avatar circle (`V`) with hover micro-scale.
+   - Name (`Vincent Yuann`) and role (`Software & AI Engineer`) linking to `#/`.
+2. **Center Controls**:
+   - **Status Indicator**: `● Open to Full-Stack & AI Roles` (pulsing teal badge).
+   - **Navigation Route**: `Projects Gallery` button routing to `#/projects`.
+   - **Spotlight Search**: `[⌘ Search ⌘K]` button opening the global keyboard command palette.
+3. **Action Cluster (Right)**:
+   - **Hire Me**: High-contrast dark button routing to `#/contact`.
+   - **GitHub**: Icon linking directly to `https://github.com/VincentYuann`.
+   - **Settings**: `<Settings />` gear icon routing to the admin console `#/admin`.
+   - *(Design Rule: No raw mailto links and no third-party network clutter in the header).*
 
 ---
 
-### Level 1: "View More" Index View (Uniform Gallery)
+## 3. Page & Component Breakdown
 
-When a visitor clicks `[View All Projects →]` or any clickable section heading:
-- **Layout**: Header with breadcrumbs (`Home / Projects`), search filter input, and tag selector.
-- **Card Grid**: Responsive 2-column or 3-column uniform cards.
-- **Uniform Card Structure**:
-  - Category badge (e.g. `Full-Stack`, `Distributed Systems`, `Applied AI`)
-  - Title & Subtitle
-  - 1-paragraph summary
-  - Tech stack badges with official brand icons
-  - Key performance stat
-  - Direct "Read Architecture Deep-Dive →" link (leads to Level 2)
+### Level 0: The Landing Page (`HomePage.tsx`)
+- **Hero Section (`Hero.tsx`)**:
+  - Focuses on narrative value proposition and systems engineering proof points.
+  - Metrics row: `3+ Flagship Systems`, `<30ms WebSocket Sync`, `Dual-LLM Qdrant RAG Pipeline`.
+  - Stream hint guiding user downward into the milestone river.
+- **River Timeline (`RiverTimeline.tsx`)**:
+  - Chronological path connecting flagship milestone stones and exploratory pebbles.
+  - Interactive cards trigger direct navigation to `#/projects/:id`.
+- **Protected Footer (`Footer.tsx`)**:
+  - Embedded quick reach-out form (`ContactForm.tsx`).
+  - Architecture Colophon detailing React 19, Tailwind, Supabase, and Resend stack.
+  - Subtle Admin CMS shortcut link (`<Settings />` icon).
 
----
+### Level 1: Projects Discovery Gallery (`ProjectsPage.tsx`)
+- Instant client-side search across title, subtitle, description, tags, and highlights.
+- Category tabs: `All`, `Flagships`, `Experiments`, `Full-Stack Web App`, `Distributed Systems`, `Applied AI`.
+- Standard project cards displaying category, title, tech badges, highlights, and deep-dive link.
 
-### Level 2: Uniform Detail Page
+### Level 2: Architectural Deep-Dive (`ProjectDetailPage.tsx`)
+- **Header Zone**: Breadcrumb navigation (`← Back to Projects`), category, title, subtitle, and action buttons (`Explore Source Code`, `Open Live Demo`).
+- **Benchmark & Metrics Grid**: 4 key performance stats (e.g. latency, protocol, database, cache hit ratio).
+- **Tech Stack Breakdown**: Array of `<TechBadge />` components with official SVG brand icons.
+- **Architectural Highlights**: Bulleted list of core design decisions (e.g., CRDT sync, RLS, dual-reranker pipeline).
+- **Longform Markdown Deep-Dive**: Technical case study breakdown rendered with code snippets and diagrams.
 
-Whether viewing a flagship project, an experimental sandbox, or a DevOps pipeline, the detail view uses a **single uniform schema and visual structure**:
-
-1. **Header Zone**:
-   - Breadcrumb navigation: `← Back to Projects`
-   - Category tag & date/status indicator
-   - Title & Subtitle
-   - Action Bar: `[Explore Source Code (GitHub)]` + `[Open Live Demo ↗]`
-2. **Media / Screenshot Showcase**:
-   - Responsive image gallery powered by Supabase Storage (`portfolio-assets` bucket).
-   - Optional caption and architecture diagram callout.
-3. **Executive Summary & Problem Statement**:
-   - What problem does this system solve?
-   - What was the core architectural challenge?
-4. **Key Architecture Patterns & Highlights**:
-   - Bulleted list of design decisions (e.g., row-level security, optimistic UI cache, WebSocket rooms).
-5. **Technical Stack Breakdown**:
-   - Array of `<TechBadge />` components with Devicon brand logos.
-6. **Benchmark & Metrics Grid**:
-   - Up to 4 performance stats (e.g., Latency, Layout Shift, Uptime, Cache Hit Ratio).
-7. **Longform Markdown Deep-Dive**:
-   - Technical breakdown with code snippets, workflow diagrams, and lessons learned.
+### Global Spotlight Search (`CommandPalette.tsx`)
+- Triggered by `⌘K`, `Ctrl+K`, or the Navbar search button.
+- Instant keyboard navigation with arrow keys and Enter.
+- Searches across all flagship projects and exploratory timeline pebbles.
 
 ---
 
-## 3. Overhead Reduction: Why Uniform Design Matters
-
-By enforcing identical fields for all projects:
-1. **Single Public Component**: The public site only needs one `<ProjectDetailView project={project} />` component.
-2. **Single Admin Form**: The Supabase admin editor uses one `<ProjectEditForm />` for both flagships and pebbles. Adding a new case study takes 2 minutes.
-3. **Predictable Data Contracts**: The TypeScript `interface Project` directly mirrors the Supabase Postgres table schema.
-
----
-
-## 4. Supabase Integration Architecture
+## 4. Backend & Security Architecture (Zero-Leak Supabase & Resend)
 
 ```
-┌────────────────────────────────────────────────────────┐
-│               Static React Frontend                    │
-│            (Deployed on GitHub Pages)                  │
-└──────────────────────────┬─────────────────────────────┘
-                           │
-             Reads Public Data (Anon Key)
-                           ▼
-┌────────────────────────────────────────────────────────┐
-│                 Supabase Cloud Project                 │
-│                                                        │
-│  ┌────────────────────────┐  ┌──────────────────────┐  │
-│  │     Postgres DB        │  │   Storage Buckets    │  │
-│  │   (Tables with RLS)    │  │ ('portfolio-assets') │  │
-│  │                        │  │                      │  │
-│  │  - projects            │  │  - project images    │  │
-│  │  - profile_info        │  │  - architecture SVGs │  │
-│  └───────────▲────────────┘  └──────────▲───────────┘  │
-│              │                          │              │
-│       RLS: Write Only            RLS: Upload Only      │
-│       for Authenticated          for Authenticated     │
-│       Admin (GitHub OAuth)       Admin (GitHub OAuth)  │
-│              │                          │              │
-└──────────────┴──────────────────────────┴──────────────┘
-                           ▲
-             Admin Mutations (OAuth Session)
-                           │
-┌──────────────────────────┴─────────────────────────────┐
-│                 Admin Editor Modal                     │
-│         (Protected by Supabase Auth Session)           │
-└────────────────────────────────────────────────────────┘
+┌────────────────────────────────────────────────────────────────────────┐
+│                        Static React SPA (GitHub Pages)                 │
+└───────────────────┬────────────────────────────────┬───────────────────┘
+                    │                                │
+      Read Public Records (anon key)      Contact Form Submission (POST)
+                    │                                │
+                    ▼                                ▼
+┌──────────────────────────────────────┐ ┌───────────────────────────────┐
+│        Supabase PostgreSQL DB        │ │   Supabase Serverless Edge    │
+│                                      │ │           Function            │
+│ • projects (public read RLS)         │ │     `send-contact-email`      │
+│ • profile_info (public read RLS)     │ ├───────────────────────────────┤
+│ • admin_users (whitelist table)      │ │ 1. check_contact_rate_limit() │
+│ • contact_rate_limits (IP hash)      │ │ 2. Honeypot check (hp_company)│
+│                                      │ │ 3. Parse file attachment      │
+│ RLS Mutations: Write access strictly │ │ 4. Dispatch via Resend API    │
+│ locked to authenticated GitHub user  │ └──────────────┬────────────────┘
+│ whose email is in `admin_users`.     │                │
+└──────────────────────────────────────┘                ▼
+                                         ┌───────────────────────────────┐
+                                         │          Resend API           │
+                                         │  (Delivers to Vincent's Gmail │
+                                         │   with user as reply_to)      │
+                                         └───────────────────────────────┘
 ```
 
-### Security & Access Control (Zero Exposure)
-- **Public Visitors**:
-  - Role: `anon`
-  - Permission: `SELECT` only on rows where `is_published = true`.
-  - No mutation endpoints exposed.
-- **Admin (Vincent Yuann)**:
-  - Role: `authenticated` via GitHub OAuth.
-  - Policy: `(auth.jwt() ->> 'email') = 'vincentyuann@gmail.com'`
-  - Full permissions (`INSERT`, `UPDATE`, `DELETE`, storage `upload/upsert`).
-- **Keys**:
-  - `SUPABASE_URL` and `SUPABASE_ANON_KEY` are embedded in the client build (safe by design under Postgres RLS).
-  - `SERVICE_ROLE_KEY` is **never** committed, bundled, or exposed.
+### Why Raw Email is Never Exposed
+1. Exposing `vincentyuan1020@gmail.com` directly in HTML or client bundles allows scrapers to send spam directly to Gmail via external SMTP, completely bypassing website rate limits.
+2. By routing all reach-outs through the serverless Edge Function:
+   - The real email stays secret on the server.
+   - IP rate limiting is strictly enforced (max 3 messages/hour per IP).
+   - Bots are dropped via honeypots without incurring email API quotas.
+   - Legitimate messages arrive in your Gmail inbox with the sender's email configured as `reply_to`.
+
+---
+
+## 5. UI Tokens & Styling Guidelines
+
+* **Canvas**: Clean editorial background (`#FAFBFD` / `#FFFFFF`).
+* **Borders & Dividers**: Subtle grey borders (`#E1E6EB`, `#D0D7DE`).
+* **Text**: High-contrast neutral dark (`#1B2127`) with muted secondary (`#57606A`).
+* **Accents**: Muted teal (`#3894B3`), soft teal background (`#EBF6F9`), with project-specific stone colors (`#3894B3`, `#E76F51`, `#2A9D8F`).
+* **Typography**: Clean sans-serif for UI controls, editorial `font-serif` for prominent titles and brand marks.
