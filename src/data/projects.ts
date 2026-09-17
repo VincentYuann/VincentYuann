@@ -19,7 +19,10 @@ export interface FlagshipProject {
   highlights: string[];
   liveUrl?: string;
   githubUrl?: string;
+  imageUrl?: string;
+  detailsMarkdown?: string;
   stoneAccent: string; // watercolor accent tone
+  isFlagship?: boolean;
 }
 
 export interface RiverPebble {
@@ -29,6 +32,12 @@ export interface RiverPebble {
   tag: string;
   icon?: string;
   githubUrl?: string;
+  liveUrl?: string;
+  imageUrl?: string;
+  detailsMarkdown?: string;
+  highlights?: string[];
+  stats?: ProjectStat[];
+  tags?: TechTag[];
 }
 
 export const FLAGSHIP_PROJECTS: FlagshipProject[] = [
@@ -155,5 +164,5 @@ export const PROFILE_INFO = {
   location: "New York, USA",
   github: "https://github.com/VincentYuann",
   linkedin: "https://linkedin.com/in/vincentyuann",
-  email: "vincentyuann@gmail.com",
+  email: "",
 };

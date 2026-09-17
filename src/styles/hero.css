@@ -1,0 +1,82 @@
+@reference "../index.css";
+
+/* Hero Section: Basic Layout */
+.hero-wrapper {
+  @apply w-full max-w-4xl mx-auto px-4 py-8;
+}
+
+.hero-nav {
+  @apply flex items-center justify-between pb-4 mb-8 border-b border-gray-200;
+}
+
+.hero-brand {
+  @apply flex items-center gap-3;
+}
+
+.hero-avatar {
+  @apply w-8 h-8 rounded bg-gray-900 text-white flex items-center justify-center font-bold text-sm;
+}
+
+.hero-name {
+  @apply font-bold text-sm block text-gray-900;
+}
+
+.hero-role {
+  @apply text-xs text-gray-500 block;
+}
+
+.hero-nav-actions {
+  @apply flex items-center gap-3;
+}
+
+.hero-status-pill {
+  @apply hidden sm:inline-flex items-center gap-2 px-2.5 py-1 rounded border border-gray-200 text-xs text-gray-600;
+}
+
+.hero-status-dot {
+  @apply w-2 h-2 rounded-full bg-green-500;
+}
+
+.hero-search-btn {
+  @apply flex items-center gap-1.5 px-3 py-1 rounded border border-gray-300 text-xs text-gray-700 hover:bg-gray-50 cursor-pointer;
+}
+
+.hero-social-links {
+  @apply flex items-center gap-2;
+}
+
+.hero-social-btn {
+  @apply p-1.5 text-gray-500 hover:text-gray-900;
+}
+
+.hero-content {
+  @apply mb-8;
+}
+
+.hero-badge {
+  @apply inline-flex items-center gap-1.5 px-2.5 py-1 rounded border border-gray-200 text-xs text-gray-600 mb-4;
+}
+
+.hero-headline {
+  @apply text-3xl sm:text-4xl font-bold text-gray-900 mb-4;
+}
+
+.hero-subtext {
+  @apply text-base text-gray-600 mb-6 max-w-2xl;
+}
+
+.hero-metrics-grid {
+  @apply grid grid-cols-3 gap-4 pt-4 border-t border-gray-200;
+}
+
+.hero-metric-val {
+  @apply text-xl font-bold text-gray-900;
+}
+
+.hero-metric-label {
+  @apply text-xs text-gray-500;
+}
+
+.hero-stream-hint {
+  @apply mt-8 flex items-center gap-2 text-xs text-gray-400;
+}

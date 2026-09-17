@@ -1,0 +1,58 @@
+@reference "../index.css";
+
+/* Footer: Basic Layout */
+.footer-container {
+  @apply w-full max-w-4xl mx-auto px-4 py-12 border-t border-gray-200 mt-12;
+}
+
+.footer-grid {
+  @apply grid grid-cols-1 md:grid-cols-12 gap-8;
+}
+
+.footer-main-col {
+  @apply md:col-span-7;
+}
+
+.footer-eyebrow {
+  @apply text-xs uppercase tracking-wider text-gray-500 font-semibold;
+}
+
+.footer-heading {
+  @apply text-2xl font-bold text-gray-900 mt-1 mb-3;
+}
+
+.footer-bio {
+  @apply text-sm text-gray-600 mb-6;
+}
+
+.footer-links {
+  @apply flex flex-wrap items-center gap-3;
+}
+
+.footer-btn-primary {
+  @apply inline-flex items-center gap-1.5 px-3.5 py-2 rounded bg-gray-900 text-white text-xs font-medium hover:bg-gray-800;
+}
+
+.footer-btn-secondary {
+  @apply inline-flex items-center gap-1.5 px-3.5 py-2 rounded border border-gray-300 bg-white text-gray-800 text-xs font-medium hover:bg-gray-50;
+}
+
+.footer-side-col {
+  @apply md:col-span-5 md:pl-6 flex flex-col justify-between;
+}
+
+.footer-colophon-box {
+  @apply p-4 rounded border border-gray-200 bg-gray-50;
+}
+
+.footer-colophon-title {
+  @apply text-xs font-mono font-semibold uppercase text-gray-500 mb-1;
+}
+
+.footer-colophon-desc {
+  @apply text-xs text-gray-600 leading-relaxed;
+}
+
+.footer-copyright {
+  @apply text-xs text-gray-400 mt-6 md:mt-0 font-mono;
+}

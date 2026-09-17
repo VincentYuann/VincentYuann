@@ -1,0 +1,58 @@
+@reference "../index.css";
+
+/* Command Palette: Basic Layout */
+.command-backdrop {
+  @apply fixed inset-0 z-50 flex items-start justify-center pt-20 px-4 bg-black/50;
+}
+
+.command-modal {
+  @apply relative w-full max-w-lg rounded-lg bg-white border border-gray-300 shadow-lg overflow-hidden;
+}
+
+.command-search-header {
+  @apply flex items-center gap-3 px-4 py-3 border-b border-gray-200;
+}
+
+.command-search-input {
+  @apply w-full bg-transparent text-sm text-gray-900 placeholder-gray-400 focus:outline-none font-mono;
+}
+
+.command-close-btn {
+  @apply p-1 text-gray-400 hover:text-gray-700 cursor-pointer;
+}
+
+.command-results-list {
+  @apply max-h-80 overflow-y-auto p-2 space-y-1;
+}
+
+.command-group-heading {
+  @apply px-3 py-1 text-[10px] uppercase font-mono tracking-wider text-gray-400;
+}
+
+.command-item {
+  @apply flex items-center justify-between px-3 py-2 rounded hover:bg-gray-100 cursor-pointer text-xs;
+}
+
+.command-item-main {
+  @apply flex items-center gap-2;
+}
+
+.command-item-title {
+  @apply font-medium text-gray-900;
+}
+
+.command-item-sub {
+  @apply text-[11px] text-gray-500;
+}
+
+.command-item-meta {
+  @apply flex items-center gap-2 text-gray-400;
+}
+
+.command-item-icon {
+  @apply w-3.5 h-3.5;
+}
+
+.command-footer {
+  @apply px-4 py-2 bg-gray-50 border-t border-gray-200 flex justify-between text-[11px] font-mono text-gray-400;
+}

@@ -14,6 +14,12 @@ dist-ssr
 .env.test.local
 .env.production.local
 
+# MCP and agent tool configs
+.mcp.json
+.agents/
+.impeccable/
+skills-lock.json
+
 # Editor & OS files
 .DS_Store
 Thumbs.db

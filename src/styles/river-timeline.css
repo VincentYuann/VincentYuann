@@ -1,0 +1,102 @@
+@reference "../index.css";
+
+/* River Timeline: Basic Layout */
+.timeline-section {
+  @apply w-full max-w-4xl mx-auto px-4 py-8;
+}
+
+.timeline-header {
+  @apply mb-8;
+}
+
+.timeline-eyebrow {
+  @apply text-xs uppercase tracking-wider text-gray-500 font-semibold;
+}
+
+.timeline-title {
+  @apply text-2xl sm:text-3xl font-bold text-gray-900 mt-1 mb-2;
+}
+
+.timeline-desc {
+  @apply text-sm text-gray-600;
+}
+
+.timeline-container {
+  @apply relative;
+}
+
+.timeline-svg-channel {
+  @apply hidden; /* Disabled decorative river graphic for basic layout */
+}
+
+.timeline-milestones-stack {
+  @apply space-y-8;
+}
+
+.milestone-row {
+  @apply flex flex-col md:flex-row gap-6 items-start;
+}
+
+.milestone-stone-col {
+  @apply w-full md:w-32 flex md:flex-col items-center md:items-start gap-3 shrink-0;
+}
+
+.boulder-node {
+  @apply w-12 h-12 rounded border border-gray-300 flex flex-col items-center justify-center cursor-pointer bg-white text-gray-700 hover:border-gray-900 transition-colors;
+}
+
+.boulder-node.active {
+  @apply bg-gray-900 text-white border-gray-900;
+}
+
+.boulder-ripple {
+  @apply hidden; /* Disabled ripple animation for basic layout */
+}
+
+.boulder-idx {
+  @apply text-[10px] font-mono;
+}
+
+.boulder-title {
+  @apply text-xs font-bold leading-none mt-0.5;
+}
+
+.milestone-meta {
+  @apply text-xs text-gray-500;
+}
+
+.milestone-badge-text {
+  @apply block font-medium;
+}
+
+.milestone-sub-text {
+  @apply text-[11px] text-gray-400;
+}
+
+.milestone-card-col {
+  @apply flex-1 w-full;
+}
+
+.pebble-row {
+  @apply mt-2 md:ml-38;
+}
+
+.pebble-pill {
+  @apply inline-flex items-center gap-2 px-3 py-1 rounded border border-gray-200 text-xs text-gray-600 hover:border-gray-400;
+}
+
+.pebble-title {
+  @apply font-mono font-medium text-gray-900;
+}
+
+.pebble-tag {
+  @apply text-gray-400 text-[10px];
+}
+
+.pebble-desc {
+  @apply text-gray-500 text-xs truncate max-w-sm hidden sm:inline;
+}
+
+.timeline-footer {
+  @apply mt-12 pt-6 border-t border-gray-200 flex flex-col sm:flex-row justify-between gap-2 text-xs text-gray-400;
+}

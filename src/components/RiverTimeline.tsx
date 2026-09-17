@@ -1,12 +1,27 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { motion, useScroll, useSpring } from 'motion/react';
 import { ExternalLink } from 'lucide-react';
-import { FLAGSHIP_PROJECTS, RIVER_PEBBLES } from '../data/projects';
+import { FLAGSHIP_PROJECTS, RIVER_PEBBLES, type FlagshipProject, type RiverPebble } from '../data/projects';
 import { ProjectCard } from './ProjectCard';
+import '../styles/river-timeline.css';
 
-export const RiverTimeline: React.FC = () => {
+interface RiverTimelineProps {
+  flagships?: FlagshipProject[];
+  pebbles?: RiverPebble[];
+  allProjects?: FlagshipProject[];
+  onOpenGallery?: (filter?: string) => void;
+  onViewDetails?: (project: FlagshipProject) => void;
+}
+
+export const RiverTimeline: React.FC<RiverTimelineProps> = ({
+  flagships = FLAGSHIP_PROJECTS,
+  pebbles = RIVER_PEBBLES,
+  allProjects = [],
+  onOpenGallery,
+  onViewDetails,
+}) => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [activeBoulderId, setActiveBoulderId] = useState<string>(FLAGSHIP_PROJECTS[0].id);
+  const [activeBoulderId, setActiveBoulderId] = useState<string>(flagships[0]?.id || 'anim-y');
 
   // Track scroll position within this timeline container
   const { scrollYProgress } = useScroll({
@@ -27,36 +42,46 @@ export const RiverTimeline: React.FC = () => {
   // Active stone detection based on scroll depth
   useEffect(() => {
     return scrollYProgress.on('change', (v) => {
-      if (v < 0.35) {
-        setActiveBoulderId(FLAGSHIP_PROJECTS[0].id); // AnimY
-      } else if (v < 0.7) {
-        setActiveBoulderId(FLAGSHIP_PROJECTS[1].id); // FoodFinder
-      } else {
-        setActiveBoulderId(FLAGSHIP_PROJECTS[2].id); // Modular RAG
+      if (v < 0.35 && flagships[0]) {
+        setActiveBoulderId(flagships[0].id);
+      } else if (v < 0.7 && flagships[1]) {
+        setActiveBoulderId(flagships[1].id);
+      } else if (flagships[2]) {
+        setActiveBoulderId(flagships[2].id);
       }
     });
-  }, [scrollYProgress]);
+  }, [scrollYProgress, flagships]);
 
   return (
-    <section ref={containerRef} className="relative w-full max-w-5xl mx-auto px-6 py-12 md:py-20">
+    <section ref={containerRef} className="timeline-section">
       {/* Section Header */}
-      <div className="mb-14 text-center md:text-left">
-        <span className="text-xs font-mono uppercase tracking-widest text-[#4E7788] font-semibold">
+      <div className="timeline-header">
+        <span className="timeline-eyebrow">
           Chronological Architecture Stream
         </span>
-        <h2 className="text-3xl sm:text-5xl font-serif text-[#1B2127] mt-2 mb-3">
+        <h2 className="timeline-title">
           The River of Milestones
         </h2>
-        <p className="text-sm sm:text-base text-[#56616B] max-w-xl">
+        <p className="timeline-desc">
           Scroll to trace the current. Water carves through our flagship systems, with exploratory
           pebbles resting along the banks.
         </p>
+        {onOpenGallery && (
+          <div className="pt-3">
+            <button
+              onClick={() => onOpenGallery('all')}
+              className="inline-flex items-center gap-2 px-3.5 py-1.5 text-xs font-semibold text-[#1B2127] bg-white hover:bg-[#F6F8FA] border border-[#D0D7DE] hover:border-[#8C959F] rounded-lg shadow-xs transition-all cursor-pointer"
+            >
+              <span>Explore All Projects & Systems Gallery ({allProjects.length || 6}) →</span>
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Main Layout: River Spine + Project Showcases */}
-      <div className="relative">
+      <div className="timeline-container">
         {/* Riverbed SVG Spline running vertically through the milestones */}
-        <div className="hidden md:block absolute left-[38px] top-0 bottom-0 w-[44px] pointer-events-none z-0">
+        <div className="timeline-svg-channel">
           <svg
             className="w-full h-full overflow-visible"
             viewBox="0 0 44 1400"
@@ -105,24 +130,20 @@ export const RiverTimeline: React.FC = () => {
         </div>
 
         {/* Milestone Milestones Stack */}
-        <div className="space-y-16 sm:space-y-24">
-          {FLAGSHIP_PROJECTS.map((project, index) => {
+        <div className="timeline-milestones-stack">
+          {flagships.map((project, index) => {
             const isActive = activeBoulderId === project.id;
-            const correspondingPebble = RIVER_PEBBLES[index];
+            const correspondingPebble = pebbles[index];
 
             return (
-              <div key={project.id} className="relative">
-                <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
+              <div key={project.id} id={project.id} className="relative scroll-mt-24">
+                <div className="milestone-row">
                   {/* Left Column: Tactile River Stone Node */}
-                  <div className="md:col-span-2 flex md:flex-col items-center gap-4 md:gap-3 md:pt-4">
+                  <div className="milestone-stone-col">
                     {/* Sculpted River Boulder Node */}
                     <button
                       onClick={() => setActiveBoulderId(project.id)}
-                      className={`relative z-10 w-16 h-16 sm:w-20 sm:h-20 rounded-[28px] flex flex-col items-center justify-center transition-all duration-500 cursor-pointer border shadow-sm ${
-                        isActive
-                          ? 'bg-[#1B2127] text-white border-[#3894B3] scale-105 shadow-lg shadow-[#3894B3]/25'
-                          : 'bg-[#F2EFE9] text-[#2C343D] border-[#2A2F35]/15 hover:bg-[#EAE5DC]'
-                      }`}
+                      className={`boulder-node ${isActive ? 'active' : ''}`}
                       style={{
                         borderRadius:
                           index === 0
@@ -135,37 +156,71 @@ export const RiverTimeline: React.FC = () => {
                     >
                       {/* Active Water Ripple Ring */}
                       {isActive && (
-                        <span className="absolute inset-[-6px] rounded-[34px] border-2 border-[#3894B3]/40 animate-ripple pointer-events-none" />
+                        <span className="boulder-ripple" />
                       )}
 
-                      <span className="text-[10px] font-mono tracking-wider opacity-70">
+                      <span className="boulder-idx">
                         0{index + 1}
                       </span>
-                      <span className="font-serif text-sm sm:text-base font-semibold leading-none mt-0.5">
+                      <span className="boulder-title">
                         {project.title.split(' ')[0]}
                       </span>
                     </button>
 
-                    <div className="md:text-center">
-                      <span className="text-xs font-mono text-[#586A7A] block font-medium">
+                    <div className="milestone-meta">
+                      <span className="milestone-badge-text">
                         {index === 0 ? 'Foundation' : index === 1 ? 'Real-Time' : 'AI Pipeline'}
                       </span>
-                      <span className="text-[11px] text-[#8696A4] hidden sm:block">
+                      <span className="milestone-sub-text">
                         {project.stats[0].value}
                       </span>
                     </div>
                   </div>
 
                   {/* Right Column: Detailed Project Case Card */}
-                  <div className="md:col-span-10">
-                    <ProjectCard project={project} isActive={isActive} />
+                  <div className="milestone-card-col">
+                    <ProjectCard
+                      project={project}
+                      isActive={isActive}
+                      onViewDetails={onViewDetails}
+                    />
                   </div>
                 </div>
 
                 {/* Riverbank Pebble (Secondary Exploration) resting below each milestone */}
                 {correspondingPebble && (
-                  <div className="mt-8 md:ml-24 md:pl-2 flex items-center gap-3">
-                    <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#EFECE4] border border-[#2A2F35]/10 text-xs text-[#444E57] hover:border-[#3894B3]/40 hover:bg-[#E8E4D8] transition-all cursor-pointer group shadow-2xs">
+                  <div className="pebble-row">
+                    <div 
+                      onClick={() => {
+                        if (onViewDetails) {
+                          const fullProject = allProjects.find((p) => p.id === correspondingPebble.id);
+                          if (fullProject) {
+                            onViewDetails(fullProject);
+                            return;
+                          }
+                          onViewDetails({
+                            id: correspondingPebble.id,
+                            title: correspondingPebble.title,
+                            category: correspondingPebble.tag || 'River Pebble',
+                            subtitle: correspondingPebble.description,
+                            description: correspondingPebble.description,
+                            tags: correspondingPebble.tags || (correspondingPebble.icon ? [{ name: correspondingPebble.title, icon: correspondingPebble.icon }] : []),
+                            stats: correspondingPebble.stats || [{ label: 'Category', value: correspondingPebble.tag }],
+                            highlights: correspondingPebble.highlights || ['Exploratory sandbox & architecture practice'],
+                            stoneAccent: '#6E7E8E',
+                            githubUrl: correspondingPebble.githubUrl,
+                            liveUrl: correspondingPebble.liveUrl,
+                            imageUrl: correspondingPebble.imageUrl,
+                            detailsMarkdown: correspondingPebble.detailsMarkdown,
+                            isFlagship: false,
+                          });
+                        } else if (onOpenGallery) {
+                          onOpenGallery('experiments');
+                        }
+                      }}
+                      className="pebble-pill cursor-pointer"
+                      title="Click to inspect exploratory sandbox details"
+                    >
                       {/* Pebble Stone Graphic or Icon */}
                       {correspondingPebble.icon ? (
                         <img
@@ -177,13 +232,13 @@ export const RiverTimeline: React.FC = () => {
                       ) : (
                         <span className="w-2.5 h-2 rounded-full bg-[#788896] group-hover:bg-[#3894B3] transition-colors" />
                       )}
-                      <span className="font-mono text-[11px] font-medium text-[#1B2127]">
+                      <span className="pebble-title">
                         {correspondingPebble.title}
                       </span>
-                      <span className="text-[#81909E] text-[10px] hidden sm:inline font-mono">
+                      <span className="pebble-tag">
                         ({correspondingPebble.tag})
                       </span>
-                      <span className="text-[#596673] text-[11px] font-normal truncate max-w-[240px] sm:max-w-md hidden md:inline">
+                      <span className="pebble-desc">
                         — {correspondingPebble.description}
                       </span>
                       {correspondingPebble.githubUrl && (
@@ -191,6 +246,7 @@ export const RiverTimeline: React.FC = () => {
                           href={correspondingPebble.githubUrl}
                           target="_blank"
                           rel="noreferrer"
+                          onClick={(e) => e.stopPropagation()}
                           className="ml-1 text-[#6E7E8E] group-hover:text-[#1B2127]"
                           title="Open repo"
                         >
@@ -207,7 +263,7 @@ export const RiverTimeline: React.FC = () => {
       </div>
 
       {/* River Terminal (Delta / Ocean) */}
-      <div className="mt-20 pt-10 border-t border-[#2A2F35]/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono text-[#586A7A]">
+      <div className="timeline-footer">
         <div className="flex items-center gap-2">
           <span className="w-2.5 h-2.5 rounded-full bg-[#3894B3]" />
           <span>Continuous Integration & Deployment via GitHub Actions</span>

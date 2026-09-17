@@ -1,0 +1,90 @@
+@reference "../index.css";
+
+/* Project Card: Basic Layout */
+.project-card {
+  @apply border border-gray-200 rounded-lg p-6 mb-6 bg-white;
+}
+
+.project-card.active {
+  @apply border-gray-900;
+}
+
+.card-header {
+  @apply flex items-center justify-between mb-3;
+}
+
+.card-category {
+  @apply text-xs uppercase tracking-wider text-gray-500 font-medium;
+}
+
+.card-beacon {
+  @apply flex items-center gap-1.5 text-xs text-gray-400;
+}
+
+.card-beacon-dot {
+  @apply w-2 h-2 rounded-full bg-gray-400;
+}
+
+.card-beacon-text {
+  @apply text-xs text-gray-500;
+}
+
+.card-title {
+  @apply text-xl font-bold text-gray-900 mb-1;
+}
+
+.card-subtitle {
+  @apply text-sm text-gray-500 mb-3;
+}
+
+.card-desc {
+  @apply text-sm text-gray-700 leading-relaxed mb-4;
+}
+
+.card-highlights-section {
+  @apply border-t border-gray-100 pt-3 mb-4 space-y-1.5;
+}
+
+.card-highlights-label {
+  @apply text-xs uppercase tracking-wider text-gray-400 font-semibold mb-2;
+}
+
+.card-highlight-item {
+  @apply flex items-start gap-2 text-xs text-gray-600;
+}
+
+.card-highlight-icon {
+  @apply w-3.5 h-3.5 text-gray-400 mt-0.5 shrink-0;
+}
+
+.card-stats-grid {
+  @apply grid grid-cols-3 gap-2 p-3 rounded border border-gray-100 bg-gray-50 mb-4;
+}
+
+.card-stat-cell {
+  @apply text-center;
+}
+
+.card-stat-label {
+  @apply text-[10px] uppercase text-gray-400;
+}
+
+.card-stat-val {
+  @apply text-xs font-semibold text-gray-800;
+}
+
+.card-tags-list {
+  @apply flex flex-wrap gap-2 mb-4;
+}
+
+.card-actions {
+  @apply flex items-center gap-3 pt-2;
+}
+
+.card-btn-primary {
+  @apply inline-flex items-center gap-1.5 px-3 py-1.5 rounded border border-gray-900 bg-gray-900 text-white text-xs font-medium hover:bg-gray-800;
+}
+
+.card-btn-secondary {
+  @apply inline-flex items-center gap-1.5 px-3 py-1.5 rounded border border-gray-300 bg-white text-gray-800 text-xs font-medium hover:bg-gray-50;
+}
