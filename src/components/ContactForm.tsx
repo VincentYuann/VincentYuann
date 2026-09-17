@@ -12,7 +12,6 @@ export const ContactForm: React.FC<ContactFormProps> = ({
 }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const [subject, setSubject] = useState(defaultSubject);
   const [message, setMessage] = useState('');
   const [honeypot, setHoneypot] = useState('');
   const [attachment, setAttachment] = useState<{ filename: string; content: string; size: number } | null>(null);
@@ -93,7 +92,7 @@ export const ContactForm: React.FC<ContactFormProps> = ({
         body: JSON.stringify({
           name: name.trim(),
           email: email.trim(),
-          subject: subject.trim(),
+          subject: defaultSubject.trim(),
           message: message.trim(),
           attachment: attachment ? { filename: attachment.filename, content: attachment.content } : undefined,
           honeypot: honeypot || undefined,
@@ -201,24 +200,6 @@ export const ContactForm: React.FC<ContactFormProps> = ({
             className="w-full px-3.5 py-2.5 text-xs bg-[#F6F8FA] border border-[#D0D7DE] rounded-xl focus:bg-white focus:outline-none focus:border-[#3894B3] transition-colors"
           />
         </div>
-      </div>
-
-      {/* Inquiry Subject */}
-      <div>
-        <label className="block text-xs font-semibold text-[#57606A] mb-1.5">
-          Inquiry Type
-        </label>
-        <select
-          value={subject}
-          onChange={(e) => setSubject(e.target.value)}
-          className="w-full px-3.5 py-2.5 text-xs bg-[#F6F8FA] border border-[#D0D7DE] rounded-xl focus:bg-white focus:outline-none focus:border-[#3894B3] transition-colors cursor-pointer"
-        >
-          <option value="Full-Stack / Applied AI Opportunity">Full-Stack / Applied AI Role or Opportunity</option>
-          <option value="Consulting / Contract Project">Consulting / Contract System Build</option>
-          <option value="Technical Architecture Discussion">Technical Architecture / System Design</option>
-          <option value="Open Source Collaboration">Open Source / Research Collaboration</option>
-          <option value="General Reach-Out">General Reach-Out / Coffee Chat</option>
-        </select>
       </div>
 
       {/* Message Textarea */}

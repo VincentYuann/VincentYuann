@@ -93,7 +93,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({
         </div>
       </main>
 
-      <Footer profile={profile} />
+      <Footer profile={profile} showCta={false} />
     </div>
   );
 };
