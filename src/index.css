@@ -1,0 +1,66 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --canvas: #FBF9F5;
+    --ink: #1B2127;
+    --ink-subtle: #56616B;
+    --ink-faint: #C9D0D6;
+    --water-stream: #3894B3;
+    --water-glow: #A0D8E9;
+    --stone-dark: #272C33;
+    --paper-card: rgba(255, 255, 255, 0.78);
+    --border-subtle: rgba(33, 40, 48, 0.09);
+  }
+
+  body {
+    background-color: var(--canvas);
+    color: var(--ink);
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+
+  h1, h2, h3, .font-serif {
+    font-family: 'Instrument Serif', Georgia, serif;
+  }
+
+  code, pre, .font-mono {
+    font-family: 'JetBrains Mono', monospace;
+  }
+}
+
+/* Subtle organic topographic elevation line overlay */
+.topo-pattern {
+  background-image: radial-gradient(circle at 50% 20%, rgba(30, 45, 60, 0.02) 0%, transparent 60%),
+    radial-gradient(circle at 80% 80%, rgba(56, 148, 179, 0.03) 0%, transparent 50%);
+}
+
+/* Smooth custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #FBF9F5;
+}
+::-webkit-scrollbar-thumb {
+  background: #D8DFE5;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #B6C3CE;
+}
+
+/* Soft ripple animation */
+@keyframes softRipple {
+  0% {
+    transform: scale(0.95);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+}
+
+.animate-ripple {
+  animation: softRipple 2.8s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+}
