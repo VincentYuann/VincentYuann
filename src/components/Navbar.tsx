@@ -1,30 +1,41 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Command, Settings } from 'lucide-react';
+import { Command, Settings, User } from 'lucide-react';
 import { GithubIcon } from './Icons';
+import { useAuth } from '../lib/useAuth';
 import type { ProfileData } from '../lib/useProfile';
+import '../styles/navbar.css';
 
 interface NavbarProps {
   onOpenCommand: () => void;
+  onOpenProfile?: () => void;
   profile: ProfileData;
+  isAdmin?: boolean;
 }
 
-export const Navbar: React.FC<NavbarProps> = ({ onOpenCommand, profile }) => {
+export const Navbar: React.FC<NavbarProps> = ({ 
+  onOpenCommand, 
+  onOpenProfile, 
+  profile,
+  isAdmin: propIsAdmin,
+}) => {
   const location = useLocation();
+  const { isAdmin: authIsAdmin } = useAuth();
+  const isAdmin = propIsAdmin ?? authIsAdmin;
 
   return (
-    <nav className="border-b border-[#E1E6EB] bg-white/95 backdrop-blur-md sticky top-0 z-30 px-4 sm:px-8 py-3.5 flex items-center justify-between transition-all">
+    <nav className="navbar-wrapper">
       {/* Brand Identity */}
-      <div className="flex items-center gap-3">
-        <Link to="/" className="flex items-center gap-2.5 group">
-          <div className="w-8 h-8 rounded-full bg-[#1B2127] text-white flex items-center justify-center font-serif text-sm font-bold shadow-xs group-hover:scale-105 transition-transform">
+      <div className="navbar-brand-group">
+        <Link to="/" className="navbar-brand-link group">
+          <div className="navbar-brand-avatar">
             V
           </div>
           <div>
-            <span className="text-sm font-bold text-[#1B2127] block leading-tight group-hover:text-[#3894B3] transition-colors">
+            <span className="navbar-brand-name">
               {profile.name}
             </span>
-            <span className="text-[11px] text-[#6E7E8E] font-medium hidden sm:block">
+            <span className="navbar-brand-role">
               {profile.role}
             </span>
           </div>
@@ -32,20 +43,14 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenCommand, profile }) => {
       </div>
 
       {/* Nav Links & Actions */}
-      <div className="flex items-center gap-2 sm:gap-3">
-        {/* Status Pill */}
-        <div className="hidden lg:flex items-center gap-2 px-2.5 py-1 rounded-full bg-[#EBF6F9] border border-[#3894B3]/30 text-[#2B6D83] text-[11px] font-medium">
-          <span className="w-1.5 h-1.5 rounded-full bg-[#3894B3] animate-pulse" />
-          <span>{profile.status}</span>
-        </div>
-
+      <div className="navbar-actions">
         {/* Projects Gallery */}
         <Link
           to="/projects"
-          className={`px-2.5 py-1.5 text-xs font-semibold rounded-lg border transition-all ${
+          className={`navbar-link ${
             location.pathname.startsWith('/projects')
-              ? 'bg-[#F6F8FA] text-[#1B2127] border-[#D0D7DE] font-bold'
-              : 'text-[#57606A] hover:text-[#1B2127] hover:bg-[#F6F8FA] border-[#D0D7DE]'
+              ? 'navbar-link-active'
+              : 'navbar-link-inactive'
           }`}
         >
           Projects Gallery
@@ -54,10 +59,10 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenCommand, profile }) => {
         {/* My Resume */}
         <Link
           to="/resume"
-          className={`px-2.5 py-1.5 text-xs font-semibold rounded-lg border transition-all ${
+          className={`navbar-link ${
             location.pathname.startsWith('/resume')
-              ? 'bg-[#F6F8FA] text-[#1B2127] border-[#D0D7DE] font-bold'
-              : 'text-[#57606A] hover:text-[#1B2127] hover:bg-[#F6F8FA] border-[#D0D7DE]'
+              ? 'navbar-link-active'
+              : 'navbar-link-inactive'
           }`}
         >
           Resume
@@ -66,20 +71,20 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenCommand, profile }) => {
         {/* Spotlight Command Search Trigger */}
         <button
           onClick={onOpenCommand}
-          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-[#F6F8FA] hover:bg-[#E1E6EB] border border-[#D0D7DE] text-xs text-[#57606A] hover:text-[#1B2127] transition-all cursor-pointer shadow-xs"
+          className="navbar-search-btn"
           title="Open Spotlight Search (Ctrl + K / Cmd + K)"
         >
-          <Command className="w-3.5 h-3.5 text-[#6E7E8E]" />
-          <span className="hidden md:inline">Search</span>
-          <kbd className="px-1 py-0.5 rounded bg-white text-[10px] text-[#4A5560] font-mono border border-[#D0D7DE]">⌘K</kbd>
+          <Command className="navbar-search-icon" />
+          <span className="navbar-search-label">Search</span>
+          <kbd className="navbar-search-kbd">⌘K</kbd>
         </button>
 
-        {/* Actions Cluster: Hire Me, GitHub, Settings */}
-        <div className="flex items-center gap-1 sm:gap-2 ml-1 pl-1 sm:pl-2 border-l border-[#E1E6EB]">
+        {/* Actions Cluster: Hire Me, GitHub, Profile, Settings */}
+        <div className="navbar-cluster-divider">
           {/* Hire Me Button */}
           <Link
             to="/contact"
-            className="px-3 py-1.5 rounded-lg bg-[#1B2127] hover:bg-[#3894B3] text-white text-xs font-semibold transition-all shadow-xs flex items-center gap-1"
+            className="navbar-hire-btn"
             title="Hire Me / Send Message"
           >
             Hire Me
@@ -90,22 +95,39 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenCommand, profile }) => {
             href={profile.github}
             target="_blank"
             rel="noreferrer"
-            className="p-1.5 rounded-md text-[#57606A] hover:text-[#1B2127] hover:bg-[#F6F8FA] transition-colors"
+            className="navbar-icon-btn"
             title="GitHub Profile"
             aria-label="GitHub Profile"
           >
             <GithubIcon className="w-4 h-4" />
           </a>
 
+          {/* Profile Overview & Quick Actions */}
+          <button
+            type="button"
+            onClick={onOpenProfile}
+            className="navbar-icon-btn relative cursor-pointer"
+            title={isAdmin ? "Profile Overview & Admin Controls" : "View Profile Overview"}
+            aria-label="Profile Overview"
+          >
+            <User className="w-4 h-4" />
+            {isAdmin && (
+              <span 
+                className="absolute top-1 right-1 w-2 h-2 rounded-full bg-emerald-500 ring-2 ring-white" 
+                title="Admin Active"
+              />
+            )}
+          </button>
+
           {/* Admin Settings */}
           <Link
             to="/admin"
-            className={`p-1.5 rounded-md transition-colors ${
+            className={
               location.pathname.startsWith('/admin')
-                ? 'text-[#1B2127] bg-[#F6F8FA]'
-                : 'text-[#8C959F] hover:text-[#1B2127] hover:bg-[#F6F8FA]'
-            }`}
-            title="Admin CMS & Settings"
+                ? 'navbar-icon-btn-admin-active'
+                : 'navbar-icon-btn-admin-inactive'
+            }
+            title={isAdmin ? "Admin CMS (Logged In)" : "Admin CMS & Settings"}
             aria-label="Admin Settings"
           >
             <Settings className="w-4 h-4" />

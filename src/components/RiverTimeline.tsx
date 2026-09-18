@@ -9,6 +9,7 @@ interface RiverTimelineProps {
   flagships?: FlagshipProject[];
   pebbles?: RiverPebble[];
   allProjects?: FlagshipProject[];
+  isAdmin?: boolean;
   onOpenGallery?: (filter?: string) => void;
   onViewDetails?: (project: FlagshipProject) => void;
 }
@@ -17,6 +18,7 @@ export const RiverTimeline: React.FC<RiverTimelineProps> = ({
   flagships = FLAGSHIP_PROJECTS,
   pebbles = RIVER_PEBBLES,
   allProjects = [],
+  isAdmin = false,
   onOpenGallery,
   onViewDetails,
 }) => {
@@ -57,22 +59,21 @@ export const RiverTimeline: React.FC<RiverTimelineProps> = ({
       {/* Section Header */}
       <div className="timeline-header">
         <span className="timeline-eyebrow">
-          Chronological Architecture Stream
+          Architecture Milestones
         </span>
         <h2 className="timeline-title">
-          The River of Milestones
+          Flagship Systems
         </h2>
         <p className="timeline-desc">
-          Scroll to trace the current. Water carves through our flagship systems, with exploratory
-          pebbles resting along the banks.
+          Core full-stack web applications, real-time sync engines, and distributed architectures.
         </p>
         {onOpenGallery && (
-          <div className="pt-3">
+          <div className="pt-2">
             <button
               onClick={() => onOpenGallery('all')}
-              className="inline-flex items-center gap-2 px-3.5 py-1.5 text-xs font-semibold text-[#1B2127] bg-white hover:bg-[#F6F8FA] border border-[#D0D7DE] hover:border-[#8C959F] rounded-lg shadow-xs transition-all cursor-pointer"
+              className="inline-flex items-center gap-2 px-3.5 py-1.5 text-xs font-semibold text-[#1B2127] bg-white hover:bg-[#F6F8FA] border border-[#D0D7DE] hover:border-[#8C959F] rounded-xl shadow-xs transition-all cursor-pointer"
             >
-              <span>Explore All Projects & Systems Gallery ({allProjects.length || 6}) →</span>
+              <span>Explore Full Systems Gallery ({allProjects.length || 6}) →</span>
             </button>
           </div>
         )}
@@ -182,6 +183,7 @@ export const RiverTimeline: React.FC<RiverTimelineProps> = ({
                     <ProjectCard
                       project={project}
                       isActive={isActive}
+                      isAdmin={isAdmin}
                       onViewDetails={onViewDetails}
                     />
                   </div>
@@ -238,7 +240,7 @@ export const RiverTimeline: React.FC<RiverTimelineProps> = ({
                       <span className="pebble-tag">
                         ({correspondingPebble.tag})
                       </span>
-                      <span className="pebble-desc">
+                      <span className="pebble-desc line-clamp-1">
                         — {correspondingPebble.description}
                       </span>
                       {correspondingPebble.githubUrl && (

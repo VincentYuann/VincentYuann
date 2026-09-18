@@ -7,17 +7,20 @@ import { GithubIcon } from '../components/Icons';
 import { TechBadge } from '../components/TechBadge';
 import type { FlagshipProject } from '../data/projects';
 import type { ProfileData } from '../lib/useProfile';
+import '../styles/projects-page.css';
 
 interface ProjectsPageProps {
   projects: FlagshipProject[];
   profile: ProfileData;
   onOpenCommand: () => void;
+  onOpenProfile?: () => void;
 }
 
 export const ProjectsPage: React.FC<ProjectsPageProps> = ({
   projects,
   profile,
   onOpenCommand,
+  onOpenProfile,
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
@@ -42,7 +45,7 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({
           ? p.isFlagship
           : selectedCategory === 'experiments'
           ? !p.isFlagship
-          : p.category.toLowerCase().includes(selectedCategory.toLowerCase());
+          : p.category === selectedCategory;
 
       const q = searchQuery.toLowerCase().trim();
       if (!q) return matchesCategory;
@@ -60,45 +63,45 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({
   }, [projects, selectedCategory, searchQuery]);
 
   return (
-    <div className="min-h-screen bg-[#FAFBFD] text-gray-900 flex flex-col">
-      <Navbar onOpenCommand={onOpenCommand} profile={profile} />
+    <div className="projects-page-container">
+      <Navbar onOpenCommand={onOpenCommand} onOpenProfile={onOpenProfile} profile={profile} />
 
       {/* Main Page Container */}
-      <main className="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-8 py-8 sm:py-12 space-y-8">
+      <main className="projects-main-content">
         {/* Page Header & Intro */}
-        <div className="space-y-3">
-          <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[#6E7E8E]">
-            <Link to="/" className="hover:text-[#1B2127] transition-colors">Home</Link>
+        <div className="projects-header-block">
+          <div className="projects-breadcrumb-bar">
+            <Link to="/" className="projects-breadcrumb-link">Home</Link>
             <span>/</span>
-            <span className="text-[#3894B3]">Level 1 Architecture Discovery</span>
+            <span className="projects-breadcrumb-current">Level 1 Architecture Discovery</span>
           </div>
 
-          <h1 className="text-3xl sm:text-4xl font-serif font-bold text-[#1B2127] tracking-tight">
+          <h1 className="projects-title">
             All Projects & Exploratory Systems
           </h1>
 
-          <p className="text-sm sm:text-base text-[#57606A] max-w-2xl leading-relaxed">
+          <p className="projects-subtitle">
             A comprehensive catalog of production architectures, real-time sync systems, applied GenAI pipelines, and exploratory sandboxes. Click any card to inspect the deep-dive engineering log.
           </p>
         </div>
 
         {/* Search & Filter Toolbar */}
-        <div className="p-4 sm:p-5 bg-white border border-[#D0D7DE] rounded-2xl shadow-xs space-y-4">
-          <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-between">
+        <div className="projects-toolbar-card">
+          <div className="projects-toolbar-row">
             {/* Search Input */}
-            <div className="relative flex-1 max-w-lg">
-              <Search className="w-4 h-4 text-[#8C959F] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+            <div className="projects-search-box">
+              <Search className="projects-search-icon" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search systems, frameworks (Docker, React, Qdrant), keywords..."
-                className="w-full pl-9 pr-4 py-2 text-xs sm:text-sm bg-[#F6F8FA] border border-[#D0D7DE] rounded-xl focus:bg-white focus:outline-none focus:border-[#3894B3] focus:ring-2 focus:ring-[#3894B3]/20 transition-all placeholder:text-[#8C959F]"
+                className="projects-search-input"
               />
               {searchQuery && (
                 <button
                   onClick={() => setSearchQuery('')}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-[#6E7E8E] hover:text-[#1B2127]"
+                  className="projects-search-clear-btn"
                 >
                   Clear
                 </button>
@@ -106,39 +109,39 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({
             </div>
 
             {/* Quick Count Badge */}
-            <div className="text-xs font-medium text-[#57606A] px-3 py-1.5 bg-[#F6F8FA] border border-[#E1E6EB] rounded-lg self-start sm:self-auto shrink-0 font-mono">
-              Showing <span className="font-bold text-[#1B2127]">{filteredProjects.length}</span> of {projects.length} systems
+            <div className="projects-count-badge">
+              Showing <span className="projects-count-highlight">{filteredProjects.length}</span> of {projects.length} systems
             </div>
           </div>
 
           {/* Category Filter Pills */}
-          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar text-xs">
+          <div className="projects-filter-pills">
             <button
               onClick={() => setSelectedCategory('all')}
-              className={`px-3 py-1.5 rounded-lg font-medium transition-all shrink-0 cursor-pointer ${
+              className={`projects-filter-pill ${
                 selectedCategory === 'all'
-                  ? 'bg-[#1B2127] text-white shadow-xs'
-                  : 'bg-white border border-[#D0D7DE] text-[#57606A] hover:text-[#1B2127]'
+                  ? 'projects-filter-pill-active'
+                  : 'projects-filter-pill-inactive'
               }`}
             >
               All Systems ({projects.length})
             </button>
             <button
               onClick={() => setSelectedCategory('flagships')}
-              className={`px-3 py-1.5 rounded-lg font-medium transition-all shrink-0 cursor-pointer ${
+              className={`projects-filter-pill ${
                 selectedCategory === 'flagships'
-                  ? 'bg-[#1B2127] text-white shadow-xs'
-                  : 'bg-white border border-[#D0D7DE] text-[#57606A] hover:text-[#1B2127]'
+                  ? 'projects-filter-pill-active'
+                  : 'projects-filter-pill-inactive'
               }`}
             >
               Flagships ({projects.filter((p) => p.isFlagship).length})
             </button>
             <button
               onClick={() => setSelectedCategory('experiments')}
-              className={`px-3 py-1.5 rounded-lg font-medium transition-all shrink-0 cursor-pointer ${
+              className={`projects-filter-pill ${
                 selectedCategory === 'experiments'
-                  ? 'bg-[#1B2127] text-white shadow-xs'
-                  : 'bg-white border border-[#D0D7DE] text-[#57606A] hover:text-[#1B2127]'
+                  ? 'projects-filter-pill-active'
+                  : 'projects-filter-pill-inactive'
               }`}
             >
               River Pebbles ({projects.filter((p) => !p.isFlagship).length})
@@ -149,10 +152,10 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({
                 <button
                   key={cat}
                   onClick={() => setSelectedCategory(cat)}
-                  className={`px-3 py-1.5 rounded-lg font-medium transition-all shrink-0 cursor-pointer ${
+                  className={`projects-filter-pill ${
                     selectedCategory === cat
-                      ? 'bg-[#1B2127] text-white shadow-xs'
-                      : 'bg-white border border-[#D0D7DE] text-[#57606A] hover:text-[#1B2127]'
+                      ? 'projects-filter-pill-active'
+                      : 'projects-filter-pill-inactive'
                   }`}
                 >
                   {cat}
@@ -163,10 +166,10 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({
 
         {/* Card Grid */}
         {filteredProjects.length === 0 ? (
-          <div className="text-center py-20 bg-white border border-[#D0D7DE] rounded-2xl p-8 space-y-3">
-            <Filter className="w-8 h-8 text-[#8C959F] mx-auto opacity-50" />
-            <div className="text-base font-bold text-[#1B2127]">No matching systems found</div>
-            <p className="text-xs text-[#57606A] max-w-sm mx-auto">
+          <div className="projects-empty-card">
+            <Filter className="projects-empty-icon" />
+            <div className="projects-empty-title">No matching systems found</div>
+            <p className="projects-empty-text">
               No projects matched &ldquo;{searchQuery}&rdquo;. Try adjusting your keywords or clearing the category filter.
             </p>
             <button
@@ -174,22 +177,22 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({
                 setSearchQuery('');
                 setSelectedCategory('all');
               }}
-              className="mt-2 text-xs font-semibold text-[#3894B3] hover:underline cursor-pointer"
+              className="projects-empty-reset-btn"
             >
               Reset filters
             </button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="projects-grid">
             {filteredProjects.map((project) => (
               <div
                 key={project.id}
-                className="group flex flex-col bg-white border border-[#D0D7DE] hover:border-[#8C959F] rounded-2xl p-5 shadow-xs hover:shadow-md transition-all duration-200"
+                className="project-item-card group"
               >
                 {/* Card Header */}
-                <div className="flex items-center justify-between gap-2 mb-3">
+                <div className="project-item-header">
                   <span
-                    className="text-[10px] font-semibold tracking-wider uppercase px-2.5 py-0.5 rounded-md"
+                    className="project-item-category"
                     style={{
                       backgroundColor: `${project.stoneAccent}15`,
                       color: project.stoneAccent,
@@ -200,11 +203,11 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({
                   </span>
 
                   {project.isFlagship ? (
-                    <span className="text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 rounded bg-[#3894B3]/10 text-[#3894B3] border border-[#3894B3]/20">
+                    <span className="project-item-flagship-pill">
                       Flagship
                     </span>
                   ) : (
-                    <span className="text-[10px] font-medium tracking-wider uppercase px-2 py-0.5 rounded bg-[#F6F8FA] text-[#6E7E8E] border border-[#E1E6EB]">
+                    <span className="project-item-sandbox-pill">
                       Sandbox
                     </span>
                   )}
@@ -212,27 +215,27 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({
 
                 {/* Title & Subtitle */}
                 <Link to={`/projects/${project.id}`} className="block group">
-                  <h2 className="text-lg font-serif font-bold text-[#1B2127] group-hover:text-[#3894B3] transition-colors">
+                  <h2 className="project-item-title">
                     {project.title}
                   </h2>
-                  <p className="text-xs text-[#57606A] font-medium mt-0.5 mb-3 line-clamp-1">
+                  <p className="project-item-subtitle">
                     {project.subtitle}
                   </p>
                 </Link>
 
                 {/* Description */}
-                <p className="text-xs text-[#57606A] leading-relaxed line-clamp-3 mb-4 flex-1">
+                <p className="project-item-desc">
                   {project.description}
                 </p>
 
                 {/* Tech Stack Badges */}
                 {project.tags && project.tags.length > 0 && (
-                  <div className="flex flex-wrap gap-1.5 mb-4">
+                  <div className="project-item-tags">
                     {project.tags.slice(0, 4).map((tag, idx) => (
                       <TechBadge key={idx} name={tag.name} icon={tag.icon} />
                     ))}
                     {project.tags.length > 4 && (
-                      <span className="text-[10px] text-[#6E7E8E] self-center px-1.5 py-0.5 rounded bg-[#F6F8FA] border border-[#E1E6EB]">
+                      <span className="project-item-tags-overflow">
                         +{project.tags.length - 4}
                       </span>
                     )}
@@ -241,17 +244,17 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({
 
                 {/* Metric Grid Preview if present */}
                 {project.stats && project.stats[0] && (
-                  <div className="flex items-center justify-between text-[11px] p-2 rounded-lg bg-[#FAFBFC] border border-[#E1E6EB] mb-4">
-                    <span className="text-[#6E7E8E]">{project.stats[0].label}:</span>
-                    <span className="font-mono font-bold text-[#1B2127]">{project.stats[0].value}</span>
+                  <div className="project-item-stat-preview">
+                    <span className="project-item-stat-label">{project.stats[0].label}:</span>
+                    <span className="project-item-stat-val">{project.stats[0].value}</span>
                   </div>
                 )}
 
                 {/* Action Row */}
-                <div className="pt-3 border-t border-[#E1E6EB] flex items-center justify-between gap-2">
+                <div className="project-item-actions">
                   <Link
                     to={`/projects/${project.id}`}
-                    className="inline-flex items-center gap-1.5 text-xs font-bold text-[#1B2127] group-hover:text-[#3894B3] transition-colors"
+                    className="project-item-read-link"
                   >
                     <span>Read Deep-Dive</span>
                     <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
@@ -263,7 +266,7 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({
                         href={project.githubUrl}
                         target="_blank"
                         rel="noreferrer"
-                        className="p-1.5 text-[#57606A] hover:text-[#1B2127] hover:bg-[#F6F8FA] rounded-md transition-colors"
+                        className="project-item-icon-link"
                         title="View GitHub Repository"
                       >
                         <GithubIcon className="w-3.5 h-3.5" />
@@ -274,7 +277,7 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({
                         href={project.liveUrl}
                         target="_blank"
                         rel="noreferrer"
-                        className="p-1.5 text-[#57606A] hover:text-[#3894B3] hover:bg-[#F6F8FA] rounded-md transition-colors"
+                        className="project-item-icon-link-live"
                         title="Open Live Demo"
                       >
                         <ExternalLink className="w-3.5 h-3.5" />

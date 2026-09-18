@@ -7,17 +7,20 @@ import { GithubIcon } from '../components/Icons';
 import { TechBadge } from '../components/TechBadge';
 import type { FlagshipProject } from '../data/projects';
 import type { ProfileData } from '../lib/useProfile';
+import '../styles/project-detail-page.css';
 
 interface ProjectDetailPageProps {
   projects: FlagshipProject[];
   profile: ProfileData;
   onOpenCommand: () => void;
+  onOpenProfile?: () => void;
 }
 
 export const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({
   projects,
   profile,
   onOpenCommand,
+  onOpenProfile,
 }) => {
   const { id } = useParams<{ id: string }>();
 
@@ -36,20 +39,20 @@ export const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({
 
   if (!project) {
     return (
-      <div className="min-h-screen bg-[#FAFBFD] text-gray-900 flex flex-col">
-        <Navbar onOpenCommand={onOpenCommand} profile={profile} />
-        <main className="flex-1 flex items-center justify-center p-8">
-          <div className="text-center space-y-4 max-w-md">
-            <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center mx-auto text-gray-500 font-mono text-lg">
+      <div className="detail-page-container">
+        <Navbar onOpenCommand={onOpenCommand} onOpenProfile={onOpenProfile} profile={profile} />
+        <main className="detail-notfound-main">
+          <div className="detail-notfound-card">
+            <div className="detail-notfound-badge">
               404
             </div>
-            <h1 className="text-2xl font-serif font-bold text-[#1B2127]">System Not Found</h1>
-            <p className="text-xs text-[#57606A]">
-              Could not find a project milestone with ID <code className="font-mono bg-gray-100 px-1 py-0.5 rounded">{id}</code>.
+            <h1 className="detail-notfound-title">System Not Found</h1>
+            <p className="detail-notfound-text">
+              Could not find a project milestone with ID <code className="detail-notfound-code">{id}</code>.
             </p>
             <Link
               to="/projects"
-              className="inline-flex items-center gap-2 px-4 py-2 bg-[#1B2127] text-white text-xs font-semibold rounded-xl hover:bg-[#2C343E] transition-colors"
+              className="detail-notfound-link"
             >
               <ArrowLeft className="w-4 h-4" />
               <span>Back to Projects Gallery</span>
@@ -62,32 +65,32 @@ export const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({
   }
 
   return (
-    <div className="min-h-screen bg-[#FAFBFD] text-gray-900 flex flex-col">
-      <Navbar onOpenCommand={onOpenCommand} profile={profile} />
+    <div className="detail-page-container">
+      <Navbar onOpenCommand={onOpenCommand} onOpenProfile={onOpenProfile} profile={profile} />
 
-      <main className="flex-1 max-w-5xl w-full mx-auto px-4 sm:px-8 py-8 sm:py-12 space-y-10">
+      <main className="detail-main-content">
         {/* Breadcrumb & Navigation Bar */}
-        <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[#E1E6EB] pb-4">
+        <div className="detail-top-nav">
           <div className="flex items-center gap-3">
             <Link
               to="/projects"
-              className="flex items-center gap-1.5 text-xs font-semibold text-[#57606A] hover:text-[#1B2127] transition-colors bg-white px-3 py-1.5 rounded-lg border border-[#D0D7DE] shadow-xs"
+              className="detail-back-link"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
               <span>Back to Projects Gallery</span>
             </Link>
 
-            <div className="hidden sm:flex items-center gap-2 text-xs text-[#6E7E8E]">
+            <div className="detail-breadcrumb-trail">
               <span>/</span>
-              <span className="text-[#3894B3]">Level 2 Deep-Dive</span>
+              <span className="detail-breadcrumb-level">Level 2 Deep-Dive</span>
               <span>/</span>
-              <span className="font-mono text-[#1B2127] font-medium">{project.id}</span>
+              <span className="detail-breadcrumb-id">{project.id}</span>
             </div>
           </div>
 
           <div className="flex items-center gap-2">
             <span
-              className="text-[11px] font-semibold tracking-wider uppercase px-2.5 py-1 rounded-md"
+              className="detail-category-badge"
               style={{
                 backgroundColor: `${project.stoneAccent}15`,
                 color: project.stoneAccent,
@@ -97,7 +100,7 @@ export const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({
               {project.category}
             </span>
             {project.isFlagship && (
-              <span className="text-[11px] uppercase font-bold tracking-wider px-2.5 py-1 rounded bg-[#3894B3]/10 text-[#3894B3] border border-[#3894B3]/25">
+              <span className="detail-flagship-badge">
                 Flagship Milestone
               </span>
             )}
@@ -105,29 +108,29 @@ export const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({
         </div>
 
         {/* Hero Identity Header */}
-        <div className="space-y-4">
-          <div className="flex items-center gap-3">
+        <div className="detail-hero-section">
+          <div className="detail-title-row">
             <span
-              className="w-4 h-4 rounded-full shrink-0 shadow-xs"
+              className="detail-stone-dot"
               style={{ backgroundColor: project.stoneAccent }}
             />
-            <h1 className="text-3xl sm:text-5xl font-serif font-bold text-[#1B2127] tracking-tight">
+            <h1 className="detail-title">
               {project.title}
             </h1>
           </div>
 
-          <p className="text-lg sm:text-xl text-[#57606A] font-light leading-relaxed max-w-3xl">
+          <p className="detail-subtitle">
             {project.subtitle}
           </p>
 
           {/* Action Row */}
-          <div className="flex flex-wrap items-center gap-3 pt-2">
+          <div className="detail-cta-row">
             {project.githubUrl && (
               <a
                 href={project.githubUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex items-center gap-2 px-5 py-2.5 text-xs sm:text-sm font-semibold text-white bg-[#1B2127] hover:bg-[#2C343E] rounded-xl shadow-sm transition-all"
+                className="detail-cta-github"
               >
                 <GithubIcon className="w-4 h-4" />
                 <span>Inspect Source Code (GitHub)</span>
@@ -138,7 +141,7 @@ export const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({
                 href={project.liveUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex items-center gap-2 px-5 py-2.5 text-xs sm:text-sm font-semibold text-[#1B2127] bg-white hover:bg-[#F6F8FA] border border-[#D0D7DE] rounded-xl shadow-xs transition-all"
+                className="detail-cta-demo"
               >
                 <ExternalLink className="w-4 h-4 text-[#3894B3]" />
                 <span>Open Live Production Demo ↗</span>
@@ -149,37 +152,37 @@ export const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({
 
         {/* Media / Screenshot Showcase (Supabase Storage) */}
         {project.imageUrl && (
-          <div className="rounded-2xl border border-[#D0D7DE] bg-white overflow-hidden shadow-xs">
+          <div className="detail-image-card">
             <img
               src={project.imageUrl}
               alt={`${project.title} screenshot`}
-              className="w-full max-h-[460px] object-cover"
+              className="detail-image-img"
               loading="lazy"
             />
-            <div className="px-5 py-3 bg-[#FAFBFC] border-t border-[#E1E6EB] text-xs text-[#57606A] flex items-center justify-between">
+            <div className="detail-image-footer">
               <span>Architecture snapshot via Supabase Storage (`portfolio-assets`)</span>
-              <span className="font-mono text-[11px] text-[#6E7E8E]">{project.title}</span>
+              <span className="detail-image-footer-code">{project.title}</span>
             </div>
           </div>
         )}
 
         {/* Metrics & System Benchmarks Grid */}
         {project.stats && project.stats.length > 0 && (
-          <div className="space-y-3">
-            <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#6E7E8E]">
+          <div className="detail-section-block">
+            <div className="detail-section-label">
               <Activity className="w-4 h-4 text-[#3894B3]" />
               <span>Verified System Benchmarks</span>
             </div>
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+            <div className="detail-benchmarks-grid">
               {project.stats.map((stat, idx) => (
                 <div
                   key={idx}
-                  className="p-4 rounded-xl bg-white border border-[#D0D7DE] space-y-1 shadow-xs hover:border-[#8C959F] transition-colors"
+                  className="detail-benchmark-cell"
                 >
-                  <div className="text-xs font-medium text-[#6E7E8E] uppercase tracking-wider">
+                  <div className="detail-benchmark-label">
                     {stat.label}
                   </div>
-                  <div className="text-lg sm:text-xl font-bold text-[#1B2127] font-mono">
+                  <div className="detail-benchmark-value">
                     {stat.value}
                   </div>
                 </div>
@@ -189,31 +192,31 @@ export const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({
         )}
 
         {/* Executive Problem Statement */}
-        <div className="space-y-3">
-          <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#6E7E8E]">
+        <div className="detail-section-block">
+          <div className="detail-section-label">
             <Cpu className="w-4 h-4 text-[#588A75]" />
             <span>Executive Problem Formulation & Impact</span>
           </div>
-          <div className="p-6 rounded-2xl bg-white border border-[#D0D7DE] text-[#24292F] text-base leading-relaxed shadow-xs">
+          <div className="detail-description-card">
             <p>{project.description}</p>
           </div>
         </div>
 
         {/* Engineered Architecture Patterns & Invariants */}
         {project.highlights && project.highlights.length > 0 && (
-          <div className="space-y-3">
-            <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#6E7E8E]">
+          <div className="detail-section-block">
+            <div className="detail-section-label">
               <ShieldCheck className="w-4 h-4 text-[#3894B3]" />
               <span>Engineered Architectural Invariants</span>
             </div>
-            <div className="grid gap-3">
+            <div className="detail-invariants-grid">
               {project.highlights.map((highlight, idx) => (
                 <div
                   key={idx}
-                  className="flex items-start gap-3 p-4 rounded-xl bg-white border border-[#D0D7DE] text-sm text-[#24292F] shadow-xs"
+                  className="detail-invariant-card"
                 >
-                  <CheckCircle2 className="w-4 h-4 text-[#588A75] shrink-0 mt-0.5" />
-                  <span className="leading-snug">{highlight}</span>
+                  <CheckCircle2 className="detail-invariant-check" />
+                  <span className="detail-invariant-text">{highlight}</span>
                 </div>
               ))}
             </div>
@@ -222,12 +225,12 @@ export const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({
 
         {/* Tech Stack Breakdown */}
         {project.tags && project.tags.length > 0 && (
-          <div className="space-y-3">
-            <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#6E7E8E]">
+          <div className="detail-section-block">
+            <div className="detail-section-label">
               <Layers className="w-4 h-4 text-[#A35D43]" />
               <span>Technology Stack & Integrations</span>
             </div>
-            <div className="flex flex-wrap gap-2.5 p-4 bg-white border border-[#D0D7DE] rounded-2xl shadow-xs">
+            <div className="detail-tags-card">
               {project.tags.map((tag, idx) => (
                 <TechBadge key={idx} name={tag.name} icon={tag.icon} />
               ))}
@@ -237,23 +240,23 @@ export const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({
 
         {/* Deep-Dive Engineering Log (Markdown) */}
         {project.detailsMarkdown && (
-          <div className="space-y-3 pt-4">
-            <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#6E7E8E]">
+          <div className="detail-section-block pt-4">
+            <div className="detail-section-label">
               <Sparkles className="w-4 h-4 text-[#3894B3]" />
               <span>Deep-Dive Engineering Log & Documentation</span>
             </div>
-            <div className="p-6 sm:p-8 rounded-2xl bg-white border border-[#D0D7DE] text-sm sm:text-base text-[#24292F] space-y-4 whitespace-pre-line leading-relaxed font-sans shadow-xs">
+            <div className="detail-markdown-card">
               {project.detailsMarkdown}
             </div>
           </div>
         )}
 
         {/* Next / Prev Navigation Stack */}
-        <div className="pt-8 border-t border-[#E1E6EB] flex items-center justify-between gap-4">
+        <div className="detail-pagination-footer">
           {prevProject ? (
             <Link
               to={`/projects/${prevProject.id}`}
-              className="flex items-center gap-2 px-4 py-2 bg-white border border-[#D0D7DE] hover:border-[#8C959F] rounded-xl text-xs font-semibold text-[#57606A] hover:text-[#1B2127] shadow-xs transition-all"
+              className="detail-pagination-btn"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
               <span>Previous: {prevProject.title}</span>
@@ -265,7 +268,7 @@ export const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({
           {nextProject ? (
             <Link
               to={`/projects/${nextProject.id}`}
-              className="flex items-center gap-2 px-4 py-2 bg-white border border-[#D0D7DE] hover:border-[#8C959F] rounded-xl text-xs font-semibold text-[#57606A] hover:text-[#1B2127] shadow-xs transition-all"
+              className="detail-pagination-btn"
             >
               <span>Next: {nextProject.title}</span>
               <ArrowRight className="w-3.5 h-3.5" />
@@ -273,7 +276,7 @@ export const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({
           ) : (
             <Link
               to="/projects"
-              className="flex items-center gap-2 px-4 py-2 bg-white border border-[#D0D7DE] hover:border-[#8C959F] rounded-xl text-xs font-semibold text-[#57606A] hover:text-[#1B2127] shadow-xs transition-all"
+              className="detail-pagination-btn"
             >
               <span>Back to All Projects →</span>
             </Link>

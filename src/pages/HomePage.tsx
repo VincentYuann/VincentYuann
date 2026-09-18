@@ -4,8 +4,10 @@ import { Navbar } from '../components/Navbar';
 import { Hero } from '../components/Hero';
 import { RiverTimeline } from '../components/RiverTimeline';
 import { Footer } from '../components/Footer';
+import { useAuth } from '../lib/useAuth';
 import type { FlagshipProject, RiverPebble } from '../data/projects';
 import type { ProfileData } from '../lib/useProfile';
+import '../styles/home-page.css';
 
 interface HomePageProps {
   flagships: FlagshipProject[];
@@ -13,6 +15,7 @@ interface HomePageProps {
   allProjects: FlagshipProject[];
   profile: ProfileData;
   onOpenCommand: () => void;
+  onOpenProfile?: () => void;
 }
 
 export const HomePage: React.FC<HomePageProps> = ({
@@ -21,20 +24,28 @@ export const HomePage: React.FC<HomePageProps> = ({
   allProjects,
   profile,
   onOpenCommand,
+  onOpenProfile,
 }) => {
   const navigate = useNavigate();
+  const { isAdmin } = useAuth();
 
   return (
-    <div className="min-h-screen bg-white text-gray-900 flex flex-col">
-      <Navbar onOpenCommand={onOpenCommand} profile={profile} />
+    <div className="home-page-container">
+      <Navbar 
+        onOpenCommand={onOpenCommand} 
+        onOpenProfile={onOpenProfile}
+        profile={profile} 
+        isAdmin={isAdmin}
+      />
 
-      <Hero profile={profile} />
+      <Hero profile={profile} isAdmin={isAdmin} />
 
-      <main className="flex-1">
+      <main className="home-main-content">
         <RiverTimeline
           flagships={flagships}
           pebbles={pebbles}
           allProjects={allProjects}
+          isAdmin={isAdmin}
           onOpenGallery={() => navigate('/projects')}
           onViewDetails={(project) => navigate(`/projects/${project.id}`)}
         />

@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Lock, ArrowLeft, CheckCircle2, AlertCircle, ShieldCheck } from 'lucide-react';
 import { GithubIcon } from '../components/Icons';
 import { useAuth } from '../lib/useAuth';
+import '../styles/login-page.css';
 
 export const LoginPage: React.FC = () => {
   const { user, isAdmin, loading, signInWithGitHub } = useAuth();
@@ -21,59 +22,59 @@ export const LoginPage: React.FC = () => {
   }, [user, isAdmin, loading, navigate]);
 
   return (
-    <div className="min-h-screen bg-[#FAFBFD] text-gray-900 flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div className="login-page-container">
       {/* Back to Site */}
-      <div className="absolute top-6 left-6">
+      <div className="login-back-wrapper">
         <Link
           to="/"
-          className="inline-flex items-center gap-2 text-xs font-semibold text-[#57606A] hover:text-[#1B2127] bg-white border border-[#D0D7DE] px-3 py-1.5 rounded-lg shadow-xs transition-all"
+          className="login-back-btn"
         >
           <ArrowLeft className="w-3.5 h-3.5" />
           <span>Back to Portfolio</span>
         </Link>
       </div>
 
-      <div className="sm:mx-auto sm:w-full sm:max-w-md space-y-6">
+      <div className="login-inner-container">
         {/* Header Icon & Title */}
-        <div className="text-center space-y-2">
-          <div className="w-12 h-12 rounded-2xl bg-[#1B2127] text-white flex items-center justify-center mx-auto shadow-md">
-            <Lock className="w-5 h-5 text-[#A0D8E9]" />
+        <div className="login-header-group">
+          <div className="login-icon-badge">
+            <Lock className="login-icon-glyph" />
           </div>
-          <h1 className="text-2xl sm:text-3xl font-serif font-bold text-[#1B2127]">
+          <h1 className="login-title">
             Portfolio Admin Login
           </h1>
-          <p className="text-xs text-[#57606A] max-w-xs mx-auto">
+          <p className="login-subtitle">
             Administrative console access for Vincent Yuann. Authenticated via GitHub OAuth with PostgreSQL Row-Level Security.
           </p>
         </div>
 
         {/* Card Box */}
-        <div className="bg-white py-8 px-6 sm:px-8 border border-[#D0D7DE] rounded-2xl shadow-sm space-y-6">
+        <div className="login-card">
           {user ? (
-            <div className="text-center space-y-4 py-4">
-              <div className="w-10 h-10 rounded-full bg-green-50 border border-green-200 text-green-700 flex items-center justify-center mx-auto">
+            <div className="login-user-box">
+              <div className="login-avatar-success">
                 <CheckCircle2 className="w-5 h-5" />
               </div>
               <div>
                 <h3 className="text-sm font-bold text-[#1B2127]">GitHub Account Connected</h3>
-                <p className="text-xs text-[#57606A] mt-1 font-mono">{user.email}</p>
+                <p className="login-email-text">{user.email}</p>
               </div>
 
               {isAdmin ? (
                 <div className="space-y-3">
-                  <div className="p-3 bg-green-50 text-green-800 border border-green-200 rounded-xl text-xs flex items-center justify-center gap-2">
+                  <div className="login-admin-banner">
                     <ShieldCheck className="w-4 h-4 text-green-600 shrink-0" />
                     <span>Authorized Administrator Verified</span>
                   </div>
                   <Link
                     to="/admin"
-                    className="w-full flex items-center justify-center py-2.5 px-4 bg-[#1B2127] hover:bg-[#2C343E] text-white rounded-xl text-xs font-semibold shadow-xs transition-colors"
+                    className="login-go-admin-btn"
                   >
                     Go to Admin Console →
                   </Link>
                 </div>
               ) : (
-                <div className="p-3 bg-amber-50 text-amber-800 border border-amber-200 rounded-xl text-xs space-y-2 text-left">
+                <div className="login-unauthorized-banner">
                   <div className="flex items-center gap-2 font-bold">
                     <AlertCircle className="w-4 h-4 text-amber-600 shrink-0" />
                     <span>Unauthorized Account</span>
@@ -99,23 +100,23 @@ export const LoginPage: React.FC = () => {
                     }
                   }}
                   disabled={isSubmitting}
-                  className="w-full flex items-center justify-center gap-2.5 py-3.5 px-4 rounded-xl bg-[#1B2127] hover:bg-[#2C343E] text-white font-semibold text-xs shadow-sm transition-all cursor-pointer disabled:opacity-50"
+                  className="login-oauth-btn"
                 >
                   <GithubIcon className="w-4 h-4" />
                   <span>{isSubmitting ? 'Redirecting to GitHub...' : 'Continue with GitHub OAuth'}</span>
                 </button>
-                <p className="text-[11px] text-[#8C959F] text-center">
+                <p className="login-oauth-hint">
                   One-click authentication using your authorized GitHub account.
                 </p>
               </div>
 
               {authMsg && (
                 <div
-                  className={`p-3 rounded-xl text-xs flex items-center gap-2 ${
+                  className={
                     authMsg.type === 'success'
-                      ? 'bg-green-50 text-green-800 border border-green-200'
-                      : 'bg-red-50 text-red-800 border border-red-200'
-                  }`}
+                      ? 'login-alert-success'
+                      : 'login-alert-error'
+                  }
                 >
                   {authMsg.type === 'success' ? (
                     <CheckCircle2 className="w-4 h-4 shrink-0 text-green-600" />
@@ -129,10 +130,8 @@ export const LoginPage: React.FC = () => {
           )}
 
           {/* Security Notice */}
-          <div className="pt-2 border-t border-[#E1E6EB] text-center">
-            <span className="text-[11px] text-[#8C959F]">
-              RLS verification is strictly enforced by PostgreSQL functions on every database transaction.
-            </span>
+          <div className="login-footer-notice">
+            RLS verification is strictly enforced by PostgreSQL functions on every database transaction.
           </div>
         </div>
       </div>

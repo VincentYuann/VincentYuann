@@ -1,0 +1,177 @@
+@reference "../index.css";
+
+/* Projects Page: Level 1 Architecture Discovery */
+.projects-page-container {
+  @apply min-h-screen bg-[#FAFBFD] text-gray-900 flex flex-col;
+}
+
+.projects-main-content {
+  @apply flex-1 max-w-6xl w-full mx-auto px-4 sm:px-8 py-8 sm:py-12 space-y-8;
+}
+
+.projects-header-block {
+  @apply space-y-3;
+}
+
+.projects-breadcrumb-bar {
+  @apply flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[#6E7E8E];
+}
+
+.projects-breadcrumb-link {
+  @apply hover:text-[#1B2127] transition-colors;
+}
+
+.projects-breadcrumb-current {
+  @apply text-[#3894B3];
+}
+
+.projects-title {
+  @apply text-3xl sm:text-4xl font-serif font-bold text-[#1B2127] tracking-tight;
+}
+
+.projects-subtitle {
+  @apply text-sm sm:text-base text-[#57606A] max-w-2xl leading-relaxed;
+}
+
+/* Toolbar: Search & Filter Controls */
+.projects-toolbar-card {
+  @apply p-4 sm:p-5 bg-white border border-[#D0D7DE] rounded-2xl shadow-xs space-y-4;
+}
+
+.projects-toolbar-row {
+  @apply flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-between;
+}
+
+.projects-search-box {
+  @apply relative flex-1 max-w-lg;
+}
+
+.projects-search-icon {
+  @apply w-4 h-4 text-[#8C959F] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none;
+}
+
+.projects-search-input {
+  @apply w-full pl-9 pr-4 py-2 text-xs sm:text-sm bg-[#F6F8FA] border border-[#D0D7DE] rounded-xl focus:bg-white focus:outline-none focus:border-[#3894B3] focus:ring-2 focus:ring-[#3894B3]/20 transition-all placeholder:text-[#8C959F];
+}
+
+.projects-search-clear-btn {
+  @apply absolute right-3 top-1/2 -translate-y-1/2 text-xs text-[#6E7E8E] hover:text-[#1B2127] cursor-pointer;
+}
+
+.projects-count-badge {
+  @apply text-xs font-medium text-[#57606A] px-3 py-1.5 bg-[#F6F8FA] border border-[#E1E6EB] rounded-lg self-start sm:self-auto shrink-0 font-mono;
+}
+
+.projects-count-highlight {
+  @apply font-bold text-[#1B2127];
+}
+
+.projects-filter-pills {
+  @apply flex items-center gap-1.5 overflow-x-auto pb-1 text-xs;
+}
+
+.projects-filter-pill {
+  @apply px-3 py-1.5 rounded-lg font-medium transition-all shrink-0 cursor-pointer;
+}
+
+.projects-filter-pill-active {
+  @apply bg-[#1B2127] text-white shadow-xs;
+}
+
+.projects-filter-pill-inactive {
+  @apply bg-white border border-[#D0D7DE] text-[#57606A] hover:text-[#1B2127];
+}
+
+/* Empty State */
+.projects-empty-card {
+  @apply text-center py-20 bg-white border border-[#D0D7DE] rounded-2xl p-8 space-y-3;
+}
+
+.projects-empty-icon {
+  @apply w-8 h-8 text-[#8C959F] mx-auto opacity-50;
+}
+
+.projects-empty-title {
+  @apply text-base font-bold text-[#1B2127];
+}
+
+.projects-empty-text {
+  @apply text-xs text-[#57606A] max-w-sm mx-auto;
+}
+
+.projects-empty-reset-btn {
+  @apply mt-2 text-xs font-semibold text-[#3894B3] hover:underline cursor-pointer;
+}
+
+/* Projects Card Grid */
+.projects-grid {
+  @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6;
+}
+
+.project-item-card {
+  @apply flex flex-col bg-white border border-[#D0D7DE] hover:border-[#8C959F] rounded-2xl p-5 shadow-xs hover:shadow-md transition-all duration-200;
+}
+
+.project-item-header {
+  @apply flex items-center justify-between gap-2 mb-3;
+}
+
+.project-item-category {
+  @apply text-[10px] font-semibold tracking-wider uppercase px-2.5 py-0.5 rounded-md;
+}
+
+.project-item-flagship-pill {
+  @apply text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 rounded bg-[#3894B3]/10 text-[#3894B3] border border-[#3894B3]/20;
+}
+
+.project-item-sandbox-pill {
+  @apply text-[10px] font-medium tracking-wider uppercase px-2 py-0.5 rounded bg-[#F6F8FA] text-[#6E7E8E] border border-[#E1E6EB];
+}
+
+.project-item-title {
+  @apply text-lg font-serif font-bold text-[#1B2127] group-hover:text-[#3894B3] transition-colors;
+}
+
+.project-item-subtitle {
+  @apply text-xs text-[#57606A] font-medium mt-0.5 mb-3 line-clamp-1;
+}
+
+.project-item-desc {
+  @apply text-xs text-[#57606A] leading-relaxed line-clamp-3 mb-4 flex-1;
+}
+
+.project-item-tags {
+  @apply flex flex-wrap gap-1.5 mb-4;
+}
+
+.project-item-tags-overflow {
+  @apply text-[10px] text-[#6E7E8E] self-center px-1.5 py-0.5 rounded bg-[#F6F8FA] border border-[#E1E6EB];
+}
+
+.project-item-stat-preview {
+  @apply flex items-center justify-between text-[11px] p-2 rounded-lg bg-[#FAFBFC] border border-[#E1E6EB] mb-4;
+}
+
+.project-item-stat-label {
+  @apply text-[#6E7E8E];
+}
+
+.project-item-stat-val {
+  @apply font-mono font-bold text-[#1B2127];
+}
+
+.project-item-actions {
+  @apply pt-3 border-t border-[#E1E6EB] flex items-center justify-between gap-2;
+}
+
+.project-item-read-link {
+  @apply inline-flex items-center gap-1.5 text-xs font-bold text-[#1B2127] group-hover:text-[#3894B3] transition-colors;
+}
+
+.project-item-icon-link {
+  @apply p-1.5 text-[#57606A] hover:text-[#1B2127] hover:bg-[#F6F8FA] rounded-md transition-colors;
+}
+
+.project-item-icon-link-live {
+  @apply p-1.5 text-[#57606A] hover:text-[#3894B3] hover:bg-[#F6F8FA] rounded-md transition-colors;
+}

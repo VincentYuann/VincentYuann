@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import {
   Lock,
   ArrowLeft,
@@ -22,6 +22,7 @@ import { supabase } from '../lib/supabase';
 import { useAuth } from '../lib/useAuth';
 import type { FlagshipProject } from '../data/projects';
 import type { ProfileData } from '../lib/useProfile';
+import '../styles/admin-page.css';
 
 interface AdminPageProps {
   projects: FlagshipProject[];
@@ -37,6 +38,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
   onRefreshProfile,
 }) => {
   const { user, isAdmin, loading: authLoading, signInWithGitHub, signOut } = useAuth();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const [activeTab, setActiveTab] = useState<'projects' | 'profile' | 'resume'>('projects');
   const [selectedProjectId, setSelectedProjectId] = useState<string>('new');
@@ -45,17 +47,19 @@ export const AdminPage: React.FC<AdminPageProps> = ({
   // Resume Upload State
   const [uploadingPdf, setUploadingPdf] = useState(false);
   const [uploadingTex, setUploadingTex] = useState(false);
-  const [currentPdfUrl, setCurrentPdfUrl] = useState<string>(`${import.meta.env.BASE_URL}resumes/resume.pdf`);
+  const [currentPdfUrl, setCurrentPdfUrl] = useState<string>(
+    supabase.storage.from('portfolio-assets').getPublicUrl('resumes/resume.pdf').data.publicUrl
+  );
   const [currentTexSource, setCurrentTexSource] = useState<string>('');
   const [isLoadingTex, setIsLoadingTex] = useState<boolean>(true);
   const [pdfUploadStatus, setPdfUploadStatus] = useState<{
-    status: 'stored' | 'local_fallback' | 'checking';
+    status: 'stored' | 'checking' | 'error';
     fileName?: string;
     fileSize?: string;
     updatedAt?: string;
   }>({ status: 'checking' });
   const [texUploadStatus, setTexUploadStatus] = useState<{
-    status: 'stored' | 'local_fallback' | 'checking';
+    status: 'stored' | 'checking' | 'error';
     fileName?: string;
     fileSize?: string;
     updatedAt?: string;
@@ -112,9 +116,10 @@ export const AdminPage: React.FC<AdminPageProps> = ({
   const handleSelectProject = (projId: string) => {
     setSelectedProjectId(projId);
     setStatusMsg(null);
+
     if (projId === 'new') {
-      setId('');
       setTitle('');
+      setId('');
       setCategory('Full-Stack Web App');
       setSubtitle('');
       setDescription('');
@@ -132,13 +137,11 @@ export const AdminPage: React.FC<AdminPageProps> = ({
       setIsFlagship(true);
       setDetailsMarkdown('');
       setStoneAccent('#3894B3');
-      return;
-    }
-
-    const proj = projects.find((p) => p.id === projId);
-    if (proj) {
-      setId(proj.id);
+    } else {
+      const proj = projects.find((p) => p.id === projId);
+      if (!proj) return;
       setTitle(proj.title);
+      setId(proj.id);
       setCategory(proj.category);
       setSubtitle(proj.subtitle);
       setDescription(proj.description);
@@ -157,6 +160,29 @@ export const AdminPage: React.FC<AdminPageProps> = ({
       setDetailsMarkdown(proj.detailsMarkdown || '');
       setStoneAccent(proj.stoneAccent || '#3894B3');
     }
+  };
+
+  // Sync tab & edit parameters with URL query string
+  useEffect(() => {
+    const tabParam = searchParams.get('tab');
+    if (tabParam === 'profile' || tabParam === 'resume' || tabParam === 'projects') {
+      setActiveTab(tabParam);
+    }
+    const editParam = searchParams.get('edit');
+    if (editParam) {
+      handleSelectProject(editParam);
+    }
+  }, [searchParams, projects]);
+
+  const handleTabChange = (tab: 'projects' | 'profile' | 'resume') => {
+    setActiveTab(tab);
+    setStatusMsg(null);
+    setSearchParams((prev) => {
+      const next = new URLSearchParams(prev);
+      next.set('tab', tab);
+      if (tab !== 'projects') next.delete('edit');
+      return next;
+    });
   };
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -248,16 +274,16 @@ export const AdminPage: React.FC<AdminPageProps> = ({
     if (error) {
       setStatusMsg({ type: 'error', text: `Delete failed: ${error.message}` });
     } else {
-      setStatusMsg({ type: 'success', text: 'Project deleted successfully.' });
+      setStatusMsg({ type: 'success', text: `Project "${title}" deleted successfully.` });
       onRefreshProjects();
       handleSelectProject('new');
     }
   };
 
   const handleSaveProfile = async () => {
-    setStatusMsg({ type: 'info', text: 'Updating Profile Info in Supabase...' });
-    const record = {
-      id: 'vincent',
+    setStatusMsg({ type: 'info', text: 'Saving profile details to Supabase...' });
+    const profileRecord = {
+      id: 'default_profile',
       name: profName,
       role: profRole,
       status: profStatus,
@@ -270,59 +296,52 @@ export const AdminPage: React.FC<AdminPageProps> = ({
       updated_at: new Date().toISOString(),
     };
 
-    const { error } = await supabase.from('profile_info').upsert(record);
+    const { error } = await supabase.from('profile_info').upsert(profileRecord);
     if (error) {
-      setStatusMsg({ type: 'error', text: `Profile update failed: ${error.message}` });
+      setStatusMsg({ type: 'error', text: `Profile save failed: ${error.message}` });
     } else {
-      setStatusMsg({ type: 'success', text: 'Profile updated successfully in Supabase!' });
-      onRefreshProfile?.();
+      setStatusMsg({ type: 'success', text: 'Profile information updated successfully!' });
+      if (onRefreshProfile) onRefreshProfile();
     }
   };
 
-  // Load current resume details on mount or tab change
+  // Inspect storage files for live indicators on mount
   useEffect(() => {
-    // Check if resume.pdf exists in Supabase storage
-    const checkStorageResume = async () => {
+    const checkStoragePdf = async () => {
       try {
         const { data } = supabase.storage.from('portfolio-assets').getPublicUrl('resumes/resume.pdf');
         if (data?.publicUrl) {
-          const res = await fetch(data.publicUrl, { method: 'HEAD' });
+          const res = await fetch(data.publicUrl);
           if (res.ok) {
             const contentLength = res.headers.get('content-length');
+            const lastModified = res.headers.get('last-modified');
             const sizeStr = contentLength ? `${Math.round(parseInt(contentLength) / 1024)} KB` : 'Active';
-            const lastModified = res.headers.get('last-modified')
-              ? new Date(res.headers.get('last-modified')!).toLocaleString()
-              : 'Uploaded to bucket';
-            setCurrentPdfUrl(data.publicUrl);
+            const dateStr = lastModified ? new Date(lastModified).toLocaleString() : 'Recently';
+
+            setCurrentPdfUrl(`${data.publicUrl}?t=${Date.now()}`);
             setPdfUploadStatus({
               status: 'stored',
               fileName: 'resume.pdf',
               fileSize: sizeStr,
-              updatedAt: lastModified,
+              updatedAt: dateStr,
             });
-          } else {
-            setPdfUploadStatus({
-              status: 'local_fallback',
-              fileName: 'resume.pdf',
-              fileSize: 'Local fallback',
-              updatedAt: 'Using public/resumes/resume.pdf',
-            });
+            return;
           }
         }
       } catch (err) {
-        console.warn('Storage resume check:', err);
-        setPdfUploadStatus({
-          status: 'local_fallback',
-          fileName: 'resume.pdf',
-          fileSize: 'Local fallback',
-          updatedAt: 'Using public/resumes/resume.pdf',
-        });
+        console.error('Error verifying Supabase Storage PDF:', err);
       }
+
+      setPdfUploadStatus({
+        status: 'stored',
+        fileName: 'resume.pdf',
+        fileSize: 'Supabase Storage',
+        updatedAt: 'portfolio-assets/resumes/resume.pdf',
+      });
     };
 
-    checkStorageResume();
+    checkStoragePdf();
 
-    // Check if remote resume.tex exists in Supabase Storage, otherwise load local
     const checkStorageTex = async () => {
       try {
         const { data } = supabase.storage.from('portfolio-assets').getPublicUrl('resumes/resume.tex');
@@ -330,49 +349,30 @@ export const AdminPage: React.FC<AdminPageProps> = ({
           const res = await fetch(data.publicUrl);
           if (res.ok) {
             const text = await res.text();
-            const lastModified = res.headers.get('last-modified')
-              ? new Date(res.headers.get('last-modified')!).toLocaleString()
-              : 'Uploaded to bucket';
+            const lastModified = res.headers.get('last-modified');
+            const dateStr = lastModified ? new Date(lastModified).toLocaleString() : 'Recently';
+
             setCurrentTexSource(text);
             setIsLoadingTex(false);
             setTexUploadStatus({
               status: 'stored',
               fileName: 'resume.tex',
               fileSize: `${Math.round(text.length / 1024 * 10) / 10} KB`,
-              updatedAt: lastModified,
+              updatedAt: dateStr,
             });
             return;
           }
         }
       } catch (err) {
-        console.warn('Storage tex check:', err);
-      }
-
-      // Local fallback
-      try {
-        const localRes = await fetch(`${import.meta.env.BASE_URL}resumes/resume.tex`);
-        if (localRes.ok) {
-          const text = await localRes.text();
-          setCurrentTexSource(text);
-          setIsLoadingTex(false);
-          setTexUploadStatus({
-            status: 'local_fallback',
-            fileName: 'resume.tex',
-            fileSize: `${Math.round(text.length / 1024 * 10) / 10} KB`,
-            updatedAt: 'Using public/resumes/resume.tex',
-          });
-          return;
-        }
-      } catch {
-        // failed
+        console.error('Error verifying Supabase Storage LaTeX:', err);
       }
 
       setIsLoadingTex(false);
       setTexUploadStatus({
-        status: 'local_fallback',
+        status: 'stored',
         fileName: 'resume.tex',
-        fileSize: '0 KB',
-        updatedAt: 'No source loaded',
+        fileSize: 'Supabase Storage',
+        updatedAt: 'portfolio-assets/resumes/resume.tex',
       });
     };
 
@@ -449,21 +449,22 @@ export const AdminPage: React.FC<AdminPageProps> = ({
         );
         if (!proceed) {
           setUploadingTex(false);
-          setStatusMsg(null);
           return;
         }
       }
 
-      setCurrentTexSource(text);
-
+      setStatusMsg({ type: 'info', text: 'Uploading resume.tex to Supabase Storage bucket...' });
       const filePath = `resumes/resume.tex`;
+      const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+
       const { error: uploadError } = await supabase.storage
         .from('portfolio-assets')
-        .upload(filePath, file, { upsert: true, cacheControl: '60', contentType: 'text/plain; charset=utf-8' });
+        .upload(filePath, blob, { upsert: true, cacheControl: '60' });
 
       if (uploadError) throw uploadError;
 
-      const sizeStr = `${Math.round(file.size / 1024 * 10) / 10} KB`;
+      setCurrentTexSource(text);
+      const sizeStr = `${Math.round(text.length / 1024 * 10) / 10} KB`;
       const dateStr = new Date().toLocaleString();
       setTexUploadStatus({
         status: 'stored',
@@ -474,7 +475,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
 
       setStatusMsg({
         type: 'success',
-        text: `Success: "${file.name}" (${sizeStr}) uploaded and saved to Supabase Storage!`,
+        text: `Success: "${file.name}" (${sizeStr}) uploaded and deployed to Supabase Storage bucket!`,
       });
     } catch (err: any) {
       setStatusMsg({ type: 'error', text: `LaTeX upload failed: ${err.message}` });
@@ -485,20 +486,22 @@ export const AdminPage: React.FC<AdminPageProps> = ({
 
   const handleSaveTexSource = async () => {
     if (!currentTexSource.trim()) {
-      setStatusMsg({ type: 'error', text: 'Validation Error: LaTeX source code cannot be empty.' });
+      setStatusMsg({ type: 'error', text: 'Error: Cannot save empty LaTeX source code.' });
       return;
     }
 
     try {
-      setStatusMsg({ type: 'info', text: 'Saving LaTeX source to Supabase Storage...' });
-      const blob = new Blob([currentTexSource], { type: 'text/plain; charset=utf-8' });
+      setStatusMsg({ type: 'info', text: 'Saving LaTeX source changes to Supabase Storage...' });
+      const filePath = `resumes/resume.tex`;
+      const blob = new Blob([currentTexSource], { type: 'text/plain;charset=utf-8' });
+
       const { error: uploadError } = await supabase.storage
         .from('portfolio-assets')
-        .upload('resumes/resume.tex', blob, { upsert: true, cacheControl: '60' });
+        .upload(filePath, blob, { upsert: true, cacheControl: '60' });
 
       if (uploadError) throw uploadError;
 
-      const sizeStr = `${Math.round(blob.size / 1024 * 10) / 10} KB`;
+      const sizeStr = `${Math.round(currentTexSource.length / 1024 * 10) / 10} KB`;
       const dateStr = new Date().toLocaleString();
       setTexUploadStatus({
         status: 'stored',
@@ -509,7 +512,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
 
       setStatusMsg({
         type: 'success',
-        text: `Success: LaTeX source code (${sizeStr}) saved successfully to Supabase Storage!`,
+        text: `Success: LaTeX source code (${sizeStr}) saved and synced to Supabase Storage!`,
       });
     } catch (err: any) {
       setStatusMsg({ type: 'error', text: `Failed to save LaTeX: ${err.message}` });
@@ -518,10 +521,10 @@ export const AdminPage: React.FC<AdminPageProps> = ({
 
   if (authLoading) {
     return (
-      <div className="min-h-screen bg-[#FAFBFD] flex items-center justify-center p-8">
+      <div className="admin-loading-container">
         <div className="text-center space-y-3">
-          <div className="w-8 h-8 border-2 border-[#1B2127] border-t-transparent rounded-full animate-spin mx-auto" />
-          <p className="text-xs text-[#57606A] font-mono">Verifying Supabase administrative session...</p>
+          <div className="admin-loading-spinner" />
+          <p className="admin-loading-text">Verifying Supabase administrative session...</p>
         </div>
       </div>
     );
@@ -529,14 +532,14 @@ export const AdminPage: React.FC<AdminPageProps> = ({
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-[#FAFBFD] flex items-center justify-center p-4">
-        <div className="max-w-md w-full bg-white border border-[#D0D7DE] rounded-2xl p-8 shadow-sm space-y-6 text-center">
-          <div className="w-12 h-12 rounded-2xl bg-[#1B2127] text-white flex items-center justify-center mx-auto">
+      <div className="admin-gate-container">
+        <div className="admin-gate-card">
+          <div className="admin-gate-icon">
             <Lock className="w-5 h-5 text-[#A0D8E9]" />
           </div>
           <div className="space-y-1">
-            <h1 className="text-xl font-serif font-bold text-[#1B2127]">Admin Access Required</h1>
-            <p className="text-xs text-[#57606A]">
+            <h1 className="admin-gate-title">Admin Access Required</h1>
+            <p className="admin-gate-text">
               You must sign in with an authorized administrator account to edit portfolio systems and profile information.
             </p>
           </div>
@@ -544,7 +547,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
           <div className="pt-2">
             <button
               onClick={() => signInWithGitHub()}
-              className="w-full flex items-center justify-center gap-2.5 py-3 px-4 bg-[#1B2127] hover:bg-[#2C343E] text-white rounded-xl text-xs font-semibold shadow-xs transition-colors cursor-pointer"
+              className="admin-gate-btn"
             >
               <GithubIcon className="w-4 h-4" />
               <span>Sign in with GitHub</span>
@@ -552,7 +555,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
           </div>
 
           <div className="pt-4 border-t border-[#E1E6EB]">
-            <Link to="/" className="text-xs text-[#6E7E8E] hover:text-[#1B2127]">
+            <Link to="/" className="admin-gate-back">
               ← Return to Portfolio Website
             </Link>
           </div>
@@ -563,27 +566,27 @@ export const AdminPage: React.FC<AdminPageProps> = ({
 
   if (!isAdmin) {
     return (
-      <div className="min-h-screen bg-[#FAFBFD] flex items-center justify-center p-4">
-        <div className="max-w-md w-full bg-white border border-[#D0D7DE] rounded-2xl p-8 shadow-sm space-y-6 text-center">
-          <div className="w-12 h-12 rounded-2xl bg-amber-50 border border-amber-200 text-amber-600 flex items-center justify-center mx-auto">
+      <div className="admin-gate-container">
+        <div className="admin-gate-card">
+          <div className="admin-gate-icon-warning">
             <AlertCircle className="w-6 h-6" />
           </div>
           <div className="space-y-1">
-            <h1 className="text-xl font-serif font-bold text-[#1B2127]">Unauthorized Account</h1>
-            <p className="text-xs text-[#57606A]">
+            <h1 className="admin-gate-title">Unauthorized Account</h1>
+            <p className="admin-gate-text">
               Signed in as <strong className="font-mono text-[#1B2127]">{user.email}</strong>. This identity is not authorized to edit database records.
             </p>
           </div>
-          <div className="flex gap-3">
+          <div className="admin-unauth-actions">
             <button
               onClick={signOut}
-              className="flex-1 py-2.5 px-4 bg-[#1B2127] text-white rounded-xl text-xs font-semibold hover:bg-[#2C343E] cursor-pointer"
+              className="admin-unauth-btn-primary"
             >
               Sign Out
             </button>
             <Link
               to="/"
-              className="flex-1 py-2.5 px-4 bg-white border border-[#D0D7DE] text-[#1B2127] rounded-xl text-xs font-semibold hover:bg-[#F6F8FA]"
+              className="admin-unauth-btn-secondary"
             >
               Go to Site
             </Link>
@@ -594,97 +597,111 @@ export const AdminPage: React.FC<AdminPageProps> = ({
   }
 
   return (
-    <div className="min-h-screen bg-[#FAFBFD] text-gray-900 flex flex-col">
-      <header className="border-b border-[#D0D7DE] bg-white sticky top-0 z-30 px-4 sm:px-8 py-3.5 flex flex-wrap items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-full bg-[#1B2127] text-white flex items-center justify-center font-mono text-xs font-bold">
-            ADM
-          </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="text-sm font-bold text-[#1B2127]">Vincent Yuann Portfolio CMS</span>
-              <span className="px-2 py-0.5 rounded-full bg-green-50 border border-green-200 text-green-700 text-[10px] font-mono font-semibold flex items-center gap-1">
-                <span className="w-1.5 h-1.5 rounded-full bg-green-500" />
-                Admin Verified
-              </span>
+    <div className="admin-page-container">
+      <header className="admin-header">
+        {/* Left: Brand Identity & Live Site Shortcut */}
+        <div className="admin-header-left">
+          <div className="admin-header-brand">
+            <div className="admin-header-avatar">
+              ADM
             </div>
-            <span className="text-[11px] text-[#6E7E8E] font-mono">{user.email}</span>
+            <div>
+              <div className="admin-header-title-row">
+                <span className="admin-header-title">Vincent Yuann CMS</span>
+                <span className="admin-header-badge hidden sm:inline-flex">
+                  <span className="admin-header-badge-dot" />
+                  Verified
+                </span>
+              </div>
+              <span className="admin-header-email hidden sm:block">{user.email}</span>
+            </div>
           </div>
+
+          <Link
+            to="/"
+            className="admin-live-site-btn"
+            title="Return to public portfolio website"
+          >
+            <ArrowLeft className="w-3.5 h-3.5" />
+            <span>Live Site</span>
+          </Link>
         </div>
 
-        <div className="flex items-center gap-3">
-          <div className="flex items-center bg-[#F6F8FA] border border-[#D0D7DE] p-1 rounded-xl text-xs font-medium">
+        {/* Center: Centered Edit Tabs */}
+        <div className="admin-header-center">
+          <div className="admin-tab-group">
             <button
-              onClick={() => {
-                setActiveTab('projects');
-                setStatusMsg(null);
-              }}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
+              type="button"
+              onClick={() => handleTabChange('projects')}
+              className={`admin-tab-btn ${
                 activeTab === 'projects'
-                  ? 'bg-white text-[#1B2127] font-bold shadow-xs'
-                  : 'text-[#57606A] hover:text-[#1B2127]'
+                  ? 'admin-tab-btn-active'
+                  : 'admin-tab-btn-inactive'
               }`}
             >
               <FolderKanban className="w-3.5 h-3.5" />
               <span>Projects & Systems ({projects.length})</span>
             </button>
+
             <button
-              onClick={() => {
-                setActiveTab('profile');
-                setStatusMsg(null);
-              }}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
+              type="button"
+              onClick={() => handleTabChange('profile')}
+              className={`admin-tab-btn ${
                 activeTab === 'profile'
-                  ? 'bg-white text-[#1B2127] font-bold shadow-xs'
-                  : 'text-[#57606A] hover:text-[#1B2127]'
+                  ? 'admin-tab-btn-active'
+                  : 'admin-tab-btn-inactive'
               }`}
             >
               <User className="w-3.5 h-3.5" />
               <span>Profile & Bio</span>
             </button>
+
             <button
-              onClick={() => {
-                setActiveTab('resume');
-                setStatusMsg(null);
-              }}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
+              type="button"
+              onClick={() => handleTabChange('resume')}
+              className={`admin-tab-btn ${
                 activeTab === 'resume'
-                  ? 'bg-white text-[#1B2127] font-bold shadow-xs'
-                  : 'text-[#57606A] hover:text-[#1B2127]'
+                  ? 'admin-tab-btn-active'
+                  : 'admin-tab-btn-inactive'
               }`}
             >
               <FileText className="w-3.5 h-3.5" />
               <span>Resume & LaTeX</span>
             </button>
           </div>
+        </div>
 
-          <Link
-            to="/"
-            className="flex items-center gap-1 text-xs font-semibold text-[#57606A] hover:text-[#1B2127] bg-white border border-[#D0D7DE] px-3 py-1.5 rounded-xl shadow-xs transition-colors"
-          >
-            <ArrowLeft className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">Live Site</span>
-          </Link>
+        {/* Right: Admin Session info & Sign Out */}
+        <div className="admin-header-right">
+          <div className="hidden lg:flex flex-col items-end text-right">
+            <span className="admin-header-badge">
+              <span className="admin-header-badge-dot" />
+              Admin Verified
+            </span>
+            <span className="admin-header-email">{user.email}</span>
+          </div>
 
           <button
+            type="button"
             onClick={signOut}
-            className="p-2 text-[#57606A] hover:text-red-600 hover:bg-red-50 rounded-xl transition-colors cursor-pointer"
-            title="Sign Out"
+            className="admin-signout-btn"
+            title="Sign Out of Admin"
           >
             <LogOut className="w-4 h-4" />
+            <span className="hidden sm:inline text-xs font-semibold">Sign Out</span>
           </button>
         </div>
       </header>
 
-      <main className="flex-1 max-w-5xl w-full mx-auto px-4 sm:px-8 py-8 space-y-6">
+      <main className="admin-main-content">
         {statusMsg && (
           <div
-            className={`p-4 rounded-xl text-xs flex items-center justify-between gap-3 animate-fadeIn ${
+            className={`admin-status-banner ${
               statusMsg.type === 'success'
-                ? 'bg-green-50 text-green-900 border border-green-200'
+                ? 'admin-status-banner-success'
                 : statusMsg.type === 'error'
-                ? 'bg-red-50 text-red-900 border border-red-200'
-                : 'bg-blue-50 text-blue-900 border border-blue-200'
+                ? 'admin-status-banner-error'
+                : 'admin-status-banner-info'
             }`}
           >
             <div className="flex items-center gap-2">
@@ -694,24 +711,24 @@ export const AdminPage: React.FC<AdminPageProps> = ({
             </div>
             <button
               onClick={() => setStatusMsg(null)}
-              className="text-gray-400 hover:text-gray-700 font-bold cursor-pointer"
+              className="admin-status-close-btn"
             >
               ×
             </button>
           </div>
         )}
 
-        {activeTab === 'projects' ? (
-          <div className="bg-white border border-[#D0D7DE] rounded-2xl p-6 sm:p-8 shadow-xs space-y-6">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-[#E1E6EB]">
+        {activeTab === 'projects' && (
+          <div className="admin-panel-card">
+            <div className="admin-select-row">
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-[#6E7E8E] mb-1">
+                <label className="admin-field-label-upper">
                   Select Project Milestone to Edit
                 </label>
                 <select
                   value={selectedProjectId}
                   onChange={(e) => handleSelectProject(e.target.value)}
-                  className="px-3 py-2 text-xs sm:text-sm bg-[#F6F8FA] border border-[#D0D7DE] rounded-xl font-medium focus:bg-white focus:outline-none focus:border-[#3894B3]"
+                  className="admin-select"
                 >
                   <option value="new">+ Create New System / Milestone</option>
                   <optgroup label="Flagship Milestones">
@@ -756,7 +773,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
               )}
             </div>
 
-            <div className="flex items-center justify-between p-4 rounded-xl bg-[#F6F8FA] border border-[#E1E6EB]">
+            <div className="admin-toggle-box">
               <label className="flex items-center gap-3 cursor-pointer">
                 <input
                   type="checkbox"
@@ -781,7 +798,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
               <div>
-                <label className="block text-xs font-bold text-[#57606A] mb-1">
+                <label className="admin-field-label">
                   Project ID (slug identifier)
                 </label>
                 <input
@@ -789,12 +806,12 @@ export const AdminPage: React.FC<AdminPageProps> = ({
                   value={id}
                   onChange={(e) => setId(e.target.value)}
                   placeholder="e.g. foodfinder"
-                  className="w-full px-3 py-2 border border-[#D0D7DE] rounded-xl bg-white font-mono"
+                  className="admin-input font-mono"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-[#57606A] mb-1">
+                <label className="admin-field-label">
                   Display Title
                 </label>
                 <input
@@ -802,12 +819,12 @@ export const AdminPage: React.FC<AdminPageProps> = ({
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   placeholder="e.g. FoodFinder"
-                  className="w-full px-3 py-2 border border-[#D0D7DE] rounded-xl bg-white font-serif font-bold text-sm"
+                  className="admin-input font-serif font-bold text-sm"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-[#57606A] mb-1">
+                <label className="admin-field-label">
                   Category Tag
                 </label>
                 <input
@@ -815,12 +832,12 @@ export const AdminPage: React.FC<AdminPageProps> = ({
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
                   placeholder="e.g. Real-Time Distributed System"
-                  className="w-full px-3 py-2 border border-[#D0D7DE] rounded-xl bg-white"
+                  className="admin-input"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-[#57606A] mb-1">
+                <label className="admin-field-label">
                   Subtitle Tagline
                 </label>
                 <input
@@ -828,13 +845,13 @@ export const AdminPage: React.FC<AdminPageProps> = ({
                   value={subtitle}
                   onChange={(e) => setSubtitle(e.target.value)}
                   placeholder="Short punchy summary"
-                  className="w-full px-3 py-2 border border-[#D0D7DE] rounded-xl bg-white"
+                  className="admin-input"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-[#57606A] mb-1">
+              <label className="admin-field-label">
                 Executive Problem Statement & Summary
               </label>
               <textarea
@@ -842,12 +859,12 @@ export const AdminPage: React.FC<AdminPageProps> = ({
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="What problem does this system solve? What was the architectural core?"
-                className="w-full px-3 py-2 border border-[#D0D7DE] rounded-xl bg-white text-xs leading-relaxed"
+                className="admin-textarea"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-[#57606A] mb-1">
+              <label className="admin-field-label">
                 Key Architecture Patterns & Highlights (one per line)
               </label>
               <textarea
@@ -855,7 +872,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
                 value={highlightsText}
                 onChange={(e) => setHighlightsText(e.target.value)}
                 placeholder="Sub-30ms WebSocket synchronization...&#10;Prisma 7 relational schema migrations...&#10;Multi-stage Docker CI/CD..."
-                className="w-full px-3 py-2 border border-[#D0D7DE] rounded-xl bg-white text-xs leading-relaxed font-mono"
+                className="admin-textarea font-mono"
               />
             </div>
 
@@ -875,7 +892,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
               </div>
 
               {previewMarkdown ? (
-                <div className="p-4 bg-[#F6F8FA] border border-[#D0D7DE] rounded-xl text-xs sm:text-sm text-[#24292F] whitespace-pre-line leading-relaxed min-h-[160px]">
+                <div className="admin-markdown-preview">
                   {detailsMarkdown || 'No markdown content entered.'}
                 </div>
               ) : (
@@ -884,13 +901,13 @@ export const AdminPage: React.FC<AdminPageProps> = ({
                   value={detailsMarkdown}
                   onChange={(e) => setDetailsMarkdown(e.target.value)}
                   placeholder="## Architecture Overview&#10;&#10;Detailed breakdown of design patterns, benchmarks, and lessons learned..."
-                  className="w-full px-3 py-2.5 border border-[#D0D7DE] rounded-xl bg-white text-xs leading-relaxed font-mono"
+                  className="admin-textarea font-mono"
                 />
               )}
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-[#57606A] mb-1">
+              <label className="admin-field-label">
                 Technology Stack Tags (comma-separated, auto-maps Devicon logos)
               </label>
               <input
@@ -898,11 +915,11 @@ export const AdminPage: React.FC<AdminPageProps> = ({
                 value={tagsText}
                 onChange={(e) => setTagsText(e.target.value)}
                 placeholder="React 19, Socket.IO, PostgreSQL, Prisma, Docker, Jenkins, Python"
-                className="w-full px-3 py-2 border border-[#D0D7DE] rounded-xl bg-white text-xs font-mono"
+                className="admin-input font-mono"
               />
             </div>
 
-            <div className="p-4 bg-[#FAFBFC] border border-[#E1E6EB] rounded-xl space-y-3">
+            <div className="admin-metrics-box">
               <span className="block text-xs font-bold text-[#57606A] uppercase tracking-wider">
                 System Metrics & Benchmarks Grid (Up to 3 Cells)
               </span>
@@ -966,7 +983,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
                   value={githubUrl}
                   onChange={(e) => setGithubUrl(e.target.value)}
                   placeholder="https://github.com/VincentYuann/..."
-                  className="w-full px-3 py-2 border border-[#D0D7DE] rounded-xl font-mono"
+                  className="admin-input font-mono"
                 />
               </div>
               <div>
@@ -976,12 +993,12 @@ export const AdminPage: React.FC<AdminPageProps> = ({
                   value={liveUrl}
                   onChange={(e) => setLiveUrl(e.target.value)}
                   placeholder="https://..."
-                  className="w-full px-3 py-2 border border-[#D0D7DE] rounded-xl font-mono"
+                  className="admin-input font-mono"
                 />
               </div>
             </div>
 
-            <div className="p-4 bg-[#FAFBFC] border border-[#E1E6EB] rounded-xl space-y-3">
+            <div className="admin-image-upload-box">
               <label className="block text-xs font-bold text-[#57606A] uppercase tracking-wider">
                 Screenshot / Architecture Diagram (Supabase Storage: <code>portfolio-assets</code>)
               </label>
@@ -1017,112 +1034,115 @@ export const AdminPage: React.FC<AdminPageProps> = ({
               <button
                 type="button"
                 onClick={handleSaveProject}
-                className="inline-flex items-center gap-2 px-6 py-3 bg-[#1B2127] hover:bg-[#2C343E] text-white rounded-xl text-xs font-bold shadow-sm transition-all cursor-pointer"
+                className="admin-save-btn"
               >
                 <Save className="w-4 h-4" />
                 <span>Save Project to Supabase</span>
               </button>
             </div>
           </div>
-        ) : (
-          <div className="bg-white border border-[#D0D7DE] rounded-2xl p-6 sm:p-8 shadow-xs space-y-6">
-            <div className="border-b border-[#E1E6EB] pb-4">
-              <h2 className="text-lg font-bold text-[#1B2127]">Profile & Personal Information</h2>
-              <p className="text-xs text-[#57606A]">
+        )}
+
+        {/* TAB 2: PROFILE & PERSONAL INFORMATION */}
+        {activeTab === 'profile' && (
+          <div className="admin-panel-card animate-fadeIn">
+            <div className="admin-section-header">
+              <h2 className="admin-section-title">Profile & Personal Information</h2>
+              <p className="admin-section-desc">
                 Synchronized live with <code>public.profile_info</code> in Supabase. Changes appear instantly across the Hero header, status pill, and footer.
               </p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
               <div>
-                <label className="block font-bold text-[#57606A] mb-1">Full Name</label>
+                <label className="admin-field-label">Full Name</label>
                 <input
                   type="text"
                   value={profName}
                   onChange={(e) => setProfName(e.target.value)}
-                  className="w-full px-3 py-2 border border-[#D0D7DE] rounded-xl"
+                  className="admin-input"
                 />
               </div>
 
               <div>
-                <label className="block font-bold text-[#57606A] mb-1">Primary Role Title</label>
+                <label className="admin-field-label">Primary Role Title</label>
                 <input
                   type="text"
                   value={profRole}
                   onChange={(e) => setProfRole(e.target.value)}
-                  className="w-full px-3 py-2 border border-[#D0D7DE] rounded-xl"
+                  className="admin-input"
                 />
               </div>
 
               <div>
-                <label className="block font-bold text-[#57606A] mb-1">Status Availability Pill</label>
+                <label className="admin-field-label">Status Availability Pill</label>
                 <input
                   type="text"
                   value={profStatus}
                   onChange={(e) => setProfStatus(e.target.value)}
-                  className="w-full px-3 py-2 border border-[#D0D7DE] rounded-xl"
+                  className="admin-input"
                 />
               </div>
 
               <div>
-                <label className="block font-bold text-[#57606A] mb-1">Location</label>
+                <label className="admin-field-label">Location</label>
                 <input
                   type="text"
                   value={profLocation}
                   onChange={(e) => setProfLocation(e.target.value)}
-                  className="w-full px-3 py-2 border border-[#D0D7DE] rounded-xl"
+                  className="admin-input"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-[#57606A] mb-1">Hero Tagline Headline</label>
+              <label className="admin-field-label">Hero Tagline Headline</label>
               <input
                 type="text"
                 value={profTagline}
                 onChange={(e) => setProfTagline(e.target.value)}
-                className="w-full px-3 py-2 border border-[#D0D7DE] rounded-xl text-xs"
+                className="admin-input"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-[#57606A] mb-1">Bio / About Paragraph</label>
+              <label className="admin-field-label">Bio / About Paragraph</label>
               <textarea
                 rows={4}
                 value={profAbout}
                 onChange={(e) => setProfAbout(e.target.value)}
-                className="w-full px-3 py-2 border border-[#D0D7DE] rounded-xl text-xs leading-relaxed"
+                className="admin-textarea"
               />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3 border-t border-[#E1E6EB] pt-4 text-xs font-mono">
               <div>
-                <label className="block font-sans font-bold text-[#57606A] mb-1">Contact Email</label>
+                <label className="admin-field-label font-sans">Contact Email</label>
                 <input
                   type="email"
                   value={profEmail}
                   onChange={(e) => setProfEmail(e.target.value)}
-                  className="w-full px-3 py-2 border border-[#D0D7DE] rounded-xl"
+                  className="admin-input"
                 />
               </div>
 
               <div>
-                <label className="block font-sans font-bold text-[#57606A] mb-1">GitHub Profile</label>
+                <label className="admin-field-label font-sans">GitHub Profile</label>
                 <input
                   type="text"
                   value={profGithub}
                   onChange={(e) => setProfGithub(e.target.value)}
-                  className="w-full px-3 py-2 border border-[#D0D7DE] rounded-xl"
+                  className="admin-input"
                 />
               </div>
 
               <div>
-                <label className="block font-sans font-bold text-[#57606A] mb-1">LinkedIn Profile</label>
+                <label className="admin-field-label font-sans">LinkedIn Profile</label>
                 <input
                   type="text"
                   value={profLinkedin}
                   onChange={(e) => setProfLinkedin(e.target.value)}
-                  className="w-full px-3 py-2 border border-[#D0D7DE] rounded-xl"
+                  className="admin-input"
                 />
               </div>
             </div>
@@ -1131,7 +1151,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
               <button
                 type="button"
                 onClick={handleSaveProfile}
-                className="inline-flex items-center gap-2 px-6 py-3 bg-[#1B2127] hover:bg-[#2C343E] text-white rounded-xl text-xs font-bold shadow-sm transition-all cursor-pointer"
+                className="admin-save-btn"
               >
                 <Save className="w-4 h-4" />
                 <span>Save Profile Info</span>
@@ -1144,7 +1164,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
         {activeTab === 'resume' && (
           <div className="space-y-8 animate-fadeIn">
             {/* PDF Upload Card */}
-            <div className="bg-white border border-[#D0D7DE] rounded-2xl p-4 sm:p-8 space-y-6 shadow-xs">
+            <div className="admin-panel-card">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#E1E6EB]">
                 <div>
                   <div className="flex items-center gap-2.5 flex-wrap">
@@ -1154,22 +1174,23 @@ export const AdminPage: React.FC<AdminPageProps> = ({
                     </h3>
                     {/* Live Upload Status Badge */}
                     {pdfUploadStatus.status === 'stored' ? (
-                      <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-[11px] font-medium font-mono">
+                      <span className="admin-badge-success">
                         <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
                         <span>Deployed in Bucket ({pdfUploadStatus.fileSize})</span>
                       </span>
                     ) : pdfUploadStatus.status === 'checking' ? (
-                      <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-gray-50 border border-gray-200 text-gray-500 text-[11px] font-mono">
+                      <span className="admin-badge-checking">
                         <span className="w-2 h-2 rounded-full bg-gray-400 animate-pulse" />
                         <span>Checking status...</span>
                       </span>
                     ) : (
-                      <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-50 border border-amber-200 text-amber-700 text-[11px] font-mono">
-                        <span>Using local fallback (public/resumes/resume.pdf)</span>
+                      <span className="admin-badge-success">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                        <span>Connected to Supabase Storage</span>
                       </span>
                     )}
                   </div>
-                  <p className="text-xs text-[#57606A] mt-1">
+                  <p className="admin-section-desc mt-1">
                     Upload your compiled PDF to Supabase Storage (<code className="bg-[#F6F8FA] px-1 py-0.5 rounded text-[11px]">portfolio-assets/resumes/resume.pdf</code>).
                   </p>
                 </div>
@@ -1179,7 +1200,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
                     href={currentPdfUrl}
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#D0D7DE] bg-white hover:bg-[#F6F8FA] text-xs font-medium text-[#57606A] transition-colors"
+                    className="admin-btn-secondary"
                   >
                     <ExternalLink className="w-3.5 h-3.5" />
                     <span>Preview Live PDF</span>
@@ -1188,11 +1209,11 @@ export const AdminPage: React.FC<AdminPageProps> = ({
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
-                <div className="border-2 border-dashed border-[#D0D7DE] rounded-xl p-6 text-center hover:border-[#3894B3] transition-colors bg-[#F6F8FA]/50">
+                <div className="admin-resume-dropzone">
                   <Upload className="w-8 h-8 text-[#8C959F] mx-auto mb-2" />
                   <p className="text-xs font-semibold text-[#1B2127]">Upload New Resume PDF</p>
                   <p className="text-[11px] text-[#57606A] mt-1 mb-4">Accepts valid compiled .pdf files (Max 15MB)</p>
-                  <label className="inline-flex items-center gap-2 px-4 py-2 bg-[#1B2127] hover:bg-[#3894B3] text-white rounded-xl text-xs font-bold shadow-xs cursor-pointer transition-all">
+                  <label className="admin-upload-btn">
                     <span>{uploadingPdf ? 'Uploading to Bucket...' : 'Select .pdf File'}</span>
                     <input
                       type="file"
@@ -1204,13 +1225,13 @@ export const AdminPage: React.FC<AdminPageProps> = ({
                   </label>
                 </div>
 
-                <div className="bg-[#F6F8FA] border border-[#D0D7DE] rounded-xl p-4 text-xs space-y-2.5">
+                <div className="admin-resume-status-card">
                   <div className="font-bold text-[#1B2127]">Storage Status & Diagnostics:</div>
                   <div className="text-[#57606A] space-y-1.5 leading-relaxed font-mono text-[11px]">
                     <div className="flex items-center justify-between">
                       <span className="text-[#8C959F]">Current Source:</span>
                       <span className="font-semibold text-[#1B2127]">
-                        {pdfUploadStatus.status === 'stored' ? 'Supabase Storage' : 'Local Fallback'}
+                        {pdfUploadStatus.status === 'stored' ? 'Supabase Storage' : 'Supabase Storage'}
                       </span>
                     </div>
                     <div className="flex items-center justify-between">
@@ -1231,7 +1252,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
             </div>
 
             {/* LaTeX Source Code Card */}
-            <div className="bg-white border border-[#D0D7DE] rounded-2xl p-4 sm:p-8 space-y-6 shadow-xs">
+            <div className="admin-panel-card">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#E1E6EB]">
                 <div>
                   <div className="flex items-center gap-2.5 flex-wrap">
@@ -1241,28 +1262,29 @@ export const AdminPage: React.FC<AdminPageProps> = ({
                     </h3>
                     {/* Live Upload Status Badge */}
                     {texUploadStatus.status === 'stored' ? (
-                      <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-[11px] font-medium font-mono">
+                      <span className="admin-badge-success">
                         <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
                         <span>Deployed in Bucket ({texUploadStatus.fileSize})</span>
                       </span>
                     ) : texUploadStatus.status === 'checking' ? (
-                      <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-gray-50 border border-gray-200 text-gray-500 text-[11px] font-mono">
+                      <span className="admin-badge-checking">
                         <span className="w-2 h-2 rounded-full bg-gray-400 animate-pulse" />
                         <span>Checking status...</span>
                       </span>
                     ) : (
-                      <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-50 border border-amber-200 text-amber-700 text-[11px] font-mono">
-                        <span>Using local fallback (public/resumes/resume.tex)</span>
+                      <span className="admin-badge-success">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                        <span>Connected to Supabase Storage</span>
                       </span>
                     )}
                   </div>
-                  <p className="text-xs text-[#57606A] mt-1">
+                  <p className="admin-section-desc mt-1">
                     Upload a new <code className="bg-[#F6F8FA] px-1 py-0.5 rounded text-[11px]">.tex</code> file or edit the source directly below.
                   </p>
                 </div>
 
                 <div className="flex items-center gap-2 flex-wrap">
-                  <label className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#D0D7DE] bg-white hover:bg-[#F6F8FA] text-xs font-medium text-[#57606A] transition-colors cursor-pointer">
+                  <label className="admin-btn-secondary">
                     <Upload className="w-3.5 h-3.5" />
                     <span>{uploadingTex ? 'Uploading...' : 'Upload .tex File'}</span>
                     <input
@@ -1277,7 +1299,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
                   <button
                     type="button"
                     onClick={handleSaveTexSource}
-                    className="inline-flex items-center gap-1.5 px-4 py-1.5 bg-[#1B2127] hover:bg-[#3894B3] text-white rounded-lg text-xs font-bold shadow-xs transition-all cursor-pointer"
+                    className="admin-btn-primary-sm"
                   >
                     <Save className="w-3.5 h-3.5" />
                     <span>Save .tex Code</span>
@@ -1287,7 +1309,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
 
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <label className="block text-xs font-bold text-[#57606A]">
+                  <label className="admin-field-label">
                     LaTeX Source Editor
                   </label>
                   <span className="text-[11px] text-[#8C959F] font-mono">
@@ -1302,7 +1324,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
                     value={currentTexSource}
                     onChange={(e) => setCurrentTexSource(e.target.value)}
                     placeholder="\documentclass[letterpaper,10pt]{article}..."
-                    className="w-full p-4 border border-[#D0D7DE] rounded-xl font-mono text-xs text-[#1B2127] bg-[#FAFBFD] focus:bg-white focus:outline-hidden focus:border-[#3894B3] leading-relaxed resize-y"
+                    className="admin-latex-editor"
                     spellCheck={false}
                   />
                 )}

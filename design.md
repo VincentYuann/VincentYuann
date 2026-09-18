@@ -95,13 +95,14 @@ The `<Navbar />` is rendered across all routes (`sticky top-0 z-30 bg-white/95 b
 
 ### Curriculum Vitae & LaTeX Source (`ResumePage.tsx`)
 - **Dual-Mode Viewer Architecture**:
-  - **Rendered (PDF)**: Embedded via `<object data={pdfUrl} type="application/pdf">` with responsive viewport heights (`h-[650px] sm:h-[850px]`), fallback modal, and toolbar controls.
-  - **LaTeX Source (.tex)**: Per-line regex AST tokenizer (`tokenizeLatexLine`), syntax highlighting (commands, environments, inline math, comments, delimiters), sticky line number gutters (`sticky left-0`), and capped responsive scrolling without page spill.
-- **Header Actions (Left-Aligned)**:
-  - `Download PDF` (direct download of active compiled PDF).
-  - `Download .tex` (direct download of UTF-8 LaTeX source code).
-  - `Open in new tab` (opens PDF directly in isolated browser tab).
-  - `Upload New Resume` (admin-only shortcut routing to CMS upload tab).
+  - **Rendered (PDF)**: Embedded via `<object data={pdfUrl} type="application/pdf">` with responsive viewport heights (`h-[650px] sm:h-[850px]`), letterpaper-ratio pulse loading skeleton (`aspect-[8.5/11]` simulated lines), fallback modal, and toolbar controls.
+  - **LaTeX Source (.tex)**: Per-line regex AST tokenizer (`tokenizeLatexLine`), syntax highlighting (commands, environments, inline math, comments, delimiters), sticky line number gutters (`sticky left-0 shadow-[1px_0_0_0_#E1E6EB]`), and capped responsive scrolling without page spill.
+- **Header Actions (Left-Aligned Visual Hierarchy)**:
+  - **Primary Hero CTA**: `Download PDF` (solid `#1B2127`, hover `#3894B3`, white text).
+  - **Secondary Actions**: `Download .tex` (outline card), `Copy LaTeX` (clipboard accelerator with copied state), and `Open in new tab` (isolated viewer window).
+  - **Admin Action**: `Admin: Upload` (distinguished with subtle left border separator, only rendered for authenticated admins).
+- **Dual-Mode Verification Pipeline**:
+  - Educational/architectural callout highlighting Vincent's zero-dependency tokenization stream and native vector PDF distribution.
 - **Zero-PBI Heading**: Sanitized heading containing strictly verified professional links (GitHub, LinkedIn, title) with zero personal contact details exposed.
 
 ### Admin CMS & Resume Management (`AdminPage.tsx`)

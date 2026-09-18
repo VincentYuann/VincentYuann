@@ -1,0 +1,258 @@
+@reference "../index.css";
+
+/* Admin Page: CMS Dashboard & Content Editor */
+.admin-page-container {
+  @apply min-h-screen bg-[#FAFBFD] text-gray-900 flex flex-col;
+}
+
+/* Authentication Loading & Gate Screens */
+.admin-loading-container {
+  @apply min-h-screen bg-[#FAFBFD] flex items-center justify-center p-8;
+}
+
+.admin-loading-spinner {
+  @apply w-8 h-8 border-2 border-[#1B2127] border-t-transparent rounded-full animate-spin mx-auto;
+}
+
+.admin-loading-text {
+  @apply text-xs text-[#57606A] font-mono;
+}
+
+.admin-gate-container {
+  @apply min-h-screen bg-[#FAFBFD] flex items-center justify-center p-4;
+}
+
+.admin-gate-card {
+  @apply max-w-md w-full bg-white border border-[#D0D7DE] rounded-2xl p-8 shadow-sm space-y-6 text-center;
+}
+
+.admin-gate-icon {
+  @apply w-12 h-12 rounded-2xl bg-[#1B2127] text-white flex items-center justify-center mx-auto;
+}
+
+.admin-gate-icon-warning {
+  @apply w-12 h-12 rounded-2xl bg-amber-50 border border-amber-200 text-amber-600 flex items-center justify-center mx-auto;
+}
+
+.admin-gate-title {
+  @apply text-xl font-serif font-bold text-[#1B2127];
+}
+
+.admin-gate-text {
+  @apply text-xs text-[#57606A];
+}
+
+.admin-gate-btn {
+  @apply w-full flex items-center justify-center gap-2.5 py-3 px-4 bg-[#1B2127] hover:bg-[#2C343E] text-white rounded-xl text-xs font-semibold shadow-xs transition-colors cursor-pointer;
+}
+
+.admin-gate-back {
+  @apply text-xs text-[#6E7E8E] hover:text-[#1B2127];
+}
+
+.admin-unauth-actions {
+  @apply flex gap-3;
+}
+
+.admin-unauth-btn-primary {
+  @apply flex-1 py-2.5 px-4 bg-[#1B2127] text-white rounded-xl text-xs font-semibold hover:bg-[#2C343E] cursor-pointer;
+}
+
+.admin-unauth-btn-secondary {
+  @apply flex-1 py-2.5 px-4 bg-white border border-[#D0D7DE] text-[#1B2127] rounded-xl text-xs font-semibold hover:bg-[#F6F8FA];
+}
+
+/* Sticky Admin Header */
+.admin-header {
+  @apply border-b border-[#D0D7DE] bg-white sticky top-0 z-30 px-4 sm:px-8 py-3 flex flex-wrap items-center justify-between gap-4;
+}
+
+.admin-header-left {
+  @apply flex items-center gap-3 sm:gap-4;
+}
+
+.admin-header-center {
+  @apply flex items-center justify-center order-last md:order-none w-full md:w-auto;
+}
+
+.admin-header-right {
+  @apply flex items-center gap-3 ml-auto md:ml-0;
+}
+
+.admin-header-brand {
+  @apply flex items-center gap-3;
+}
+
+.admin-header-avatar {
+  @apply w-8 h-8 rounded-full bg-[#1B2127] text-white flex items-center justify-center font-mono text-xs font-bold shrink-0;
+}
+
+.admin-header-title-row {
+  @apply flex items-center gap-2;
+}
+
+.admin-header-title {
+  @apply text-sm font-bold text-[#1B2127];
+}
+
+.admin-header-badge {
+  @apply px-2 py-0.5 rounded-full bg-green-50 border border-green-200 text-green-700 text-[10px] font-mono font-semibold flex items-center gap-1;
+}
+
+.admin-header-badge-dot {
+  @apply w-1.5 h-1.5 rounded-full bg-green-500;
+}
+
+.admin-header-email {
+  @apply text-[11px] text-[#6E7E8E] font-mono;
+}
+
+.admin-tab-group {
+  @apply flex items-center bg-[#F6F8FA] border border-[#D0D7DE] p-1 rounded-xl text-xs font-medium shadow-2xs;
+}
+
+.admin-tab-btn {
+  @apply flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg transition-all cursor-pointer font-medium;
+}
+
+.admin-tab-btn-active {
+  @apply bg-white text-[#1B2127] font-bold shadow-xs;
+}
+
+.admin-tab-btn-inactive {
+  @apply text-[#57606A] hover:text-[#1B2127];
+}
+
+.admin-live-site-btn {
+  @apply flex items-center gap-1.5 text-xs font-semibold text-[#57606A] hover:text-[#1B2127] bg-[#F6F8FA] hover:bg-[#E1E6EB] border border-[#D0D7DE] px-3 py-1.5 rounded-xl shadow-2xs transition-colors;
+}
+
+.admin-signout-btn {
+  @apply flex items-center gap-1.5 px-3 py-1.5 text-[#57606A] hover:text-red-600 hover:bg-red-50 border border-transparent hover:border-red-200 rounded-xl transition-all cursor-pointer;
+}
+
+/* Main Layout */
+.admin-main-content {
+  @apply flex-1 max-w-5xl w-full mx-auto px-4 sm:px-8 py-8 space-y-6;
+}
+
+/* Status Banner */
+.admin-status-banner {
+  @apply p-4 rounded-xl text-xs flex items-center justify-between gap-3;
+  animation: fadeIn 0.25s ease-out forwards;
+}
+
+.admin-status-banner-success {
+  @apply bg-green-50 text-green-900 border border-green-200;
+}
+
+.admin-status-banner-error {
+  @apply bg-red-50 text-red-900 border border-red-200;
+}
+
+.admin-status-banner-info {
+  @apply bg-blue-50 text-blue-900 border border-blue-200;
+}
+
+.admin-status-close-btn {
+  @apply text-gray-400 hover:text-gray-700 font-bold cursor-pointer;
+}
+
+/* Common Panel Card */
+.admin-panel-card {
+  @apply bg-white border border-[#D0D7DE] rounded-2xl p-6 sm:p-8 shadow-xs space-y-6;
+}
+
+.admin-select-row {
+  @apply flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-[#E1E6EB];
+}
+
+.admin-field-label {
+  @apply block text-xs font-bold text-[#57606A] mb-1;
+}
+
+.admin-field-label-upper {
+  @apply block text-xs font-bold uppercase tracking-wider text-[#6E7E8E] mb-1;
+}
+
+.admin-select {
+  @apply px-3 py-2 text-xs sm:text-sm bg-[#F6F8FA] border border-[#D0D7DE] rounded-xl font-medium focus:bg-white focus:outline-none focus:border-[#3894B3];
+}
+
+.admin-toggle-box {
+  @apply flex items-center justify-between p-4 rounded-xl bg-[#F6F8FA] border border-[#E1E6EB];
+}
+
+.admin-input {
+  @apply w-full px-3 py-2 border border-[#D0D7DE] rounded-xl bg-white text-xs;
+}
+
+.admin-textarea {
+  @apply w-full px-3 py-2 border border-[#D0D7DE] rounded-xl bg-white text-xs leading-relaxed;
+}
+
+.admin-markdown-preview {
+  @apply p-4 bg-[#F6F8FA] border border-[#D0D7DE] rounded-xl text-xs sm:text-sm text-[#24292F] whitespace-pre-line leading-relaxed min-h-[160px];
+}
+
+.admin-metrics-box {
+  @apply p-4 bg-[#FAFBFC] border border-[#E1E6EB] rounded-xl space-y-3;
+}
+
+.admin-image-upload-box {
+  @apply p-4 bg-[#FAFBFC] border border-[#E1E6EB] rounded-xl space-y-3;
+}
+
+.admin-save-btn {
+  @apply inline-flex items-center gap-2 px-6 py-3 bg-[#1B2127] hover:bg-[#2C343E] text-white rounded-xl text-xs font-bold shadow-sm transition-all cursor-pointer;
+}
+
+/* Resume Tab Cards & Badges */
+.admin-section-header {
+  @apply border-b border-[#E1E6EB] pb-4;
+}
+
+.admin-section-title {
+  @apply text-lg font-bold text-[#1B2127];
+}
+
+.admin-section-desc {
+  @apply text-xs text-[#57606A];
+}
+
+.admin-badge-success {
+  @apply inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-[11px] font-medium font-mono;
+}
+
+.admin-badge-checking {
+  @apply inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-gray-50 border border-gray-200 text-gray-500 text-[11px] font-mono;
+}
+
+.admin-badge-fallback {
+  @apply inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-50 border border-amber-200 text-amber-700 text-[11px] font-mono;
+}
+
+.admin-btn-secondary {
+  @apply inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#D0D7DE] bg-white hover:bg-[#F6F8FA] text-xs font-medium text-[#57606A] transition-colors cursor-pointer;
+}
+
+.admin-btn-primary-sm {
+  @apply inline-flex items-center gap-1.5 px-4 py-1.5 bg-[#1B2127] hover:bg-[#3894B3] text-white rounded-lg text-xs font-bold shadow-xs transition-all cursor-pointer;
+}
+
+.admin-upload-btn {
+  @apply inline-flex items-center gap-2 px-4 py-2 bg-[#1B2127] hover:bg-[#3894B3] text-white rounded-xl text-xs font-bold shadow-xs cursor-pointer transition-all;
+}
+
+.admin-resume-dropzone {
+  @apply border-2 border-dashed border-[#D0D7DE] rounded-xl p-6 text-center hover:border-[#3894B3] transition-colors bg-[#F6F8FA]/50;
+}
+
+.admin-resume-status-card {
+  @apply bg-[#F6F8FA] border border-[#D0D7DE] rounded-xl p-4 text-xs space-y-2.5;
+}
+
+.admin-latex-editor {
+  @apply w-full p-4 border border-[#D0D7DE] rounded-xl font-mono text-xs text-[#1B2127] bg-[#FAFBFD] focus:bg-white focus:outline-hidden focus:border-[#3894B3] leading-relaxed resize-y;
+}
+

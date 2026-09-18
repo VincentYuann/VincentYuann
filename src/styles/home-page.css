@@ -1,0 +1,10 @@
+@reference "../index.css";
+
+/* Home Page: Main Landing Container */
+.home-page-container {
+  @apply min-h-screen bg-white text-gray-900 flex flex-col;
+}
+
+.home-main-content {
+  @apply flex-1;
+}

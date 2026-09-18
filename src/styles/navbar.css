@@ -1,0 +1,86 @@
+@reference "../index.css";
+
+/* Navbar: Sticky Top Navigation */
+.navbar-wrapper {
+  @apply border-b border-[#E1E6EB] bg-white/95 backdrop-blur-md sticky top-0 z-30 px-4 sm:px-8 py-3.5 flex items-center justify-between transition-all;
+}
+
+.navbar-brand-group {
+  @apply flex items-center gap-3;
+}
+
+.navbar-brand-link {
+  @apply flex items-center gap-2.5;
+}
+
+.navbar-brand-avatar {
+  @apply w-8 h-8 rounded-full bg-[#1B2127] text-white flex items-center justify-center font-serif text-sm font-bold shadow-xs group-hover:scale-105 transition-transform;
+}
+
+.navbar-brand-name {
+  @apply text-sm font-bold text-[#1B2127] block leading-tight group-hover:text-[#3894B3] transition-colors;
+}
+
+.navbar-brand-role {
+  @apply text-[11px] text-[#6E7E8E] font-medium hidden sm:block;
+}
+
+.navbar-actions {
+  @apply flex items-center gap-2 sm:gap-3;
+}
+
+.navbar-status-pill {
+  @apply hidden lg:flex items-center gap-2 px-2.5 py-1 rounded-full bg-[#EBF6F9] border border-[#3894B3]/30 text-[#2B6D83] text-[11px] font-medium;
+}
+
+.navbar-status-dot {
+  @apply w-1.5 h-1.5 rounded-full bg-[#3894B3] animate-pulse;
+}
+
+.navbar-link {
+  @apply px-2.5 py-1.5 text-xs font-semibold rounded-lg border transition-all;
+}
+
+.navbar-link-active {
+  @apply bg-[#F6F8FA] text-[#1B2127] border-[#D0D7DE] font-bold;
+}
+
+.navbar-link-inactive {
+  @apply text-[#57606A] hover:text-[#1B2127] hover:bg-[#F6F8FA] border-[#D0D7DE];
+}
+
+.navbar-search-btn {
+  @apply flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-[#F6F8FA] hover:bg-[#E1E6EB] border border-[#D0D7DE] text-xs text-[#57606A] hover:text-[#1B2127] transition-all cursor-pointer shadow-xs;
+}
+
+.navbar-search-icon {
+  @apply w-3.5 h-3.5 text-[#6E7E8E];
+}
+
+.navbar-search-label {
+  @apply hidden md:inline;
+}
+
+.navbar-search-kbd {
+  @apply px-1 py-0.5 rounded bg-white text-[10px] text-[#4A5560] font-mono border border-[#D0D7DE];
+}
+
+.navbar-cluster-divider {
+  @apply flex items-center gap-1 sm:gap-2 ml-1 pl-1 sm:pl-2 border-l border-[#E1E6EB];
+}
+
+.navbar-hire-btn {
+  @apply px-3 py-1.5 rounded-lg bg-[#1B2127] hover:bg-[#3894B3] text-white text-xs font-semibold transition-all shadow-xs flex items-center gap-1;
+}
+
+.navbar-icon-btn {
+  @apply p-1.5 rounded-md text-[#57606A] hover:text-[#1B2127] hover:bg-[#F6F8FA] transition-colors;
+}
+
+.navbar-icon-btn-admin-active {
+  @apply p-1.5 rounded-md transition-colors text-[#1B2127] bg-[#F6F8FA];
+}
+
+.navbar-icon-btn-admin-inactive {
+  @apply p-1.5 rounded-md transition-colors text-[#8C959F] hover:text-[#1B2127] hover:bg-[#F6F8FA];
+}

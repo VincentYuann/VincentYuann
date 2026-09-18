@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { Send, CheckCircle2, AlertCircle, Loader2, Mail, Paperclip, X, FileText, ShieldCheck } from 'lucide-react';
+import '../styles/contact-page.css';
 
 interface ContactFormProps {
   className?: string;
@@ -66,6 +67,13 @@ export const ContactForm: React.FC<ContactFormProps> = ({
     e.preventDefault();
     setErrorMessage(null);
 
+    // Honeypot spam check
+    if (honeypot) {
+      console.warn('Spam submission detected via honeypot.');
+      setIsSubmitted(true);
+      return;
+    }
+
     // Basic client validation
     if (!name.trim()) {
       setErrorMessage('Please enter your name.');
@@ -81,6 +89,7 @@ export const ContactForm: React.FC<ContactFormProps> = ({
     }
 
     setIsSubmitting(true);
+
     try {
       const edgeFunctionUrl = 'https://pqowefuwzxcrfzmnubvo.supabase.co/functions/v1/send-contact-email';
 
@@ -122,20 +131,20 @@ export const ContactForm: React.FC<ContactFormProps> = ({
 
   if (isSubmitted) {
     return (
-      <div className={`p-8 sm:p-10 bg-white border border-[#D0D7DE] rounded-2xl text-center space-y-5 shadow-xs ${className}`}>
-        <div className="w-14 h-14 rounded-2xl bg-green-50 border border-green-200 text-green-700 flex items-center justify-center mx-auto shadow-xs">
+      <div className={`contact-success-card ${className}`}>
+        <div className="contact-success-icon-badge">
           <CheckCircle2 className="w-7 h-7" />
         </div>
         <div className="space-y-1.5">
-          <h4 className="text-lg font-serif font-bold text-[#1B2127]">Inquiry Dispatched Successfully!</h4>
-          <p className="text-xs text-[#57606A] max-w-md mx-auto leading-relaxed">
+          <h4 className="contact-success-title">Inquiry Dispatched Successfully!</h4>
+          <p className="contact-success-desc">
             Thank you for reaching out. Your message and details have been delivered directly to Vincent's email via Resend. You will receive a response promptly.
           </p>
         </div>
         <div className="pt-2">
           <button
             onClick={() => setIsSubmitted(false)}
-            className="inline-flex items-center gap-1.5 px-5 py-2.5 bg-[#1B2127] hover:bg-[#2C343E] text-white rounded-xl text-xs font-semibold shadow-xs transition-colors cursor-pointer"
+            className="contact-success-btn"
           >
             Send Another Message
           </button>
@@ -147,7 +156,7 @@ export const ContactForm: React.FC<ContactFormProps> = ({
   return (
     <form
       onSubmit={handleSubmit}
-      className={`bg-white border border-[#D0D7DE] rounded-2xl p-6 sm:p-8 shadow-xs space-y-5 text-left ${className}`}
+      className={`contact-form-card ${className}`}
     >
       {/* Honeypot Spam Trap (Hidden) */}
       <input
@@ -160,21 +169,21 @@ export const ContactForm: React.FC<ContactFormProps> = ({
         autoComplete="off"
       />
 
-      <div className="space-y-1 pb-2 border-b border-[#E1E6EB]">
-        <h3 className="text-base font-bold text-[#1B2127] flex items-center gap-2">
+      <div className="contact-form-header">
+        <h3 className="contact-form-title">
           <Mail className="w-4 h-4 text-[#3894B3]" />
           <span>Send a Direct Message / Hire Inquiry</span>
         </h3>
-        <p className="text-xs text-[#57606A]">
+        <p className="contact-form-desc">
           Have an open role, an architectural challenge, or a contract in mind? Deliver a direct message with optional specs or documents attached.
         </p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div className="contact-form-grid">
         {/* Name Input */}
         <div>
-          <label className="block text-xs font-semibold text-[#57606A] mb-1.5">
-            Your Name <span className="text-red-500">*</span>
+          <label className="contact-form-label">
+            Your Name <span className="contact-form-required">*</span>
           </label>
           <input
             type="text"
@@ -182,14 +191,14 @@ export const ContactForm: React.FC<ContactFormProps> = ({
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Ada Lovelace"
-            className="w-full px-3.5 py-2.5 text-xs bg-[#F6F8FA] border border-[#D0D7DE] rounded-xl focus:bg-white focus:outline-none focus:border-[#3894B3] transition-colors"
+            className="contact-form-input"
           />
         </div>
 
         {/* Email Input */}
         <div>
-          <label className="block text-xs font-semibold text-[#57606A] mb-1.5">
-            Your Email <span className="text-red-500">*</span>
+          <label className="contact-form-label">
+            Your Email <span className="contact-form-required">*</span>
           </label>
           <input
             type="email"
@@ -197,15 +206,15 @@ export const ContactForm: React.FC<ContactFormProps> = ({
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="ada@company.com"
-            className="w-full px-3.5 py-2.5 text-xs bg-[#F6F8FA] border border-[#D0D7DE] rounded-xl focus:bg-white focus:outline-none focus:border-[#3894B3] transition-colors"
+            className="contact-form-input"
           />
         </div>
       </div>
 
       {/* Message Textarea */}
       <div>
-        <label className="block text-xs font-semibold text-[#57606A] mb-1.5">
-          Message <span className="text-red-500">*</span>
+        <label className="contact-form-label">
+          Message <span className="contact-form-required">*</span>
         </label>
         <textarea
           required
@@ -213,7 +222,7 @@ export const ContactForm: React.FC<ContactFormProps> = ({
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           placeholder="Hi Vincent, we came across your work and are looking for someone to help build..."
-          className="w-full px-3.5 py-2.5 text-xs bg-[#F6F8FA] border border-[#D0D7DE] rounded-xl focus:bg-white focus:outline-none focus:border-[#3894B3] transition-colors resize-y leading-relaxed font-sans"
+          className="contact-form-textarea"
         />
       </div>
 
@@ -224,7 +233,7 @@ export const ContactForm: React.FC<ContactFormProps> = ({
         </label>
 
         {attachment ? (
-          <div className="flex items-center justify-between p-3 bg-[#F0F7FA] border border-[#A0D8E9] rounded-xl text-xs text-[#2B6D83]">
+          <div className="contact-attachment-preview">
             <div className="flex items-center gap-2 truncate">
               <FileText className="w-4 h-4 shrink-0 text-[#3894B3]" />
               <span className="font-semibold truncate">{attachment.filename}</span>
@@ -251,7 +260,7 @@ export const ContactForm: React.FC<ContactFormProps> = ({
             />
             <label
               htmlFor="file-upload-input"
-              className="inline-flex items-center gap-2 px-3.5 py-2 bg-[#F6F8FA] hover:bg-[#E1E6EB] border border-[#D0D7DE] rounded-xl text-xs font-semibold text-[#1B2127] cursor-pointer shadow-xs transition-colors"
+              className="contact-upload-trigger-btn"
             >
               <Paperclip className="w-3.5 h-3.5 text-[#57606A]" />
               <span>Attach a Document / PDF</span>
@@ -267,7 +276,7 @@ export const ContactForm: React.FC<ContactFormProps> = ({
 
       {/* Error Alert */}
       {errorMessage && (
-        <div className="p-3.5 bg-red-50 text-red-900 border border-red-200 rounded-xl text-xs flex items-center gap-2.5 animate-fadeIn">
+        <div className="contact-error-banner">
           <AlertCircle className="w-4 h-4 shrink-0 text-red-600" />
           <span className="font-medium">{errorMessage}</span>
         </div>
@@ -278,7 +287,7 @@ export const ContactForm: React.FC<ContactFormProps> = ({
         <button
           type="submit"
           disabled={isSubmitting}
-          className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 bg-[#1B2127] hover:bg-[#2C343E] text-white text-xs font-semibold rounded-xl shadow-xs transition-all cursor-pointer disabled:opacity-50"
+          className="contact-submit-btn"
         >
           {isSubmitting ? (
             <>

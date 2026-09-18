@@ -1,90 +1,108 @@
 @reference "../index.css";
 
-/* Project Card: Basic Layout */
+/* Project Card: Tactile Showcase on River Stream */
 .project-card {
-  @apply border border-gray-200 rounded-lg p-6 mb-6 bg-white;
+  @apply border border-[#D0D7DE] rounded-2xl p-5 sm:p-6 bg-white shadow-xs hover:shadow-md hover:border-[#8C959F] transition-all duration-300 space-y-4;
 }
 
 .project-card.active {
-  @apply border-gray-900;
+  @apply border-[#1B2127] shadow-md ring-1 ring-[#1B2127]/10;
 }
 
+/* Header & Metadata */
 .card-header {
-  @apply flex items-center justify-between mb-3;
+  @apply flex items-center justify-between gap-3;
 }
 
 .card-category {
-  @apply text-xs uppercase tracking-wider text-gray-500 font-medium;
+  @apply text-[11px] uppercase tracking-wider font-bold px-2.5 py-0.5 rounded-md;
 }
 
 .card-beacon {
-  @apply flex items-center gap-1.5 text-xs text-gray-400;
+  @apply flex items-center gap-1.5 text-xs text-[#57606A];
 }
 
 .card-beacon-dot {
-  @apply w-2 h-2 rounded-full bg-gray-400;
+  @apply w-2 h-2 rounded-full;
 }
 
 .card-beacon-text {
-  @apply text-xs text-gray-500;
+  @apply text-xs font-mono text-[#57606A];
 }
 
+.card-admin-edit-btn {
+  @apply inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-amber-50 hover:bg-amber-100 border border-amber-200 text-amber-800 text-[11px] font-mono font-semibold transition-colors cursor-pointer shadow-2xs;
+}
+
+/* Visual Media / Blueprint Frame */
+.card-visual-frame {
+  @apply relative w-full h-44 sm:h-52 rounded-xl overflow-hidden border border-[#E1E6EB] transition-all flex items-center justify-center;
+}
+
+.card-visual-image {
+  @apply w-full h-full object-cover transition-transform duration-500 group-hover/frame:scale-105;
+}
+
+.card-blueprint-preview {
+  @apply w-full h-full p-5 flex flex-col justify-between relative select-none;
+}
+
+.card-blueprint-badge {
+  @apply inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-white/80 backdrop-blur-xs border border-[#D0D7DE] text-[11px] font-mono text-[#1B2127] font-semibold w-fit;
+}
+
+.card-blueprint-center {
+  @apply flex flex-col items-center justify-center text-center space-y-1 my-auto;
+}
+
+.card-blueprint-title {
+  @apply text-lg sm:text-xl font-serif font-bold text-[#1B2127];
+}
+
+.card-blueprint-hint {
+  @apply text-[11px] font-mono text-[#57606A] flex items-center gap-1;
+}
+
+/* Title & Subtitle */
 .card-title {
-  @apply text-xl font-bold text-gray-900 mb-1;
+  @apply text-xl sm:text-2xl font-serif font-bold text-[#1B2127] tracking-tight;
 }
 
 .card-subtitle {
-  @apply text-sm text-gray-500 mb-3;
+  @apply text-xs sm:text-sm text-[#57606A] leading-relaxed font-normal;
 }
 
-.card-desc {
-  @apply text-sm text-gray-700 leading-relaxed mb-4;
-}
-
-.card-highlights-section {
-  @apply border-t border-gray-100 pt-3 mb-4 space-y-1.5;
-}
-
-.card-highlights-label {
-  @apply text-xs uppercase tracking-wider text-gray-400 font-semibold mb-2;
-}
-
-.card-highlight-item {
-  @apply flex items-start gap-2 text-xs text-gray-600;
-}
-
-.card-highlight-icon {
-  @apply w-3.5 h-3.5 text-gray-400 mt-0.5 shrink-0;
-}
-
+/* Performance & Metric Badges */
 .card-stats-grid {
-  @apply grid grid-cols-3 gap-2 p-3 rounded border border-gray-100 bg-gray-50 mb-4;
+  @apply grid grid-cols-3 gap-2.5 p-3 rounded-xl border border-[#E1E6EB] bg-[#FAFBFD];
 }
 
 .card-stat-cell {
-  @apply text-center;
+  @apply text-center px-1;
 }
 
 .card-stat-label {
-  @apply text-[10px] uppercase text-gray-400;
+  @apply text-[10px] uppercase font-bold tracking-wider text-[#6E7E8E] block truncate mb-0.5;
 }
 
 .card-stat-val {
-  @apply text-xs font-semibold text-gray-800;
+  @apply text-xs sm:text-sm font-bold font-mono text-[#1B2127] block truncate;
 }
 
+/* Tech Stack Tags */
 .card-tags-list {
-  @apply flex flex-wrap gap-2 mb-4;
+  @apply flex flex-wrap items-center gap-1.5;
 }
 
+/* Action Links */
 .card-actions {
-  @apply flex items-center gap-3 pt-2;
+  @apply flex flex-wrap items-center gap-2 pt-2 border-t border-[#E1E6EB];
 }
 
 .card-btn-primary {
-  @apply inline-flex items-center gap-1.5 px-3 py-1.5 rounded border border-gray-900 bg-gray-900 text-white text-xs font-medium hover:bg-gray-800;
+  @apply inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#1B2127] hover:bg-[#2C343E] text-white text-xs font-bold transition-all shadow-xs cursor-pointer;
 }
 
 .card-btn-secondary {
-  @apply inline-flex items-center gap-1.5 px-3 py-1.5 rounded border border-gray-300 bg-white text-gray-800 text-xs font-medium hover:bg-gray-50;
+  @apply inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border border-[#D0D7DE] bg-white hover:bg-[#F6F8FA] text-[#1B2127] text-xs font-semibold transition-colors;
 }

@@ -8,13 +8,17 @@ import { AdminPage } from './pages/AdminPage';
 import { ContactPage } from './pages/ContactPage';
 import { ResumePage } from './pages/ResumePage';
 import { CommandPalette } from './components/CommandPalette';
+import { ProfileModal } from './components/ProfileModal';
 import { useProjects } from './lib/useProjects';
 import { useProfile } from './lib/useProfile';
+import { useAuth } from './lib/useAuth';
 
 export const App: React.FC = () => {
   const [isCommandOpen, setIsCommandOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
   const { allProjects, flagships, pebbles, refreshProjects } = useProjects();
   const { profile, refreshProfile } = useProfile();
+  const { isAdmin, signOut } = useAuth();
 
   // Global keyboard shortcut listener for Cmd + K or Ctrl + K
   useEffect(() => {
@@ -45,6 +49,7 @@ export const App: React.FC = () => {
                 allProjects={allProjects}
                 profile={profile}
                 onOpenCommand={() => setIsCommandOpen(true)}
+                onOpenProfile={() => setIsProfileOpen(true)}
               />
             }
           />
@@ -57,6 +62,7 @@ export const App: React.FC = () => {
                 projects={allProjects}
                 profile={profile}
                 onOpenCommand={() => setIsCommandOpen(true)}
+                onOpenProfile={() => setIsProfileOpen(true)}
               />
             }
           />
@@ -69,6 +75,7 @@ export const App: React.FC = () => {
                 projects={allProjects}
                 profile={profile}
                 onOpenCommand={() => setIsCommandOpen(true)}
+                onOpenProfile={() => setIsProfileOpen(true)}
               />
             }
           />
@@ -99,6 +106,7 @@ export const App: React.FC = () => {
               <ContactPage
                 profile={profile}
                 onOpenCommand={() => setIsCommandOpen(true)}
+                onOpenProfile={() => setIsProfileOpen(true)}
               />
             }
           />
@@ -110,6 +118,7 @@ export const App: React.FC = () => {
               <ResumePage
                 profile={profile}
                 onOpenCommand={() => setIsCommandOpen(true)}
+                onOpenProfile={() => setIsProfileOpen(true)}
               />
             }
           />
@@ -124,6 +133,7 @@ export const App: React.FC = () => {
                 allProjects={allProjects}
                 profile={profile}
                 onOpenCommand={() => setIsCommandOpen(true)}
+                onOpenProfile={() => setIsProfileOpen(true)}
               />
             }
           />
@@ -135,6 +145,15 @@ export const App: React.FC = () => {
           onClose={() => setIsCommandOpen(false)}
           flagships={flagships}
           pebbles={pebbles}
+        />
+
+        {/* Global Profile Overview & Quick Actions Modal */}
+        <ProfileModal
+          isOpen={isProfileOpen}
+          onClose={() => setIsProfileOpen(false)}
+          profile={profile}
+          isAdmin={isAdmin}
+          onSignOut={signOut}
         />
       </div>
     </HashRouter>

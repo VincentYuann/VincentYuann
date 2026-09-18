@@ -1,0 +1,186 @@
+@reference "../index.css";
+
+/* Project Detail Page: Level 2 Architectural Deep-Dive */
+.detail-page-container {
+  @apply min-h-screen bg-[#FAFBFD] text-gray-900 flex flex-col;
+}
+
+/* 404 Not Found State */
+.detail-notfound-main {
+  @apply flex-1 flex items-center justify-center p-8;
+}
+
+.detail-notfound-card {
+  @apply text-center space-y-4 max-w-md;
+}
+
+.detail-notfound-badge {
+  @apply w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center mx-auto text-gray-500 font-mono text-lg;
+}
+
+.detail-notfound-title {
+  @apply text-2xl font-serif font-bold text-[#1B2127];
+}
+
+.detail-notfound-text {
+  @apply text-xs text-[#57606A];
+}
+
+.detail-notfound-code {
+  @apply font-mono bg-gray-100 px-1 py-0.5 rounded;
+}
+
+.detail-notfound-link {
+  @apply inline-flex items-center gap-2 px-4 py-2 bg-[#1B2127] text-white text-xs font-semibold rounded-xl hover:bg-[#2C343E] transition-colors;
+}
+
+/* Main Detail Content */
+.detail-main-content {
+  @apply flex-1 max-w-5xl w-full mx-auto px-4 sm:px-8 py-8 sm:py-12 space-y-10;
+}
+
+/* Top Navigation Bar */
+.detail-top-nav {
+  @apply flex flex-wrap items-center justify-between gap-4 border-b border-[#E1E6EB] pb-4;
+}
+
+.detail-back-link {
+  @apply flex items-center gap-1.5 text-xs font-semibold text-[#57606A] hover:text-[#1B2127] transition-colors bg-white px-3 py-1.5 rounded-lg border border-[#D0D7DE] shadow-xs;
+}
+
+.detail-breadcrumb-trail {
+  @apply hidden sm:flex items-center gap-2 text-xs text-[#6E7E8E];
+}
+
+.detail-breadcrumb-level {
+  @apply text-[#3894B3];
+}
+
+.detail-breadcrumb-id {
+  @apply font-mono text-[#1B2127] font-medium;
+}
+
+.detail-category-badge {
+  @apply text-[11px] font-semibold tracking-wider uppercase px-2.5 py-1 rounded-md;
+}
+
+.detail-flagship-badge {
+  @apply text-[11px] uppercase font-bold tracking-wider px-2.5 py-1 rounded bg-[#3894B3]/10 text-[#3894B3] border border-[#3894B3]/25;
+}
+
+/* Hero Section */
+.detail-hero-section {
+  @apply space-y-4;
+}
+
+.detail-title-row {
+  @apply flex items-center gap-3;
+}
+
+.detail-stone-dot {
+  @apply w-4 h-4 rounded-full shrink-0 shadow-xs;
+}
+
+.detail-title {
+  @apply text-3xl sm:text-5xl font-serif font-bold text-[#1B2127] tracking-tight;
+}
+
+.detail-subtitle {
+  @apply text-lg sm:text-xl text-[#57606A] font-light leading-relaxed max-w-3xl;
+}
+
+.detail-cta-row {
+  @apply flex flex-wrap items-center gap-3 pt-2;
+}
+
+.detail-cta-github {
+  @apply inline-flex items-center gap-2 px-5 py-2.5 text-xs sm:text-sm font-semibold text-white bg-[#1B2127] hover:bg-[#2C343E] rounded-xl shadow-sm transition-all;
+}
+
+.detail-cta-demo {
+  @apply inline-flex items-center gap-2 px-5 py-2.5 text-xs sm:text-sm font-semibold text-[#1B2127] bg-white hover:bg-[#F6F8FA] border border-[#D0D7DE] rounded-xl shadow-xs transition-all;
+}
+
+/* Image Showcase */
+.detail-image-card {
+  @apply rounded-2xl border border-[#D0D7DE] bg-white overflow-hidden shadow-xs;
+}
+
+.detail-image-img {
+  @apply w-full max-h-[460px] object-cover;
+}
+
+.detail-image-footer {
+  @apply px-5 py-3 bg-[#FAFBFC] border-t border-[#E1E6EB] text-xs text-[#57606A] flex items-center justify-between;
+}
+
+.detail-image-footer-code {
+  @apply font-mono text-[11px] text-[#6E7E8E];
+}
+
+/* Common Section Blocks */
+.detail-section-block {
+  @apply space-y-3;
+}
+
+.detail-section-label {
+  @apply flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#6E7E8E];
+}
+
+/* Benchmarks Grid */
+.detail-benchmarks-grid {
+  @apply grid grid-cols-2 sm:grid-cols-3 gap-4;
+}
+
+.detail-benchmark-cell {
+  @apply p-4 rounded-xl bg-white border border-[#D0D7DE] space-y-1 shadow-xs hover:border-[#8C959F] transition-colors;
+}
+
+.detail-benchmark-label {
+  @apply text-xs font-medium text-[#6E7E8E] uppercase tracking-wider;
+}
+
+.detail-benchmark-value {
+  @apply text-lg sm:text-xl font-bold text-[#1B2127] font-mono;
+}
+
+/* Description Panel */
+.detail-description-card {
+  @apply p-6 rounded-2xl bg-white border border-[#D0D7DE] text-[#24292F] text-base leading-relaxed shadow-xs;
+}
+
+/* Invariants List */
+.detail-invariants-grid {
+  @apply grid gap-3;
+}
+
+.detail-invariant-card {
+  @apply flex items-start gap-3 p-4 rounded-xl bg-white border border-[#D0D7DE] text-sm text-[#24292F] shadow-xs;
+}
+
+.detail-invariant-check {
+  @apply w-4 h-4 text-[#588A75] shrink-0 mt-0.5;
+}
+
+.detail-invariant-text {
+  @apply leading-snug;
+}
+
+/* Tags Panel */
+.detail-tags-card {
+  @apply flex flex-wrap gap-2.5 p-4 bg-white border border-[#D0D7DE] rounded-2xl shadow-xs;
+}
+
+/* Markdown Log Panel */
+.detail-markdown-card {
+  @apply p-6 sm:p-8 rounded-2xl bg-white border border-[#D0D7DE] text-sm sm:text-base text-[#24292F] space-y-4 whitespace-pre-line leading-relaxed font-sans shadow-xs;
+}
+
+/* Pagination Footer */
+.detail-pagination-footer {
+  @apply pt-8 border-t border-[#E1E6EB] flex items-center justify-between gap-4;
+}
+
+.detail-pagination-btn {
+  @apply flex items-center gap-2 px-4 py-2 bg-white border border-[#D0D7DE] hover:border-[#8C959F] rounded-xl text-xs font-semibold text-[#57606A] hover:text-[#1B2127] shadow-xs transition-all;
+}
