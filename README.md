@@ -2,9 +2,9 @@
 
 Check out my portfolio:
 
-https://vincentyuann.github.io
+[https://vincentyuann.github.io/VincentYuann](https://vincentyuann.github.io/VincentYuann)
 
 I'm an aspiring software and AI engineer building real-time systems and solutions that solve problems—whether it's for me, friends and family, or others.
 
-Reach out or say hi: https://vincentyuann.github.io/#/contact
+Reach out or say hi: [https://vincentyuann.github.io/#/contact](https://vincentyuann.github.io/VincentYuann/#/contact)
 
