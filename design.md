@@ -1,265 +1,639 @@
-# Design & Interaction Architecture (`design.md`)
+---
+version: alpha
+name: Vincent Yuann — Akari Day & Night Portfolio
+ description: >-
+  A two-theme portfolio design system that combines a warm Akari-inspired
+  editorial day mode with a quiet charcoal night mode. The visual language is
+  Japanese-influenced, tactile, precise, and deliberately sparse.
+colors:
+  # Shared brand / identity
+  identity-accent: "#B5482E"
+  identity-accent-hover: "#9E3D27"
+  identity-accent-soft: "#F0D7C7"
 
-> **Ground Truth Reference**: Layout hierarchy, navigation contracts, component schemas, styling tokens, and backend security architecture for Vincent Yuann's interactive systems portfolio.
->
-> **Merge note:** This file is the authoritative document for the portfolio (routing, components, backend/security architecture, and the shadcn/Radix system in Sections 1–4 and 6 are unchanged and take priority as-is). Only **Section 5 (UI Tokens & Styling Guidelines)** has been merged with the warm, editorial "Akari" colorway from the earlier reference theme, remapped onto this project's existing Tailwind v4 semantic-token architecture so nothing structural breaks.
+  # Light theme — canonical Akari palette
+  light-canvas: "#F2E9DA"
+  light-surface: "#F7F0E3"
+  light-surface-raised: "#FBF6EC"
+  light-surface-muted: "#EDE1CE"
+  light-ink: "#2B2E3A"
+  light-ink-muted: "#6B6559"
+  light-ink-subtle: "#8B8375"
+  light-border: "#D9C9AE"
+  light-border-strong: "#BDAA89"
+  light-button-dark: "#26262E"
+  light-on-dark: "#F7F0E3"
+  light-focus: "#B5482E"
+  light-success: "#526D57"
+  light-warning: "#9A6B2E"
+  light-error: "#B5482E"
 
+  # Dark theme — charcoal night counterpart
+  dark-canvas: "#1E1F24"
+  dark-surface: "#2A2C32"
+  dark-surface-raised: "#32343B"
+  dark-surface-muted: "#24262C"
+  dark-ink: "#E8E6DF"
+  dark-ink-muted: "#A7A398"
+  dark-ink-subtle: "#797A7E"
+  dark-border: "#3A3D44"
+  dark-border-strong: "#565A63"
+  dark-button-light: "#E8E6DF"
+  dark-on-light: "#1E1F24"
+  dark-focus: "#C65B42"
+  dark-success: "#87A889"
+  dark-warning: "#D3A45B"
+  dark-error: "#D86A50"
+
+typography:
+  display-xl:
+    fontFamily: "Canela, Iowan Old Style, Georgia, serif"
+    fontSize: "64px"
+    fontWeight: 400
+    lineHeight: 1.02
+    letterSpacing: "-0.035em"
+  display-lg:
+    fontFamily: "Canela, Iowan Old Style, Georgia, serif"
+    fontSize: "52px"
+    fontWeight: 400
+    lineHeight: 1.05
+    letterSpacing: "-0.03em"
+  headline-lg:
+    fontFamily: "Canela, Iowan Old Style, Georgia, serif"
+    fontSize: "40px"
+    fontWeight: 400
+    lineHeight: 1.12
+    letterSpacing: "-0.02em"
+  headline-md:
+    fontFamily: "Canela, Iowan Old Style, Georgia, serif"
+    fontSize: "30px"
+    fontWeight: 400
+    lineHeight: 1.18
+    letterSpacing: "-0.015em"
+  headline-sm:
+    fontFamily: "Montserrat, Inter, Arial, sans-serif"
+    fontSize: "20px"
+    fontWeight: 500
+    lineHeight: 1.3
+    letterSpacing: "0.01em"
+  body-lg:
+    fontFamily: "Montserrat, Inter, Arial, sans-serif"
+    fontSize: "18px"
+    fontWeight: 400
+    lineHeight: 1.65
+    letterSpacing: "0em"
+  body-md:
+    fontFamily: "Montserrat, Inter, Arial, sans-serif"
+    fontSize: "15px"
+    fontWeight: 400
+    lineHeight: 1.6
+    letterSpacing: "0em"
+  body-sm:
+    fontFamily: "Montserrat, Inter, Arial, sans-serif"
+    fontSize: "13px"
+    fontWeight: 400
+    lineHeight: 1.55
+    letterSpacing: "0.005em"
+  label-lg:
+    fontFamily: "Montserrat, Inter, Arial, sans-serif"
+    fontSize: "13px"
+    fontWeight: 600
+    lineHeight: 1.15
+    letterSpacing: "0.08em"
+  label-md:
+    fontFamily: "Montserrat, Inter, Arial, sans-serif"
+    fontSize: "11px"
+    fontWeight: 600
+    lineHeight: 1.2
+    letterSpacing: "0.12em"
+  label-caps:
+    fontFamily: "Montserrat, Inter, Arial, sans-serif"
+    fontSize: "10px"
+    fontWeight: 600
+    lineHeight: 1.2
+    letterSpacing: "0.16em"
+  code-md:
+    fontFamily: "JetBrains Mono, SFMono-Regular, Consolas, monospace"
+    fontSize: "13px"
+    fontWeight: 400
+    lineHeight: 1.65
+    letterSpacing: "0em"
+  code-sm:
+    fontFamily: "JetBrains Mono, SFMono-Regular, Consolas, monospace"
+    fontSize: "11px"
+    fontWeight: 400
+    lineHeight: 1.5
+    letterSpacing: "0em"
+
+spacing:
+  px: "1px"
+  0: "0px"
+  1: "4px"
+  2: "8px"
+  3: "12px"
+  4: "16px"
+  5: "20px"
+  6: "24px"
+  8: "32px"
+  10: "40px"
+  12: "48px"
+  16: "64px"
+  20: "80px"
+  24: "96px"
+  32: "128px"
+  page-gutter-mobile: "20px"
+  page-gutter-tablet: "32px"
+  page-gutter-desktop: "48px"
+  content-max: "1440px"
+  content-reading-max: "720px"
+  sidebar-width: "240px"
+  grid-gap: "24px"
+
+rounded:
+  none: "0px"
+  hairline: "2px"
+  sm: "4px"
+  md: "8px"
+  lg: "12px"
+  xl: "16px"
+  pill: "9999px"
+
+components:
+  app-shell-light:
+    backgroundColor: "{colors.light-canvas}"
+    textColor: "{colors.light-ink}"
+    sidebarWidth: "{spacing.sidebar-width}"
+    borderColor: "{colors.light-border}"
+  app-shell-dark:
+    backgroundColor: "{colors.dark-canvas}"
+    textColor: "{colors.dark-ink}"
+    sidebarWidth: "{spacing.sidebar-width}"
+    borderColor: "{colors.dark-border}"
+  sidebar-light:
+    backgroundColor: "{colors.light-surface}"
+    textColor: "{colors.light-ink}"
+    borderColor: "{colors.light-border}"
+    padding: "{spacing.6}"
+  sidebar-dark:
+    backgroundColor: "{colors.dark-canvas}"
+    textColor: "{colors.dark-ink}"
+    borderColor: "{colors.dark-border}"
+    padding: "{spacing.6}"
+  card-light:
+    backgroundColor: "{colors.light-surface}"
+    textColor: "{colors.light-ink}"
+    borderColor: "{colors.light-border}"
+    rounded: "{rounded.md}"
+    padding: "{spacing.6}"
+  card-dark:
+    backgroundColor: "{colors.dark-surface}"
+    textColor: "{colors.dark-ink}"
+    borderColor: "{colors.dark-border}"
+    rounded: "{rounded.md}"
+    padding: "{spacing.6}"
+  button-primary-light:
+    backgroundColor: "{colors.light-button-dark}"
+    textColor: "{colors.light-on-dark}"
+    borderColor: "{colors.light-button-dark}"
+    typography: "{typography.label-md}"
+    rounded: "{rounded.sm}"
+    height: "40px"
+    padding: "0 16px"
+  button-primary-light-hover:
+    backgroundColor: "{colors.light-ink}"
+    textColor: "{colors.light-on-dark}"
+    borderColor: "{colors.light-ink}"
+  button-primary-dark:
+    backgroundColor: "{colors.dark-button-light}"
+    textColor: "{colors.dark-on-light}"
+    borderColor: "{colors.dark-button-light}"
+    typography: "{typography.label-md}"
+    rounded: "{rounded.sm}"
+    height: "40px"
+    padding: "0 16px"
+  button-primary-dark-hover:
+    backgroundColor: "#FFFFFF"
+    textColor: "{colors.dark-on-light}"
+    borderColor: "#FFFFFF"
+  button-secondary-light:
+    backgroundColor: "transparent"
+    textColor: "{colors.light-ink}"
+    borderColor: "{colors.light-border-strong}"
+    typography: "{typography.label-md}"
+    rounded: "{rounded.sm}"
+    height: "40px"
+    padding: "0 16px"
+  button-secondary-dark:
+    backgroundColor: "transparent"
+    textColor: "{colors.dark-ink}"
+    borderColor: "{colors.dark-border-strong}"
+    typography: "{typography.label-md}"
+    rounded: "{rounded.sm}"
+    height: "40px"
+    padding: "0 16px"
+  button-accent:
+    backgroundColor: "{colors.identity-accent}"
+    textColor: "#FFFFFF"
+    borderColor: "{colors.identity-accent}"
+    typography: "{typography.label-md}"
+    rounded: "{rounded.sm}"
+    height: "40px"
+    padding: "0 16px"
+  tag-light:
+    backgroundColor: "transparent"
+    textColor: "{colors.light-ink-muted}"
+    borderColor: "{colors.light-border}"
+    typography: "{typography.label-caps}"
+    rounded: "{rounded.pill}"
+    padding: "6px 12px"
+  tag-dark:
+    backgroundColor: "transparent"
+    textColor: "{colors.dark-ink-muted}"
+    borderColor: "{colors.dark-border-strong}"
+    typography: "{typography.label-caps}"
+    rounded: "{rounded.pill}"
+    padding: "6px 12px"
+  nav-item-light:
+    textColor: "{colors.light-ink}"
+    typography: "{typography.label-md}"
+    padding: "10px 0"
+  nav-item-light-active:
+    textColor: "{colors.identity-accent}"
+    typography: "{typography.label-md}"
+    activeIndicatorColor: "{colors.identity-accent}"
+  nav-item-dark:
+    textColor: "{colors.dark-ink}"
+    typography: "{typography.label-md}"
+    padding: "10px 0"
+  nav-item-dark-active:
+    textColor: "{colors.identity-accent}"
+    typography: "{typography.label-md}"
+    activeIndicatorColor: "{colors.identity-accent}"
+  status-badge-light:
+    backgroundColor: "{colors.light-surface}"
+    textColor: "{colors.light-ink-muted}"
+    borderColor: "{colors.light-border}"
+    dotColor: "{colors.identity-accent}"
+    rounded: "{rounded.pill}"
+    padding: "8px 12px"
+  status-badge-dark:
+    backgroundColor: "{colors.dark-surface}"
+    textColor: "{colors.dark-ink-muted}"
+    borderColor: "{colors.dark-border-strong}"
+    dotColor: "{colors.identity-accent}"
+    rounded: "{rounded.pill}"
+    padding: "8px 12px"
+  input-light:
+    backgroundColor: "{colors.light-surface-raised}"
+    textColor: "{colors.light-ink}"
+    borderColor: "{colors.light-border}"
+    rounded: "{rounded.sm}"
+    height: "44px"
+    padding: "0 12px"
+  input-dark:
+    backgroundColor: "{colors.dark-surface-raised}"
+    textColor: "{colors.dark-ink}"
+    borderColor: "{colors.dark-border}"
+    rounded: "{rounded.sm}"
+    height: "44px"
+    padding: "0 12px"
+  code-block-light:
+    backgroundColor: "{colors.light-surface-muted}"
+    textColor: "{colors.light-ink}"
+    borderColor: "{colors.light-border}"
+    typography: "{typography.code-sm}"
+    rounded: "{rounded.sm}"
+    padding: "{spacing.4}"
+  code-block-dark:
+    backgroundColor: "#202228"
+    textColor: "{colors.dark-ink}"
+    borderColor: "{colors.dark-border}"
+    typography: "{typography.code-sm}"
+    rounded: "{rounded.sm}"
+    padding: "{spacing.4}"
+  icon-button-light:
+    backgroundColor: "transparent"
+    textColor: "{colors.light-ink}"
+    borderColor: "transparent"
+    rounded: "{rounded.sm}"
+    size: "36px"
+  icon-button-dark:
+    backgroundColor: "transparent"
+    textColor: "{colors.dark-ink}"
+    borderColor: "transparent"
+    rounded: "{rounded.sm}"
+    size: "36px"
 ---
 
-## 1. Interaction Hierarchy & Routing Model
+# Vincent Yuann — Akari Day & Night Portfolio
 
-The application uses client-side hash routing (`HashRouter`) for seamless static hosting compatibility with GitHub Pages:
+## Overview
 
-```
-                          ┌──────────────────────────┐
-                          │   Persistent Navbar      │
-                          │ (Sticky Top Across All)  │
-                          └─────────────┬────────────┘
-                                        │
-      ┌──────────────────────────────────┼──────────────────────────────────┐
-      │                                  │                                  │
-      ▼                                  ▼                                  ▼
-Level 0: Home Page             Level 1: Projects Gallery         Level 2: Detail Deep-Dive
-Route: `#/`                    Route: `#/projects`               Route: `#/projects/:id`
-• Sticky Navbar                • Breadcrumbs (`Home / Projects`) • Hero metadata & status
-• Hero Narrative & Metrics     • Category filter tabs            • Live Demo & GitHub CTAs
-• Interactive River Timeline   • Instant fuzzy search            • 4-point Architecture Metrics
-• Chronological Pebble Stream  • Uniform project cards           • Brand TechBadges
-• Standard Protected Footer    • Tags & highlight metrics        • Markdown Engineering Log
-      │                                  │                                  │
-      └──────────────────────────────────┼──────────────────────────────────┘
-                                         │
-      ┌──────────────────────────────────┼──────────────────────────────────┐
-      │                                  │                                  │
-      ▼                                  ▼                                  ▼
-Curriculum Vitae & LaTeX Source  Protected Reach-Out Page         Admin CMS & Settings
-Route: `#/resume`                Route: `#/contact`               Route: `#/admin` & `#/login`
-• Dual-Mode (PDF & LaTeX .tex)   • Direct inquiry form            • GitHub OAuth authenticated
-• Zero-dep AST Tokenizer         • 5MB attachments support        • PostgreSQL RLS + Trigger
-• Responsive Capped Height       • Edge Function + Resend API     • Projects & Systems editor
-• Direct Supabase Bucket Sync    • IP Rate-limiting (3/hr)        • Profile & Resume Asset Manager
-```
+This is a portfolio design system for **Vincent Yuann, Software & AI Engineer**. It joins the restraint of Japanese editorial and Akari lighting references with the clarity expected of a contemporary technical portfolio. The result should feel calm, crafted, luminous, and quietly precise—not like a generic SaaS dashboard, a neon developer portfolio, or a dense résumé site.
 
----
+The system has two equal themes:
 
-## 2. Persistent Sticky Navbar Layout
+- **Day / Light:** Warm washi-paper canvas, parchment-like panels, fine tan hairlines, and softened charcoal-navy text. It should evoke daylight through shoji screens, studio paper, bamboo, and warm wood.
+- **Night / Dark:** Deep blue-charcoal canvas, muted warm-white type, low-contrast graphite borders, and the same quiet editorial rhythm. It should evoke a focused evening workbench rather than a high-saturation “cyber” interface.
 
-The `<Navbar />` is rendered across all routes (`sticky top-0 z-30 bg-white/95 backdrop-blur-md` → see Section 5 for the merged surface-token equivalent):
+Terracotta red is the sole deliberate brand accent in both themes. It carries the energy of a hanko stamp: visible, meaningful, and rare. It is not a general-purpose decorative color.
 
-1. **Brand Identity (Left)**:
-   - Avatar circle (`V`) with hover micro-scale.
-   - Name (`Vincent Yuann`) and role (`Software & AI Engineer`) linking to `#/`.
-2. **Center Controls**:
-   - **Status Indicator**: `● Open to Full-Stack & AI Roles` (pulsing teal badge).
-   - **Navigation Routes**:
-     - `Projects Gallery` button routing to `#/projects`.
-     - `Resume` button routing to `#/resume`.
-   - **Spotlight Search**: `[⌘ Search ⌘K]` button opening the global keyboard command palette (`⌘K`).
-3. **Action Cluster (Right)**:
-   - **Hire Me**: High-contrast dark button routing to `#/contact`.
-   - **GitHub**: Icon linking directly to `https://github.com/VincentYuann`.
-   - **Settings**: `<Settings />` gear icon routing to the admin console `#/admin`.
-   - _(Design Rule: No raw mailto links and no third-party network clutter in the header)._
+The visual voice is: restrained, intelligent, tactile, patient, editorial, and technically capable. Prioritize generous negative space, a small number of strong visual moments, and legible hierarchy.
 
----
+## Colors
 
-## 3. Page & Component Breakdown
+### Light theme
 
-### Level 0: The Landing Page (`HomePage.tsx`)
+The light theme must use the canonical Akari palette below. Do not substitute visually similar creams, blacks, or tans. These exact values are the source of truth.
 
-- **Hero Section (`Hero.tsx`)**:
-  - Focuses on narrative value proposition and systems engineering proof points.
-  - Metrics row: `3+ Flagship Systems`, `<30ms WebSocket Sync`, `Dual-LLM Qdrant RAG Pipeline`.
-  - Stream hint guiding user downward into the milestone river.
-- **River Timeline (`RiverTimeline.tsx`)**:
-  - Chronological path connecting flagship milestone stones and exploratory pebbles.
-  - Interactive cards trigger direct navigation to `#/projects/:id`.
-- **Protected Footer (`Footer.tsx`)**:
-  - Embedded quick reach-out form (`ContactForm.tsx`).
-  - Architecture Colophon detailing React 19, Tailwind, Supabase, and Resend stack.
-  - Subtle Admin CMS shortcut link (`<Settings />` icon).
+| Role | Token | Value | Use |
+|---|---|---:|---|
+| Canvas | `light-canvas` | `#F2E9DA` | Page background and broad open space |
+| Panel | `light-surface` | `#F7F0E3` | Sidebars, cards, light containers |
+| Raised surface | `light-surface-raised` | `#FBF6EC` | Inputs and subtle foreground layers |
+| Muted surface | `light-surface-muted` | `#EDE1CE` | Code blocks, image overlays, quiet separation |
+| Primary ink | `light-ink` | `#2B2E3A` | Headings, body copy, primary icons |
+| Secondary ink | `light-ink-muted` | `#6B6559` | Dates, captions, metadata, helper text |
+| Border | `light-border` | `#D9C9AE` | Hairline dividers, card outlines, input borders |
+| Strong border | `light-border-strong` | `#BDAA89` | Hover/focus-adjacent neutral borders only |
+| CTA fill | `light-button-dark` | `#26262E` | Main dark action buttons and active dark tabs |
+| On dark | `light-on-dark` | `#F7F0E3` | Text/icons on dark light-theme controls |
+| Identity accent | `identity-accent` | `#B5482E` | Hanko mark, selected nav cue, one status dot, rare highlight |
 
-### Level 1: Projects Discovery Gallery (`ProjectsPage.tsx`)
+### Dark theme
 
-- Instant client-side search across title, subtitle, description, tags, and highlights.
-- Category tabs: `All`, `Flagships`, `Experiments`, `Full-Stack Web App`, `Distributed Systems`, `Applied AI`.
-- Standard project cards displaying category, title, tech badges, highlights, and deep-dive link.
+The dark theme is a quiet inverse, not a black-theme conversion. Its blue-charcoal base must retain warmth from the surrounding off-white, terracotta, and paper imagery.
 
-### Level 2: Architectural Deep-Dive (`ProjectDetailPage.tsx`)
+| Role | Token | Value | Use |
+|---|---|---:|---|
+| Canvas | `dark-canvas` | `#1E1F24` | Page and sidebar background |
+| Panel | `dark-surface` | `#2A2C32` | Cards and contained regions |
+| Raised surface | `dark-surface-raised` | `#32343B` | Inputs and foreground containers |
+| Primary ink | `dark-ink` | `#E8E6DF` | Main copy, headline text, active icons |
+| Secondary ink | `dark-ink-muted` | `#A7A398` | Metadata, labels, subdued copy |
+| Border | `dark-border` | `#3A3D44` | Fine separators and card outlines |
+| Strong border | `dark-border-strong` | `#565A63` | Hover states and selected outlines |
+| Light CTA | `dark-button-light` | `#E8E6DF` | Main light action buttons in dark mode |
+| On light | `dark-on-light` | `#1E1F24` | Text/icons on light dark-theme controls |
+| Identity accent | `identity-accent` | `#B5482E` | Same sparse brand role as light mode |
 
-- **Header Zone**: Breadcrumb navigation (`← Back to Projects`), category, title, subtitle, and action buttons (`Explore Source Code`, `Open Live Demo`).
-- **Benchmark & Metrics Grid**: 4 key performance stats (e.g. latency, protocol, database, cache hit ratio).
-- **Tech Stack Breakdown**: Array of `<TechBadge />` components with official SVG brand icons.
-- **Architectural Highlights**: Bulleted list of core design decisions (e.g., CRDT sync, RLS, dual-reranker pipeline).
-- **Longform Markdown Deep-Dive**: Technical case study breakdown rendered with code snippets and diagrams.
+### Color application
 
-### Global Spotlight Search (`CommandPalette.tsx`)
+- Use the light canvas and light panel as distinct surfaces. The difference is subtle by design; create hierarchy through border, spacing, and typography before adding stronger contrast.
+- In light mode, use `light-ink` for normal text and `light-button-dark` only for high-emphasis controls. These are separate tokens and must not be collapsed into one generic black.
+- In dark mode, avoid pure black (`#000000`) and pure white (`#FFFFFF`) as large surfaces. The interface should remain soft and paper-adjacent.
+- Use terracotta on at most one major interactive emphasis per viewport. Examples: current nav item, a compact availability indicator, a stamp/logo mark, or a small underline.
+- Do not introduce teal, cyan, saturated blue, purple, lime, or rainbow gradients. There is no teal token in this design system.
+- Do not use the accent as a large card fill, page background, code syntax theme, or repeated badge color.
 
-- Triggered by `⌘K`, `Ctrl+K`, or the Navbar search button.
-- Instant keyboard navigation with arrow keys and Enter.
-- Searches across all flagship projects, exploratory timeline pebbles, and quick page jumps (`Projects`, `Resume`, `Admin`, `Contact`).
+### Semantic states
 
-### Curriculum Vitae & LaTeX Source (`ResumePage.tsx`)
+Use muted, low-noise semantic states. Status should not compete with the portfolio content.
 
-- **Dual-Mode Viewer Architecture**:
-  - **Rendered (PDF)**: Embedded via `<object data={pdfUrl} type="application/pdf">` with responsive viewport heights (`h-[650px] sm:h-[850px]`), letterpaper-ratio pulse loading skeleton (`aspect-[8.5/11]` simulated lines), fallback modal, and toolbar controls.
-  - **LaTeX Source (.tex)**: Per-line regex AST tokenizer (`tokenizeLatexLine`), syntax highlighting (commands, environments, inline math, comments, delimiters), sticky line number gutters (`sticky left-0 shadow-[1px_0_0_0_#E1E6EB]`), and capped responsive scrolling without page spill.
-- **Header Actions (Left-Aligned Visual Hierarchy)**:
-  - **Primary Hero CTA**: `Download PDF` (solid `#1B2127`, hover `#3894B3`, white text).
-  - **Secondary Actions**: `Download .tex` (outline card), `Copy LaTeX` (clipboard accelerator with copied state), and `Open in new tab` (isolated viewer window).
-  - **Admin Action**: `Admin: Upload` (distinguished with subtle left border separator, only rendered for authenticated admins).
-- **Dual-Mode Verification Pipeline**:
-  - Educational/architectural callout highlighting Vincent's zero-dependency tokenization stream and native vector PDF distribution.
-- **Zero-PBI Heading**: Sanitized heading containing strictly verified professional links (GitHub, LinkedIn, title) with zero personal contact details exposed.
+- Success: `light-success` / `dark-success`, reserved for verified success states.
+- Warning: `light-warning` / `dark-warning`, reserved for warning states.
+- Error: `light-error` / `dark-error`, reserved for errors and destructive actions.
+- Focus: use a 2px visible ring or outline in `light-focus` / `dark-focus`; offset it from the component edge by 2px where space permits.
 
-### Admin CMS & Resume Management (`AdminPage.tsx`)
+## Typography
 
-- **Resume & LaTeX Tab**:
-  - **PDF Uploader**: Validates `.pdf` files up to 15MB, deploys to `portfolio-assets/resumes/resume.pdf`, and applies cache-busting timestamps for immediate preview.
-  - **LaTeX Uploader & In-Browser Code Editor**: Validates `.tex`/`.txt` files with `\documentclass` sanity checks, saves directly to Supabase Storage, and provides live line count/kilobyte telemetry.
-  - **Real-Time Storage Diagnostics**: Live emerald/amber status badges tracking whether assets are active in bucket storage or using local fallback, with file sizes and timestamps.
+Typography uses three families with clearly separated jobs. Avoid treating every page as either a serif editorial spread or a monospace code terminal.
 
----
+### Type families
 
-## 4. Backend & Security Architecture (Zero-Leak Supabase & Resend)
+- **Canela** is the expressive editorial serif. Use it for display headlines, page titles, and select project names. Its purpose is atmosphere and hierarchy.
+- **Montserrat** is the operational sans-serif. Use it for navigation, body text, buttons, labels, descriptions, and metadata. Keep it clean and readable.
+- **JetBrains Mono** is the technical monospace. Use it for code blocks, short technology metadata, file-like references, and small data points—not for ordinary prose.
 
-```
-┌────────────────────────────────────────────────────────────────────────┐
-│                        Static React SPA (GitHub Pages)                 │
-└───────────────────┬────────────────────────────────┬───────────────────┘
-                    │                                │
-      Read Public Records (anon key)      Contact Form Submission (POST)
-                    │                                │
-                    ▼                                ▼
-┌──────────────────────────────────────┐ ┌───────────────────────────────┐
-│        Supabase PostgreSQL DB        │ │   Supabase Serverless Edge    │
-│                                      │ │           Function            │
-│ • projects (public read RLS)         │ │     `send-contact-email`      │
-│ • profile_info (public read RLS)     │ ├───────────────────────────────┤
-│ • admin_users (whitelist table)      │ │ 1. check_contact_rate_limit() │
-│ • contact_rate_limits (IP hash)      │ │ 2. Honeypot check (hp_company)│
-│                                      │ │ 3. Parse file attachment      │
-│ RLS Mutations: Write access strictly │ │ 4. Dispatch via Resend API    │
-│ locked to authenticated GitHub user  │ └──────────────┬────────────────┘
-│ whose email is in `admin_users`.     │                │
-└──────────────────────────────────────┘                ▼
-                                         ┌───────────────────────────────┐
-                                         │          Resend API           │
-                                         │  (Delivers to Vincent's Gmail │
-                                         │   with user as reply_to)      │
-                                         └───────────────────────────────┘
-```
+Fallbacks are included in the token definitions. If Canela is unavailable, use Iowan Old Style or Georgia. If Montserrat is unavailable, use Inter or Arial.
 
-### Why Raw Email is Never Exposed
+### Type scale
 
-1. Exposing `vincentyuan1020@gmail.com` directly in HTML or client bundles allows scrapers to send spam directly to Gmail via external SMTP, completely bypassing website rate limits.
-2. By routing all reach-outs through the serverless Edge Function:
-   - The real email stays secret on the server.
-   - IP rate limiting is strictly enforced (max 3 messages/hour per IP).
-   - Bots are dropped via honeypots without incurring email API quotas.
-   - Legitimate messages arrive in your Gmail inbox with the sender's email configured as `reply_to`.
+| Role | Size | Leading | Primary use |
+|---|---:|---:|---|
+| `display-xl` | 64px | 1.02 | Desktop hero title; use sparingly |
+| `display-lg` | 52px | 1.05 | Major page title |
+| `headline-lg` | 40px | 1.12 | Section heading or feature project title |
+| `headline-md` | 30px | 1.18 | Card and article titles |
+| `headline-sm` | 20px | 1.30 | Compact sans heading |
+| `body-lg` | 18px | 1.65 | Introductory portfolio copy |
+| `body-md` | 15px | 1.60 | Default reading copy |
+| `body-sm` | 13px | 1.55 | Supporting copy and compact cards |
+| `label-lg` | 13px | 1.15 | Button text and prominent labels |
+| `label-md` | 11px | 1.20 | Navigation and component labels |
+| `label-caps` | 10px | 1.20 | Technical tags and micro-labels |
+| `code-md` | 13px | 1.65 | Readable code |
+| `code-sm` | 11px | 1.50 | Compact code and technical metadata |
 
----
+### Typography rules
 
-## 5. UI Tokens & Styling Guidelines — **Merged (Akari Warm Colorway × Existing Editorial System)**
+- Set display and editorial headings in Canela at weight 400. Do not fake bold serif headlines.
+- Set body copy in Montserrat Regular (400). Use 500–600 for navigation, buttons, and labels only.
+- Use uppercase labels with `label-md` or `label-caps`, including their specified tracking. They should read as quiet technical annotations.
+- Keep long reading lines to approximately 60–75 characters using `content-reading-max`.
+- Avoid all-caps body paragraphs, centered long-form copy, excessive italic text, and more than two type weights within a compact component.
+- Avoid oversized headings on every section. The hero earns display scale; ordinary sections should use `headline-lg` or `headline-md`.
 
-The base architecture (Tailwind v4 semantic tokens, shadcn/Radix theming layer) is unchanged and remains authoritative. What changes is the **palette fed into those tokens**: the original stark white/grey editorial canvas is replaced with the warm, paper-and-ink Akari neutral system, while the project's existing functional accent (muted teal, used for hover states, status badges, and admin diagnostics) is **retained as the primary interactive accent** so no described interaction in Sections 1–4 breaks. Terracotta is folded in as a secondary/rare highlight, matching the "one deliberate pop of color" principle from the Akari reference.
+## Layout
 
-### 5.1 Merged Palette
+### Page structure
 
-| Token role                                        | Old value (editorial)           | **Merged value (Akari-warm)**                 | Where it's used                                                                                                                                                        |
-| ------------------------------------------------- | ------------------------------- | --------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Canvas / `--background`                           | `#FAFBFD` / `#FFFFFF`           | **`#F6EFE2`** (warm parchment)                | Page background, replaces stark white across all routes                                                                                                                |
-| Panel / `--card`                                  | `#FFFFFF`                       | **`#FBF5E9`** (lighter cream)                 | Project cards, resume viewer frame, command palette surface                                                                                                            |
-| Navbar surface                                    | `bg-white/95`                   | **`bg-[#F6EFE2]/90 backdrop-blur-md`**        | Sticky navbar stays warm-tinted, not pure white                                                                                                                        |
-| Text / `--foreground`                             | `#1B2127`                       | **`#211F26`** (ink charcoal, slightly warmed) | Headings, body copy                                                                                                                                                    |
-| Muted text / `--muted-foreground`                 | `#57606A`                       | **`#6B6558`** (warm gray-brown)               | Captions, metadata, timestamps                                                                                                                                         |
-| Borders / `--border`, `--input`                   | `#E1E6EB`, `#D0D7DE`            | **`#DCCBA9`** (sand hairline)                 | Dividers, card outlines, sticky gutter shadow (Section 3, LaTeX viewer)                                                                                                |
-| Primary accent / `--primary`                      | `#3894B3` (muted teal)          | **Retained: `#3894B3`**                       | All existing teal usages stay intact: status-indicator pulse, `Download PDF` hover, active nav state, link accents                                                     |
-| Primary button (dark) / `--primary-foreground` bg | `#1B2127`                       | **`#26221C`** (warm near-black)               | `Hire Me`, `Download PDF` base fill, primary CTAs                                                                                                                      |
-| Secondary accent (new, rare use)                  | —                               | **`#B5482E`** (terracotta)                    | Reserved for exactly one recurring mark: the admin/"authenticated" indicator dot and the `V` avatar ring — signals "this is the maker's stamp," not a general UI color |
-| Project stone colors                              | `#3894B3`, `#E76F51`, `#2A9D8F` | **Unchanged**                                 | Project-specific category colors in the River Timeline stay as-is; they already read as warm-compatible against the new cream canvas                                   |
-| Success / diagnostics (emerald/amber)             | Tailwind defaults               | **Unchanged**                                 | Admin storage-diagnostics badges keep standard emerald/amber for unambiguous status meaning                                                                            |
+Desktop layouts use a left sidebar and a content canvas. The sidebar is a stable navigational anchor and brand surface; the main pane carries projects, writing, and detail views.
 
-### 5.2 Typography (merged)
+- Desktop sidebar width: 240px.
+- Desktop outer page gutter: 48px.
+- Tablet gutter: 32px.
+- Mobile gutter: 20px.
+- Primary content maximum width: 1440px.
+- Reading content maximum width: 720px.
+- Standard grid gap: 24px.
 
-- **UI controls, nav, badges, metadata**: keep the existing clean sans-serif (unchanged — this is a systems/engineering portfolio and needs to stay legible and technical).
-- **Section headings & brand mark only** (`Vincent Yuann`, page H1s like "Projects," "Resume," hero headline): introduce the Akari-style **light-weight editorial serif** as an optional display face for large titles, to add the same "museum-label calm" the reference theme has — sans-serif remains for everything functional (buttons, tags, code, tables).
-- **Code / LaTeX tokenizer / monospace blocks**: unchanged monospace stack; only its background shifts to the merged `--card` cream (`#FBF5E9`) instead of pure white, with the sticky gutter shadow re-tinted to the sand border color (`#DCCBA9`) instead of `#E1E6EB`.
+On mobile, convert the fixed sidebar into a compact top bar or a modal navigation panel. Do not shrink desktop navigation into unreadable vertical text.
 
-### 5.3 Tailwind v4 Token Mapping (`src/index.css`)
+### Spacing system
 
-```css
-@theme inline {
-  --background: #f6efe2;
-  --foreground: #211f26;
+Use the 4px scale in the YAML front matter. Prefer the following rhythm:
 
-  --card: #fbf5e9;
-  --card-foreground: #211f26;
+- 4px / 8px: icon-to-label alignment, metadata gaps, tight internal adjustments.
+- 12px / 16px: related text, tags, compact fields, cards with concise content.
+- 24px / 32px: default card padding, section-internal grouping, grid gaps.
+- 48px / 64px: section separation and large editorial breathing room.
+- 80px / 96px: major page and hero separation on desktop.
 
-  --muted: #efe4d0;
-  --muted-foreground: #6b6558;
+Do not use arbitrary values such as 13px, 19px, 27px, or 37px when a scale value achieves the same visual result.
 
-  --primary: #3894b3; /* retained teal, functional accent */
-  --primary-foreground: #fbf5e9;
+### Grid behavior
 
-  --secondary: #26221c; /* warm near-black for solid CTAs */
-  --secondary-foreground: #f6efe2;
+- Desktop: use 12 columns for page-level arrangements. Project cards can span 4, 6, 8, or 12 columns based on importance.
+- Tablet: collapse toward 8 columns while preserving at least 24px gutters.
+- Mobile: use 4 columns; stack project cards vertically and retain 20px side gutters.
+- Keep dividers and image edges aligned to the grid whenever practical.
+- Use asymmetry only with intent: a larger feature card beside smaller supporting cards, not arbitrary unevenness.
 
-  --accent: #b5482e; /* terracotta — reserved, sparing use only */
-  --accent-foreground: #fbf5e9;
+### Imagery
 
-  --border: #dccba9;
-  --input: #dccba9;
-  --ring: #3894b3;
+Use imagery that supports the paper-and-light direction: washi paper, bamboo, shoji-filtered sunlight, warm wood, architectural shadows, quiet workspaces, restrained landscape art, and crafted objects.
 
-  --destructive: #c0392b; /* unchanged, standard destructive red */
-}
-```
+- Use warm, low-saturation color grading.
+- Favor images with visible texture, natural grain, and pockets of negative space.
+- Crop images with structural alignment to the grid; use the `md` corner radius.
+- In light mode, apply faint parchment overlays or warm-toned vignettes only when needed for text legibility.
+- In dark mode, slightly lower image brightness and preserve warm highlights. Do not use harsh blue overlays.
 
-### 5.4 Rules of application (so the merge stays disciplined)
+## Elevation & Depth
 
-1. **Teal stays functional, terracotta stays symbolic.** Teal continues to mean "interactive/active" (hover, focus rings, active nav, status pulse). Terracotta is never used for interactive states — only as a static identity mark (avatar ring, admin badge accent) so it doesn't compete with teal for the user's attention.
-2. **Cream replaces white everywhere, including modals/dialogs.** Radix `<Dialog />` and `<Tooltip />` surfaces should use `--card` (`#FBF5E9`), not white, so the whole shadcn component layer stays visually unified with the new canvas — no component should render on stark white against a cream page.
-3. **Dark mode (if/when added):** invert toward warm charcoal (`#211F26` background, `#F6EFE2` text) rather than a cool slate/black, so dark mode still reads as "the same ink-on-paper system," not a different brand.
-4. **Contrast check:** `#211F26` on `#F6EFE2` and `#6B6558` on `#F6EFE2` should both be re-verified against WCAG AA (4.5:1 body / 3:1 large text) before shipping, since warm low-contrast pairings need explicit checking — don't assume the same ratios as the old pure white/near-black pair carry over exactly.
+This is a primarily flat system. Hierarchy comes from tonal layers, hairline borders, image framing, and generous spacing—not heavy drop shadows.
 
----
+### Rules
 
-## 6. Design System Modernization: shadcn/ui & Radix UI Integration
+- Base canvas sits below panel surfaces through a subtle tone shift.
+- Cards use 1px borders before they use shadows.
+- Default card shadow: none.
+- On hover, use either a slight border-strength change, a 1–2px translate upward, or one restrained shadow. Do not stack all three aggressively.
+- If a shadow is necessary, use `0 8px 24px rgba(43, 46, 58, 0.08)` in light mode and `0 10px 28px rgba(0, 0, 0, 0.20)` in dark mode.
+- Modals and floating navigation may use `0 16px 48px rgba(43, 46, 58, 0.16)` in light mode or `0 18px 56px rgba(0, 0, 0, 0.35)` in dark mode.
+- Preserve clear edge contrast with borders; avoid “floating glass” or strong blur treatments.
 
-### Architecture & Code Ownership
+## Shapes
 
-The portfolio uses **shadcn/ui** built on top of **Radix UI** primitives (`radix-ui ^1.6.7`), integrated with **Tailwind CSS v4** and **React 19**:
+The shape language is mostly rectangular, quiet, and gently softened. It should feel like paper panels and neatly framed editorial blocks, not a bubble-heavy consumer app.
 
-1. **How Component Storage Works (`src/components/ui/`)**:
-   - Components are **NOT** prepackaged or monolithic. We do not dump 50+ unused components into the bundle.
-   - Components are added **on-demand** into `src/components/ui/` (e.g. `button.tsx`, `dialog.tsx`, `badge.tsx`, `tooltip.tsx`).
-   - Every file lives directly in our codebase with 100% code ownership: we can customize the JSX, variants, animations, and Tailwind classes without upstream library overrides.
+### Radius rules
 
-2. **The Radix UI + shadcn Synergy**:
-   - **Radix UI (`radix-ui`)**: Powers headless, accessible, and high-performance JavaScript mechanics:
-     - Focus trapping (`FocusScope`) and focus restoration when closing modals.
-     - Full WAI-ARIA 1.2 screen reader compliance (`role="dialog"`, `aria-expanded`, `aria-describedby`).
-     - Automatic keyboard navigation (Escape dismiss, Arrow keys traversal, Tab indexing).
-     - Collision detection and viewport positioning for tooltips and popovers.
-   - **shadcn/ui**: Provides the aesthetic layer—wrapping Radix primitives with `class-variance-authority` (`cva`), `cn()` (`clsx` + `tailwind-merge`), and theme-driven styling — now fed by the merged palette in Section 5.3.
+- Cards, inputs, and buttons: 4px (`rounded.sm`) by default.
+- Larger image frames and feature cards: 8px (`rounded.md`).
+- Pills and status badges: `rounded.pill` only.
+- Page-level shells and broad panels should generally remain 0–4px. Do not use 16px+ rounded corners as a default visual language.
+- Use 1px solid hairline borders. The line should look tan in light mode and graphite in dark mode.
 
-3. **Tailwind CSS v4 Design Tokens (`src/index.css`)**:
-   - Utilizes Tailwind v4's CSS-first `@theme inline` configuration.
-   - Semantic CSS variables (`--background`, `--foreground`, `--primary`, `--secondary`, `--muted`, `--accent`, `--destructive`, `--border`, `--input`, `--ring`) allow instant light/dark theme switching with zero runtime CSS overhead — values updated per Section 5.3 above.
+### Decorative language
 
-4. **Component Adoption Roadmap**:
-   - `<Button />`: Unified button component replacing repetitive button classes across the app.
-   - `<Dialog />`: Radix-based accessible modal replacing custom overlay implementations in `ProjectDetailModal.tsx` and `AdminModal.tsx`.
-   - `<Badge />`: Design system badges for technology tags and project milestones.
-   - `<Tooltip />`: Accessible tooltips for icon buttons (GitHub, Command, Contact triggers).
-   - Future additions: `cmdk` for the Command Palette, `Sheet` for mobile responsive navigation.
+Decorative elements are reference points, not product UI controls. Use them sparingly:
 
----
+- Black brush ensō circle.
+- Terracotta hanko-style identity stamp.
+- Thin botanical branches, bamboo drawing, seigaiha wave geometry, sunburst, or minimal geometric ornaments.
+- One small diamond centered on a divider can mark a special transition.
 
-## 7. Summary of What Changed in This Merge
+Do not mix multiple decorative motifs into every card. A maximum of one motif per major region is a useful default.
 
-- **Unchanged (top priority, as-is):** Routing model, navbar contract, all page/component breakdowns, backend/security architecture, shadcn/Radix component strategy.
-- **Changed:** Section 5 only — canvas and surface colors moved from stark white/grey to warm parchment/cream; text ink warmed slightly; borders moved to a sand hairline; teal accent **kept** as the functional interactive color; terracotta **added** as a single reserved identity accent (avatar ring / admin mark only).
-- **Not carried over from the Akari reference:** the rounded "poster frame" outer container and the vertical icon-sidebar nav — those were specific to the original e-commerce layout and would conflict with this project's existing sticky-navbar + hash-routing structure, so they were intentionally left out of the merge.
+## Components
+
+### App shell and sidebar
+
+The sidebar holds the Vincent Yuann identity, compact navigation, availability status, and optionally a small featured-project or contact module.
+
+- Use `sidebar-light` or `sidebar-dark` based on theme.
+- Separate the sidebar from main content with a 1px border.
+- Identity lockup: serif name, small uppercase “SOFTWARE & AI ENGINEER” descriptor, circular V monogram, and optional small terracotta ring/stamp detail.
+- Navigation items use outline icons with 1.5–1.75px strokes and `label-md` typography.
+- An active item uses terracotta text or a small terracotta left marker. It must not use teal, a full neon fill, or a thick colored bar.
+- Keep menu labels short: Home, Projects, About, Resume, Contact.
+- Availability may use a compact pill with one terracotta dot; keep the rest of the status copy neutral.
+
+### Buttons
+
+Use one clear primary action per local context.
+
+| Variant | Light theme | Dark theme | Use |
+|---|---|---|---|
+| Primary | Dark charcoal fill with warm off-white text | Warm off-white fill with dark text | Main CTA: “View project,” “Get in touch” |
+| Secondary | Transparent with tan border | Transparent with graphite border | Alternate or paired action |
+| Accent | Terracotta fill with white text | Terracotta fill with white text | Rare singular emphasis only |
+| Tertiary | Text plus arrow, no container | Text plus arrow, no container | Low-emphasis links |
+
+Button requirements:
+
+- Standard height is 40px; large hero actions may be 44px–48px.
+- Use 16px horizontal padding at the standard size.
+- Use `label-md` and a compact arrow icon when relevant.
+- Hover should be subtle: tonal shift, border strengthening, or 1px movement. Avoid glow, scale bounce, and flashy transitions.
+- Focus states must remain visible and keyboard accessible.
+- Keep labels action-oriented: “View Project,” “Read Case Study,” “Download Résumé,” “Get in Touch.”
+
+### Cards and project cards
+
+Cards provide containment, not decoration.
+
+- Use `card-light` / `card-dark` tokens.
+- Default radius: 8px for cards containing an image; 4px for compact information cards.
+- Use 24px padding on standard desktop cards; reduce to 16px when space is constrained.
+- Project cards include: image, project title, 1–2 sentence outcome-oriented summary, 2–4 neutral technology tags, and a text link with arrow.
+- Keep project summaries concrete: problem, action, or impact. Avoid generic filler such as “a modern solution.”
+- On hover, make the image slightly more prominent and strengthen the border; do not create large scaling or colored overlays.
+
+### Tags and filters
+
+Technology tags should be informative but visually quiet.
+
+- Use `tag-light` / `tag-dark` as outlined neutral pills.
+- Use uppercase labels such as React, Next.js, Python, AWS, Docker, PostgreSQL, Supabase, n8n, LlamaIndex, or Qdrant.
+- Tags should remain neutral in both themes. Do not color-code individual technologies.
+- Use terracotta only for a selected filter state if a clear selected state is needed; otherwise use a dark fill in light mode or light fill in dark mode.
+
+### Tabs, pagination, and status
+
+- Active tabs: dark charcoal fill with warm light text in light mode; warm off-white fill with dark text in dark mode. Alternatively, use a neutral tab with a 2px terracotta underline.
+- Inactive tabs: text-only or neutral bordered style.
+- Pagination: inactive dots use muted neutral color; active dot is terracotta or the primary ink depending on whether it is the sole highlight in the local region.
+- Status dots: terracotta is acceptable for an attention-worthy availability indicator. Otherwise use muted neutral dots.
+- Never use teal for an active tab, tag, status dot, progress mark, or indicator.
+
+### Inputs and forms
+
+- Inputs use 44px height, 4px radius, and a 1px border.
+- Labels sit above inputs in `label-md`; helper text uses `body-sm` in muted ink.
+- Placeholder text should be muted but readable; do not use ultra-low-contrast placeholders.
+- Focus uses the terracotta focus ring with adequate contrast.
+- Error messages use the error token and concise actionable language.
+- Keep forms narrow enough to scan; do not stretch inputs across a wide desktop page without a clear reason.
+
+### Code blocks and technical content
+
+- Use `code-block-light` / `code-block-dark`.
+- Use JetBrains Mono, 11px–13px, with 1.5–1.65 line height.
+- Code blocks should be bordered and lightly tonal, not black terminal panels in light mode.
+- Use line numbers only for code examples where users may need to refer to specific lines.
+- Keep syntax highlighting restrained; use primarily neutral ink and muted tones, with terracotta only for a very limited emphasis if needed.
+
+### Icons
+
+- Use minimal outline icons with a consistent 1.5–1.75px stroke weight.
+- Preferred icon size: 18px–20px in navigation; 20px–24px in standalone icon controls.
+- Icons use primary ink by default and muted ink when inactive.
+- Do not mix filled, multicolor, skeuomorphic, and outline icon styles in the same interface.
+- Use familiar metaphors for home, folder/projects, document/resume, calendar, search, settings, external link, arrow, and contact.
+
+### Dividers and borders
+
+- Use a 1px border in the theme border token.
+- Long horizontal dividers may include a centered small diamond only at major section transitions.
+- Avoid repeating ornamental dividers between every list item.
+- Card outlines should remain visible but understated.
+
+## Do's and Don'ts
+
+### Do
+
+- Do preserve the exact canonical light palette: `#F2E9DA`, `#F7F0E3`, `#2B2E3A`, `#6B6559`, `#D9C9AE`, `#26262E`, and `#B5482E`.
+- Do use terracotta as a single, intentional highlight rather than a default UI color.
+- Do use the difference between canvas and panel surfaces subtly and consistently.
+- Do make technical work feel credible through concise project descriptions, neutral technology tags, code snippets, and precise hierarchy.
+- Do use warm, tactile imagery with paper, bamboo, wood, soft daylight, and restrained landscape references.
+- Do use low-contrast borders and generous whitespace to create calm.
+- Do support light and dark themes equally; layout and hierarchy should remain consistent across both.
+- Do meet WCAG AA contrast requirements: at least 4.5:1 for normal text and 3:1 for large text and essential UI boundaries.
+- Do test focus, hover, pressed, disabled, and keyboard states for all interactive elements.
+
+### Don't
+
+- Don’t introduce teal, cyan, bright blue, purple, neon green, or a second competing accent color.
+- Don’t replace the Akari light tokens with lighter approximate creams or near-black text values.
+- Don’t use `#211F26` as a substitute for `#2B2E3A` body ink, and don’t use one dark color for both text and CTA fill when the distinct tokens are available.
+- Don’t use terracotta for every badge, icon, border, heading, and button.
+- Don’t use glossy gradients, glassmorphism, heavy blur, large drop shadows, or high-saturation visual effects.
+- Don’t over-round cards, inputs, and buttons. This system is lightly softened, not bubbly.
+- Don’t use generic dashboard widgets, dense metric grids, or loud developer-terminal aesthetics unless the content explicitly calls for them.
+- Don’t let decorative Japanese-inspired motifs become cultural wallpaper; use them as quiet structural accents and keep the product content primary.
+- Don’t use long paragraphs in cards, excessive tag counts, or cramped navigation.
+- Don’t use different icon stroke styles, arbitrary spacing values, or unapproved colors to solve local layout problems.
