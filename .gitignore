@@ -1,0 +1,26 @@
+# Dependencies
+node_modules
+.pnp
+.pnp.js
+
+# Production build output
+dist
+dist-ssr
+
+# Local env files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# MCP and agent tool configs
+.mcp.json
+.agents/
+.impeccable/
+skills-lock.json
+
+# Editor & OS files
+.DS_Store
+Thumbs.db
+*.log
