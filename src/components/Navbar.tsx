@@ -51,6 +51,18 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenCommand, profile }) => {
           Projects Gallery
         </Link>
 
+        {/* My Resume */}
+        <Link
+          to="/resume"
+          className={`px-2.5 py-1.5 text-xs font-semibold rounded-lg border transition-all ${
+            location.pathname.startsWith('/resume')
+              ? 'bg-[#F6F8FA] text-[#1B2127] border-[#D0D7DE] font-bold'
+              : 'text-[#57606A] hover:text-[#1B2127] hover:bg-[#F6F8FA] border-[#D0D7DE]'
+          }`}
+        >
+          Resume
+        </Link>
+
         {/* Spotlight Command Search Trigger */}
         <button
           onClick={onOpenCommand}

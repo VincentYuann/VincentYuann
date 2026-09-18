@@ -14,9 +14,9 @@ The application uses client-side hash routing (`HashRouter`) for seamless static
                           │ (Sticky Top Across All)  │
                           └─────────────┬────────────┘
                                         │
-     ┌──────────────────────────────────┼──────────────────────────────────┐
-     │                                  │                                  │
-     ▼                                  ▼                                  ▼
+      ┌──────────────────────────────────┼──────────────────────────────────┐
+      │                                  │                                  │
+      ▼                                  ▼                                  ▼
 Level 0: Home Page             Level 1: Projects Gallery         Level 2: Detail Deep-Dive
 Route: `#/`                    Route: `#/projects`               Route: `#/projects/:id`
 • Sticky Navbar                • Breadcrumbs (`Home / Projects`) • Hero metadata & status
@@ -24,18 +24,18 @@ Route: `#/`                    Route: `#/projects`               Route: `#/proje
 • Interactive River Timeline   • Instant fuzzy search            • 4-point Architecture Metrics
 • Chronological Pebble Stream  • Uniform project cards           • Brand TechBadges
 • Standard Protected Footer    • Tags & highlight metrics        • Markdown Engineering Log
-     │                                  │                                  │
-     └──────────────────────────────────┼──────────────────────────────────┘
-                                        │
-     ┌──────────────────────────────────┴──────────────────────────────────┐
-     │                                                                     │
-     ▼                                                                     ▼
-Protected Reach-Out Page                                       Admin CMS & Settings
-Route: `#/contact`                                             Route: `#/admin` & `#/login`
-• Direct inquiry form with attachments (up to 5MB)             • GitHub OAuth authenticated
-• Supabase Edge Function (`send-contact-email`)                • PostgreSQL Row-Level Security (RLS)
-• IP Rate-limiting (3/hr) & honeypot anti-spam                 • Projects & Systems editor
-• Dispatches to Resend API (`vincentyuan1020@gmail.com`)       • Profile & Bio editor + Storage Upload
+      │                                  │                                  │
+      └──────────────────────────────────┼──────────────────────────────────┘
+                                         │
+      ┌──────────────────────────────────┼──────────────────────────────────┐
+      │                                  │                                  │
+      ▼                                  ▼                                  ▼
+Curriculum Vitae & LaTeX Source  Protected Reach-Out Page         Admin CMS & Settings
+Route: `#/resume`                Route: `#/contact`               Route: `#/admin` & `#/login`
+• Dual-Mode (PDF & LaTeX .tex)   • Direct inquiry form            • GitHub OAuth authenticated
+• Zero-dep AST Tokenizer         • 5MB attachments support        • PostgreSQL RLS + Trigger
+• Responsive Capped Height       • Edge Function + Resend API     • Projects & Systems editor
+• Direct Supabase Bucket Sync    • IP Rate-limiting (3/hr)        • Profile & Resume Asset Manager
 ```
 
 ---
@@ -49,8 +49,10 @@ The `<Navbar />` is rendered across all routes (`sticky top-0 z-30 bg-white/95 b
    - Name (`Vincent Yuann`) and role (`Software & AI Engineer`) linking to `#/`.
 2. **Center Controls**:
    - **Status Indicator**: `● Open to Full-Stack & AI Roles` (pulsing teal badge).
-   - **Navigation Route**: `Projects Gallery` button routing to `#/projects`.
-   - **Spotlight Search**: `[⌘ Search ⌘K]` button opening the global keyboard command palette.
+   - **Navigation Routes**:
+     - `Projects Gallery` button routing to `#/projects`.
+     - `Resume` button routing to `#/resume`.
+   - **Spotlight Search**: `[⌘ Search ⌘K]` button opening the global keyboard command palette (`⌘K`).
 3. **Action Cluster (Right)**:
    - **Hire Me**: High-contrast dark button routing to `#/contact`.
    - **GitHub**: Icon linking directly to `https://github.com/VincentYuann`.
@@ -89,7 +91,24 @@ The `<Navbar />` is rendered across all routes (`sticky top-0 z-30 bg-white/95 b
 ### Global Spotlight Search (`CommandPalette.tsx`)
 - Triggered by `⌘K`, `Ctrl+K`, or the Navbar search button.
 - Instant keyboard navigation with arrow keys and Enter.
-- Searches across all flagship projects and exploratory timeline pebbles.
+- Searches across all flagship projects, exploratory timeline pebbles, and quick page jumps (`Projects`, `Resume`, `Admin`, `Contact`).
+
+### Curriculum Vitae & LaTeX Source (`ResumePage.tsx`)
+- **Dual-Mode Viewer Architecture**:
+  - **Rendered (PDF)**: Embedded via `<object data={pdfUrl} type="application/pdf">` with responsive viewport heights (`h-[650px] sm:h-[850px]`), fallback modal, and toolbar controls.
+  - **LaTeX Source (.tex)**: Per-line regex AST tokenizer (`tokenizeLatexLine`), syntax highlighting (commands, environments, inline math, comments, delimiters), sticky line number gutters (`sticky left-0`), and capped responsive scrolling without page spill.
+- **Header Actions (Left-Aligned)**:
+  - `Download PDF` (direct download of active compiled PDF).
+  - `Download .tex` (direct download of UTF-8 LaTeX source code).
+  - `Open in new tab` (opens PDF directly in isolated browser tab).
+  - `Upload New Resume` (admin-only shortcut routing to CMS upload tab).
+- **Zero-PBI Heading**: Sanitized heading containing strictly verified professional links (GitHub, LinkedIn, title) with zero personal contact details exposed.
+
+### Admin CMS & Resume Management (`AdminPage.tsx`)
+- **Resume & LaTeX Tab**:
+  - **PDF Uploader**: Validates `.pdf` files up to 15MB, deploys to `portfolio-assets/resumes/resume.pdf`, and applies cache-busting timestamps for immediate preview.
+  - **LaTeX Uploader & In-Browser Code Editor**: Validates `.tex`/`.txt` files with `\documentclass` sanity checks, saves directly to Supabase Storage, and provides live line count/kilobyte telemetry.
+  - **Real-Time Storage Diagnostics**: Live emerald/amber status badges tracking whether assets are active in bucket storage or using local fallback, with file sizes and timestamps.
 
 ---
 

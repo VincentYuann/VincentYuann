@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, X, ExternalLink, Terminal, ArrowRight, FolderKanban, Lock, Home, Mail } from 'lucide-react';
+import { Search, X, ExternalLink, Terminal, ArrowRight, FolderKanban, Lock, Home, Mail, FileText } from 'lucide-react';
 import { GithubIcon } from './Icons';
 import { FLAGSHIP_PROJECTS, RIVER_PEBBLES, PROFILE_INFO, type FlagshipProject, type RiverPebble } from '../data/projects';
 import '../styles/command-palette.css';
@@ -98,6 +98,23 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
               <div>
                 <div className="command-item-title">Projects Index Gallery</div>
                 <div className="command-item-sub">View all {flagships.length + pebbles.length} systems & experiments</div>
+              </div>
+            </div>
+            <ArrowRight className="command-item-icon w-3.5 h-3.5 text-[#8C9AA7]" />
+          </div>
+
+          <div
+            onClick={() => {
+              navigate('/resume');
+              onClose();
+            }}
+            className="command-item cursor-pointer"
+          >
+            <div className="command-item-main">
+              <FileText className="w-3.5 h-3.5 text-[#8250DF]" />
+              <div>
+                <div className="command-item-title">Resume & LaTeX Source</div>
+                <div className="command-item-sub">View rendered PDF and syntax-highlighted .tex source</div>
               </div>
             </div>
             <ArrowRight className="command-item-icon w-3.5 h-3.5 text-[#8C9AA7]" />

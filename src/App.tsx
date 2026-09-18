@@ -6,6 +6,7 @@ import { ProjectDetailPage } from './pages/ProjectDetailPage';
 import { LoginPage } from './pages/LoginPage';
 import { AdminPage } from './pages/AdminPage';
 import { ContactPage } from './pages/ContactPage';
+import { ResumePage } from './pages/ResumePage';
 import { CommandPalette } from './components/CommandPalette';
 import { useProjects } from './lib/useProjects';
 import { useProfile } from './lib/useProfile';
@@ -96,6 +97,17 @@ export const App: React.FC = () => {
             path="/contact"
             element={
               <ContactPage
+                profile={profile}
+                onOpenCommand={() => setIsCommandOpen(true)}
+              />
+            }
+          />
+
+          {/* Dedicated My Resume & LaTeX Source Page */}
+          <Route
+            path="/resume"
+            element={
+              <ResumePage
                 profile={profile}
                 onOpenCommand={() => setIsCommandOpen(true)}
               />

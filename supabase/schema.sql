@@ -420,4 +420,26 @@ $$;
 
 grant execute on function public.check_contact_rate_limit(text) to anon, authenticated, service_role;
 
+-- 12. OAuth Whitelist Protection: Block unauthorized registrations in auth.users
+create or replace function public.block_unauthorized_users()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  if not exists (select 1 from public.admin_users where lower(email) = lower(new.email)) then
+    raise exception 'Unauthorized: Registration is restricted to authorized portfolio administrators only.';
+  end if;
+  return new;
+end;
+$$;
+
+drop trigger if exists on_auth_user_created on auth.users;
+
+create trigger on_auth_user_created
+  before insert on auth.users
+  for each row execute function public.block_unauthorized_users();
+
+
 

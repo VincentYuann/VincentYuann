@@ -14,6 +14,8 @@ import {
   Save,
   Eye,
   Edit3,
+  FileText,
+  Code2,
 } from 'lucide-react';
 import { GithubIcon } from '../components/Icons';
 import { supabase } from '../lib/supabase';
@@ -36,9 +38,28 @@ export const AdminPage: React.FC<AdminPageProps> = ({
 }) => {
   const { user, isAdmin, loading: authLoading, signInWithGitHub, signOut } = useAuth();
 
-  const [activeTab, setActiveTab] = useState<'projects' | 'profile'>('projects');
+  const [activeTab, setActiveTab] = useState<'projects' | 'profile' | 'resume'>('projects');
   const [selectedProjectId, setSelectedProjectId] = useState<string>('new');
   const [previewMarkdown, setPreviewMarkdown] = useState(false);
+
+  // Resume Upload State
+  const [uploadingPdf, setUploadingPdf] = useState(false);
+  const [uploadingTex, setUploadingTex] = useState(false);
+  const [currentPdfUrl, setCurrentPdfUrl] = useState<string>(`${import.meta.env.BASE_URL}resumes/resume.pdf`);
+  const [currentTexSource, setCurrentTexSource] = useState<string>('');
+  const [isLoadingTex, setIsLoadingTex] = useState<boolean>(true);
+  const [pdfUploadStatus, setPdfUploadStatus] = useState<{
+    status: 'stored' | 'local_fallback' | 'checking';
+    fileName?: string;
+    fileSize?: string;
+    updatedAt?: string;
+  }>({ status: 'checking' });
+  const [texUploadStatus, setTexUploadStatus] = useState<{
+    status: 'stored' | 'local_fallback' | 'checking';
+    fileName?: string;
+    fileSize?: string;
+    updatedAt?: string;
+  }>({ status: 'checking' });
 
   // Project Form State
   const [title, setTitle] = useState('');
@@ -258,6 +279,243 @@ export const AdminPage: React.FC<AdminPageProps> = ({
     }
   };
 
+  // Load current resume details on mount or tab change
+  useEffect(() => {
+    // Check if resume.pdf exists in Supabase storage
+    const checkStorageResume = async () => {
+      try {
+        const { data } = supabase.storage.from('portfolio-assets').getPublicUrl('resumes/resume.pdf');
+        if (data?.publicUrl) {
+          const res = await fetch(data.publicUrl, { method: 'HEAD' });
+          if (res.ok) {
+            const contentLength = res.headers.get('content-length');
+            const sizeStr = contentLength ? `${Math.round(parseInt(contentLength) / 1024)} KB` : 'Active';
+            const lastModified = res.headers.get('last-modified')
+              ? new Date(res.headers.get('last-modified')!).toLocaleString()
+              : 'Uploaded to bucket';
+            setCurrentPdfUrl(data.publicUrl);
+            setPdfUploadStatus({
+              status: 'stored',
+              fileName: 'resume.pdf',
+              fileSize: sizeStr,
+              updatedAt: lastModified,
+            });
+          } else {
+            setPdfUploadStatus({
+              status: 'local_fallback',
+              fileName: 'resume.pdf',
+              fileSize: 'Local fallback',
+              updatedAt: 'Using public/resumes/resume.pdf',
+            });
+          }
+        }
+      } catch (err) {
+        console.warn('Storage resume check:', err);
+        setPdfUploadStatus({
+          status: 'local_fallback',
+          fileName: 'resume.pdf',
+          fileSize: 'Local fallback',
+          updatedAt: 'Using public/resumes/resume.pdf',
+        });
+      }
+    };
+
+    checkStorageResume();
+
+    // Check if remote resume.tex exists in Supabase Storage, otherwise load local
+    const checkStorageTex = async () => {
+      try {
+        const { data } = supabase.storage.from('portfolio-assets').getPublicUrl('resumes/resume.tex');
+        if (data?.publicUrl) {
+          const res = await fetch(data.publicUrl);
+          if (res.ok) {
+            const text = await res.text();
+            const lastModified = res.headers.get('last-modified')
+              ? new Date(res.headers.get('last-modified')!).toLocaleString()
+              : 'Uploaded to bucket';
+            setCurrentTexSource(text);
+            setIsLoadingTex(false);
+            setTexUploadStatus({
+              status: 'stored',
+              fileName: 'resume.tex',
+              fileSize: `${Math.round(text.length / 1024 * 10) / 10} KB`,
+              updatedAt: lastModified,
+            });
+            return;
+          }
+        }
+      } catch (err) {
+        console.warn('Storage tex check:', err);
+      }
+
+      // Local fallback
+      try {
+        const localRes = await fetch(`${import.meta.env.BASE_URL}resumes/resume.tex`);
+        if (localRes.ok) {
+          const text = await localRes.text();
+          setCurrentTexSource(text);
+          setIsLoadingTex(false);
+          setTexUploadStatus({
+            status: 'local_fallback',
+            fileName: 'resume.tex',
+            fileSize: `${Math.round(text.length / 1024 * 10) / 10} KB`,
+            updatedAt: 'Using public/resumes/resume.tex',
+          });
+          return;
+        }
+      } catch {
+        // failed
+      }
+
+      setIsLoadingTex(false);
+      setTexUploadStatus({
+        status: 'local_fallback',
+        fileName: 'resume.tex',
+        fileSize: '0 KB',
+        updatedAt: 'No source loaded',
+      });
+    };
+
+    checkStorageTex();
+  }, []);
+
+  const handleUploadResumePdf = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.name.toLowerCase().endsWith('.pdf') && file.type !== 'application/pdf') {
+      setStatusMsg({ type: 'error', text: 'Validation Error: Please select a valid PDF file (.pdf).' });
+      return;
+    }
+
+    if (file.size > 15 * 1024 * 1024) {
+      setStatusMsg({ type: 'error', text: 'Validation Error: PDF file exceeds 15MB limit.' });
+      return;
+    }
+
+    try {
+      setUploadingPdf(true);
+      setStatusMsg({ type: 'info', text: 'Uploading resume.pdf to Supabase Storage bucket...' });
+      const filePath = `resumes/resume.pdf`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('portfolio-assets')
+        .upload(filePath, file, { upsert: true, cacheControl: '60' });
+
+      if (uploadError) throw uploadError;
+
+      const { data } = supabase.storage.from('portfolio-assets').getPublicUrl(filePath);
+      const newUrl = `${data.publicUrl}?t=${Date.now()}`;
+      setCurrentPdfUrl(newUrl);
+
+      const sizeStr = `${Math.round(file.size / 1024)} KB`;
+      const dateStr = new Date().toLocaleString();
+      setPdfUploadStatus({
+        status: 'stored',
+        fileName: file.name,
+        fileSize: sizeStr,
+        updatedAt: dateStr,
+      });
+
+      setStatusMsg({
+        type: 'success',
+        text: `Success: "${file.name}" (${sizeStr}) uploaded and deployed to Supabase Storage bucket!`,
+      });
+    } catch (err: any) {
+      setStatusMsg({ type: 'error', text: `PDF upload failed: ${err.message}` });
+    } finally {
+      setUploadingPdf(false);
+    }
+  };
+
+  const handleUploadResumeTex = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.name.toLowerCase().endsWith('.tex') && !file.name.toLowerCase().endsWith('.txt')) {
+      setStatusMsg({ type: 'error', text: 'Validation Error: Please select a valid LaTeX file (.tex or .txt).' });
+      return;
+    }
+
+    try {
+      setUploadingTex(true);
+      setStatusMsg({ type: 'info', text: 'Reading and validating LaTeX file...' });
+      const text = await file.text();
+
+      // Basic LaTeX sanity validation
+      if (!text.includes('\\begin{document}') && !text.includes('\\documentclass')) {
+        const proceed = window.confirm(
+          'Warning: This file does not contain standard LaTeX markers (\\documentclass or \\begin{document}). Upload anyway?'
+        );
+        if (!proceed) {
+          setUploadingTex(false);
+          setStatusMsg(null);
+          return;
+        }
+      }
+
+      setCurrentTexSource(text);
+
+      const filePath = `resumes/resume.tex`;
+      const { error: uploadError } = await supabase.storage
+        .from('portfolio-assets')
+        .upload(filePath, file, { upsert: true, cacheControl: '60', contentType: 'text/plain; charset=utf-8' });
+
+      if (uploadError) throw uploadError;
+
+      const sizeStr = `${Math.round(file.size / 1024 * 10) / 10} KB`;
+      const dateStr = new Date().toLocaleString();
+      setTexUploadStatus({
+        status: 'stored',
+        fileName: file.name,
+        fileSize: sizeStr,
+        updatedAt: dateStr,
+      });
+
+      setStatusMsg({
+        type: 'success',
+        text: `Success: "${file.name}" (${sizeStr}) uploaded and saved to Supabase Storage!`,
+      });
+    } catch (err: any) {
+      setStatusMsg({ type: 'error', text: `LaTeX upload failed: ${err.message}` });
+    } finally {
+      setUploadingTex(false);
+    }
+  };
+
+  const handleSaveTexSource = async () => {
+    if (!currentTexSource.trim()) {
+      setStatusMsg({ type: 'error', text: 'Validation Error: LaTeX source code cannot be empty.' });
+      return;
+    }
+
+    try {
+      setStatusMsg({ type: 'info', text: 'Saving LaTeX source to Supabase Storage...' });
+      const blob = new Blob([currentTexSource], { type: 'text/plain; charset=utf-8' });
+      const { error: uploadError } = await supabase.storage
+        .from('portfolio-assets')
+        .upload('resumes/resume.tex', blob, { upsert: true, cacheControl: '60' });
+
+      if (uploadError) throw uploadError;
+
+      const sizeStr = `${Math.round(blob.size / 1024 * 10) / 10} KB`;
+      const dateStr = new Date().toLocaleString();
+      setTexUploadStatus({
+        status: 'stored',
+        fileName: 'resume.tex',
+        fileSize: sizeStr,
+        updatedAt: dateStr,
+      });
+
+      setStatusMsg({
+        type: 'success',
+        text: `Success: LaTeX source code (${sizeStr}) saved successfully to Supabase Storage!`,
+      });
+    } catch (err: any) {
+      setStatusMsg({ type: 'error', text: `Failed to save LaTeX: ${err.message}` });
+    }
+  };
+
   if (authLoading) {
     return (
       <div className="min-h-screen bg-[#FAFBFD] flex items-center justify-center p-8">
@@ -383,6 +641,20 @@ export const AdminPage: React.FC<AdminPageProps> = ({
             >
               <User className="w-3.5 h-3.5" />
               <span>Profile & Bio</span>
+            </button>
+            <button
+              onClick={() => {
+                setActiveTab('resume');
+                setStatusMsg(null);
+              }}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
+                activeTab === 'resume'
+                  ? 'bg-white text-[#1B2127] font-bold shadow-xs'
+                  : 'text-[#57606A] hover:text-[#1B2127]'
+              }`}
+            >
+              <FileText className="w-3.5 h-3.5" />
+              <span>Resume & LaTeX</span>
             </button>
           </div>
 
@@ -864,6 +1136,177 @@ export const AdminPage: React.FC<AdminPageProps> = ({
                 <Save className="w-4 h-4" />
                 <span>Save Profile Info</span>
               </button>
+            </div>
+          </div>
+        )}
+
+        {/* TAB 3: RESUME & LATEX SOURCE */}
+        {activeTab === 'resume' && (
+          <div className="space-y-8 animate-fadeIn">
+            {/* PDF Upload Card */}
+            <div className="bg-white border border-[#D0D7DE] rounded-2xl p-4 sm:p-8 space-y-6 shadow-xs">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#E1E6EB]">
+                <div>
+                  <div className="flex items-center gap-2.5 flex-wrap">
+                    <h3 className="text-base font-bold text-[#1B2127] flex items-center gap-2">
+                      <FileText className="w-5 h-5 text-[#3894B3]" />
+                      <span>Rendered Resume (PDF)</span>
+                    </h3>
+                    {/* Live Upload Status Badge */}
+                    {pdfUploadStatus.status === 'stored' ? (
+                      <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-[11px] font-medium font-mono">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                        <span>Deployed in Bucket ({pdfUploadStatus.fileSize})</span>
+                      </span>
+                    ) : pdfUploadStatus.status === 'checking' ? (
+                      <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-gray-50 border border-gray-200 text-gray-500 text-[11px] font-mono">
+                        <span className="w-2 h-2 rounded-full bg-gray-400 animate-pulse" />
+                        <span>Checking status...</span>
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-50 border border-amber-200 text-amber-700 text-[11px] font-mono">
+                        <span>Using local fallback (public/resumes/resume.pdf)</span>
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-xs text-[#57606A] mt-1">
+                    Upload your compiled PDF to Supabase Storage (<code className="bg-[#F6F8FA] px-1 py-0.5 rounded text-[11px]">portfolio-assets/resumes/resume.pdf</code>).
+                  </p>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <a
+                    href={currentPdfUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#D0D7DE] bg-white hover:bg-[#F6F8FA] text-xs font-medium text-[#57606A] transition-colors"
+                  >
+                    <ExternalLink className="w-3.5 h-3.5" />
+                    <span>Preview Live PDF</span>
+                  </a>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+                <div className="border-2 border-dashed border-[#D0D7DE] rounded-xl p-6 text-center hover:border-[#3894B3] transition-colors bg-[#F6F8FA]/50">
+                  <Upload className="w-8 h-8 text-[#8C959F] mx-auto mb-2" />
+                  <p className="text-xs font-semibold text-[#1B2127]">Upload New Resume PDF</p>
+                  <p className="text-[11px] text-[#57606A] mt-1 mb-4">Accepts valid compiled .pdf files (Max 15MB)</p>
+                  <label className="inline-flex items-center gap-2 px-4 py-2 bg-[#1B2127] hover:bg-[#3894B3] text-white rounded-xl text-xs font-bold shadow-xs cursor-pointer transition-all">
+                    <span>{uploadingPdf ? 'Uploading to Bucket...' : 'Select .pdf File'}</span>
+                    <input
+                      type="file"
+                      accept=".pdf,application/pdf"
+                      onChange={handleUploadResumePdf}
+                      disabled={uploadingPdf}
+                      className="hidden"
+                    />
+                  </label>
+                </div>
+
+                <div className="bg-[#F6F8FA] border border-[#D0D7DE] rounded-xl p-4 text-xs space-y-2.5">
+                  <div className="font-bold text-[#1B2127]">Storage Status & Diagnostics:</div>
+                  <div className="text-[#57606A] space-y-1.5 leading-relaxed font-mono text-[11px]">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[#8C959F]">Current Source:</span>
+                      <span className="font-semibold text-[#1B2127]">
+                        {pdfUploadStatus.status === 'stored' ? 'Supabase Storage' : 'Local Fallback'}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-[#8C959F]">Target Path:</span>
+                      <span className="text-[#1B2127]">portfolio-assets/resumes/resume.pdf</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-[#8C959F]">Last Updated:</span>
+                      <span className="text-[#1B2127]">{pdfUploadStatus.updatedAt || 'N/A'}</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-[#8C959F]">File Size:</span>
+                      <span className="text-[#1B2127]">{pdfUploadStatus.fileSize || 'N/A'}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* LaTeX Source Code Card */}
+            <div className="bg-white border border-[#D0D7DE] rounded-2xl p-4 sm:p-8 space-y-6 shadow-xs">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#E1E6EB]">
+                <div>
+                  <div className="flex items-center gap-2.5 flex-wrap">
+                    <h3 className="text-base font-bold text-[#1B2127] flex items-center gap-2">
+                      <Code2 className="w-5 h-5 text-[#8250DF]" />
+                      <span>LaTeX Source Code (.tex)</span>
+                    </h3>
+                    {/* Live Upload Status Badge */}
+                    {texUploadStatus.status === 'stored' ? (
+                      <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-[11px] font-medium font-mono">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                        <span>Deployed in Bucket ({texUploadStatus.fileSize})</span>
+                      </span>
+                    ) : texUploadStatus.status === 'checking' ? (
+                      <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-gray-50 border border-gray-200 text-gray-500 text-[11px] font-mono">
+                        <span className="w-2 h-2 rounded-full bg-gray-400 animate-pulse" />
+                        <span>Checking status...</span>
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-50 border border-amber-200 text-amber-700 text-[11px] font-mono">
+                        <span>Using local fallback (public/resumes/resume.tex)</span>
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-xs text-[#57606A] mt-1">
+                    Upload a new <code className="bg-[#F6F8FA] px-1 py-0.5 rounded text-[11px]">.tex</code> file or edit the source directly below.
+                  </p>
+                </div>
+
+                <div className="flex items-center gap-2 flex-wrap">
+                  <label className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#D0D7DE] bg-white hover:bg-[#F6F8FA] text-xs font-medium text-[#57606A] transition-colors cursor-pointer">
+                    <Upload className="w-3.5 h-3.5" />
+                    <span>{uploadingTex ? 'Uploading...' : 'Upload .tex File'}</span>
+                    <input
+                      type="file"
+                      accept=".tex,text/plain"
+                      onChange={handleUploadResumeTex}
+                      disabled={uploadingTex}
+                      className="hidden"
+                    />
+                  </label>
+
+                  <button
+                    type="button"
+                    onClick={handleSaveTexSource}
+                    className="inline-flex items-center gap-1.5 px-4 py-1.5 bg-[#1B2127] hover:bg-[#3894B3] text-white rounded-lg text-xs font-bold shadow-xs transition-all cursor-pointer"
+                  >
+                    <Save className="w-3.5 h-3.5" />
+                    <span>Save .tex Code</span>
+                  </button>
+                </div>
+              </div>
+
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <label className="block text-xs font-bold text-[#57606A]">
+                    LaTeX Source Editor
+                  </label>
+                  <span className="text-[11px] text-[#8C959F] font-mono">
+                    {currentTexSource.split('\n').length} lines &bull; {Math.round(currentTexSource.length / 1024 * 10) / 10} KB
+                  </span>
+                </div>
+                {isLoadingTex ? (
+                  <div className="p-8 text-center text-[#57606A] text-xs font-mono">Loading LaTeX source...</div>
+                ) : (
+                  <textarea
+                    rows={18}
+                    value={currentTexSource}
+                    onChange={(e) => setCurrentTexSource(e.target.value)}
+                    placeholder="\documentclass[letterpaper,10pt]{article}..."
+                    className="w-full p-4 border border-[#D0D7DE] rounded-xl font-mono text-xs text-[#1B2127] bg-[#FAFBFD] focus:bg-white focus:outline-hidden focus:border-[#3894B3] leading-relaxed resize-y"
+                    spellCheck={false}
+                  />
+                )}
+              </div>
             </div>
           </div>
         )}
