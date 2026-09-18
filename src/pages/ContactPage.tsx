@@ -11,14 +11,12 @@ interface ContactPageProps {
   profile: ProfileData;
   onOpenCommand: () => void;
   onOpenProfile?: () => void;
-  onOpenSettings?: () => void;
 }
 
 export const ContactPage: React.FC<ContactPageProps> = ({
   profile,
   onOpenCommand,
   onOpenProfile,
-  onOpenSettings,
 }) => {
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -26,7 +24,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({
 
   return (
     <div className="contact-page-container">
-      <Navbar onOpenCommand={onOpenCommand} onOpenProfile={onOpenProfile} onOpenSettings={onOpenSettings} profile={profile} />
+      <Navbar onOpenCommand={onOpenCommand} onOpenProfile={onOpenProfile} profile={profile} />
 
       <main className="contact-main-content">
         {/* Navigation Breadcrumbs */}

@@ -2,7 +2,7 @@
 
 /* Projects Page: Level 1 Architecture Discovery */
 .projects-page-container {
-  @apply min-h-screen bg-background text-foreground flex flex-col transition-colors duration-200;
+  @apply min-h-screen bg-transparent text-foreground flex flex-col transition-colors duration-200;
 }
 
 .projects-main-content {

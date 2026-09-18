@@ -1,8 +1,8 @@
 @reference "../index.css";
 
-/* Navbar: Sticky Top Navigation */
+/* Navbar: Mobile & Tablet Top Bar (Hidden on desktop where Sidebar takes over) */
 .navbar-wrapper {
-  @apply border-b border-border bg-background/90 backdrop-blur-md sticky top-0 z-30 px-4 sm:px-8 py-3 flex items-center justify-between transition-colors;
+  @apply lg:hidden border-b border-border bg-sidebar sticky top-0 z-30 px-4 sm:px-6 py-2.5 flex items-center justify-between transition-colors;
 }
 
 .navbar-brand-group {

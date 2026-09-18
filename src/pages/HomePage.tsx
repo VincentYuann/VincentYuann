@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Navbar } from '../components/Navbar';
 import { Hero } from '../components/Hero';
-import { RiverTimeline } from '../components/RiverTimeline';
+import { ProjectsShowcase } from '../components/ProjectsShowcase';
 import { Footer } from '../components/Footer';
 import { useAuth } from '../lib/useAuth';
 import type { FlagshipProject, RiverPebble } from '../data/projects';
@@ -11,22 +11,19 @@ import '../styles/home-page.css';
 
 interface HomePageProps {
   flagships: FlagshipProject[];
-  pebbles: RiverPebble[];
+  pebbles?: RiverPebble[];
   allProjects: FlagshipProject[];
   profile: ProfileData;
   onOpenCommand: () => void;
   onOpenProfile?: () => void;
-  onOpenSettings?: () => void;
 }
 
 export const HomePage: React.FC<HomePageProps> = ({
   flagships,
-  pebbles,
   allProjects,
   profile,
   onOpenCommand,
   onOpenProfile,
-  onOpenSettings,
 }) => {
   const navigate = useNavigate();
   const { isAdmin } = useAuth();
@@ -36,7 +33,6 @@ export const HomePage: React.FC<HomePageProps> = ({
       <Navbar 
         onOpenCommand={onOpenCommand} 
         onOpenProfile={onOpenProfile}
-        onOpenSettings={onOpenSettings}
         profile={profile} 
         isAdmin={isAdmin}
       />
@@ -44,9 +40,8 @@ export const HomePage: React.FC<HomePageProps> = ({
       <Hero profile={profile} isAdmin={isAdmin} />
 
       <main className="home-main-content">
-        <RiverTimeline
+        <ProjectsShowcase
           flagships={flagships}
-          pebbles={pebbles}
           allProjects={allProjects}
           isAdmin={isAdmin}
           onOpenGallery={() => navigate('/projects')}

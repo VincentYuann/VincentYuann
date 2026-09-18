@@ -2,7 +2,7 @@
 
 /* Hero Section: Editorial Narrative Header */
 .hero-wrapper {
-  @apply w-full max-w-4xl mx-auto px-4 sm:px-8 pt-10 sm:pt-16 pb-8;
+  @apply w-full max-w-5xl mx-auto px-4 sm:px-8 pt-8 sm:pt-14 pb-8;
 }
 
 .hero-content {
@@ -10,15 +10,15 @@
 }
 
 .hero-admin-pill {
-  @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-accent/10 hover:bg-accent/20 border border-accent/30 text-accent text-xs font-mono font-semibold transition-colors cursor-pointer mb-2 shadow-2xs;
+  @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-sm bg-accent/10 hover:bg-accent/20 border border-accent/30 text-accent text-xs font-mono font-semibold transition-colors cursor-pointer mb-2 shadow-2xs;
 }
 
 .hero-headline {
-  @apply text-4xl sm:text-6xl font-serif font-normal text-foreground tracking-tight leading-[1.12];
+  @apply text-3xl sm:text-5xl lg:text-5xl font-serif font-normal text-foreground tracking-tight leading-[1.12];
 }
 
 .hero-subtext {
-  @apply text-base sm:text-lg text-muted-foreground max-w-2xl leading-relaxed font-normal;
+  @apply text-base text-muted-foreground max-w-xl leading-relaxed font-normal;
 }
 
 /* Technical Specialization Focus Chips */

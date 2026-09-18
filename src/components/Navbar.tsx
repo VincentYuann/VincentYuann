@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Command, Settings, User, Menu, Home, FolderGit2, FileText, Mail, Palette, ShieldCheck } from 'lucide-react';
+import { Command, User, Menu, Home, FolderGit2, FileText, Mail, ShieldCheck } from 'lucide-react';
 import { GithubIcon } from './Icons';
+import { HankoStamp, EnsoCircle } from './JapaneseMotifs';
+import { ThemeToggle } from './ThemeToggle';
 import { useAuth } from '../lib/useAuth';
 import type { ProfileData } from '../lib/useProfile';
 import {
@@ -22,7 +24,6 @@ import '../styles/navbar.css';
 interface NavbarProps {
   onOpenCommand: () => void;
   onOpenProfile?: () => void;
-  onOpenSettings?: () => void;
   profile: ProfileData;
   isAdmin?: boolean;
 }
@@ -30,8 +31,7 @@ interface NavbarProps {
 export const Navbar: React.FC<NavbarProps> = ({ 
   onOpenCommand, 
   onOpenProfile, 
-  onOpenSettings,
-  profile,
+  profile, 
   isAdmin: propIsAdmin,
 }) => {
   const location = useLocation();
@@ -39,15 +39,12 @@ export const Navbar: React.FC<NavbarProps> = ({
   const isAdmin = propIsAdmin ?? authIsAdmin;
   const [isMobileOpen, setIsMobileOpen] = useState(false);
 
-
   return (
-    <nav className="navbar-wrapper">
-      {/* Brand Identity */}
+    <nav className="navbar-wrapper" aria-label="Mobile and Tablet Navigation">
+      {/* Brand Identity with Hanko Mark */}
       <div className="navbar-brand-group">
         <Link to="/" className="navbar-brand-link group">
-          <div className="navbar-brand-avatar">
-            V
-          </div>
+          <HankoStamp size={28} className="group-hover:scale-105 transition-transform" />
           <div>
             <span className="navbar-brand-name">
               {profile.name}
@@ -59,47 +56,8 @@ export const Navbar: React.FC<NavbarProps> = ({
         </Link>
       </div>
 
-      {/* Nav Links & Actions */}
+      {/* Nav Actions */}
       <div className="navbar-actions">
-        {/* Desktop Nav Links */}
-        <div className="hidden md:flex items-center gap-2">
-          {/* Home */}
-          <Link
-            to="/"
-            className={`navbar-link ${
-              location.pathname === '/'
-                ? 'navbar-link-active'
-                : 'navbar-link-inactive'
-            }`}
-          >
-            Home
-          </Link>
-
-          {/* Projects Gallery */}
-          <Link
-            to="/projects"
-            className={`navbar-link ${
-              location.pathname.startsWith('/projects')
-                ? 'navbar-link-active'
-                : 'navbar-link-inactive'
-            }`}
-          >
-            Projects Gallery
-          </Link>
-
-          {/* My Resume */}
-          <Link
-            to="/resume"
-            className={`navbar-link ${
-              location.pathname.startsWith('/resume')
-                ? 'navbar-link-active'
-                : 'navbar-link-inactive'
-            }`}
-          >
-            Resume
-          </Link>
-        </div>
-
         {/* Spotlight Command Search Trigger */}
         <button
           onClick={onOpenCommand}
@@ -111,33 +69,28 @@ export const Navbar: React.FC<NavbarProps> = ({
           <kbd className="navbar-search-kbd">⌘K</kbd>
         </button>
 
-        {/* Actions Cluster: Hire Me, GitHub, Profile, Settings */}
-        <TooltipProvider delayDuration={150}>
-          <div className="navbar-cluster-divider">
-            {/* Hire Me Button (Desktop) */}
-            <Link
-              to="/contact"
-              className="navbar-hire-btn hidden sm:flex"
-              title="Hire Me / Send Message"
-            >
-              Hire Me
-            </Link>
+        {/* Day / Night Theme Toggle */}
+        <ThemeToggle showLabels={false} className="hidden sm:inline-flex" />
 
-            {/* GitHub Profile */}
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <a
-                  href={profile.github}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="navbar-icon-btn"
-                  aria-label="GitHub Profile"
-                >
-                  <GithubIcon className="w-4 h-4" />
-                </a>
-              </TooltipTrigger>
-              <TooltipContent>GitHub Profile</TooltipContent>
-            </Tooltip>
+        <TooltipProvider delayDuration={200}>
+          <div className="navbar-cluster-divider">
+            {/* GitHub Link */}
+            {profile.github && (
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <a
+                    href={profile.github}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="navbar-icon-btn"
+                    aria-label="GitHub Profile"
+                  >
+                    <GithubIcon className="size-4" />
+                  </a>
+                </TooltipTrigger>
+                <TooltipContent>GitHub Profile</TooltipContent>
+              </Tooltip>
+            )}
 
             {/* Profile Overview & Quick Actions */}
             <Tooltip>
@@ -148,10 +101,10 @@ export const Navbar: React.FC<NavbarProps> = ({
                   className="navbar-icon-btn relative cursor-pointer"
                   aria-label="Profile Overview"
                 >
-                  <User className="w-4 h-4" />
+                  <User className="size-4" />
                   {isAdmin && (
                     <span 
-                      className="absolute top-1 right-1 w-2 h-2 rounded-full bg-emerald-500 ring-2 ring-white" 
+                      className="absolute top-1 right-1 size-2 rounded-full bg-accent ring-2 ring-card" 
                       title="Admin Active"
                     />
                   )}
@@ -160,22 +113,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               <TooltipContent>{isAdmin ? "Profile & Admin Controls" : "View Profile"}</TooltipContent>
             </Tooltip>
 
-            {/* Site Settings & Theme Preferences (Publicly Accessible) */}
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button
-                  type="button"
-                  onClick={onOpenSettings}
-                  className="navbar-icon-btn cursor-pointer"
-                  aria-label="Site Settings & Themes"
-                >
-                  <Settings className="w-4 h-4" />
-                </button>
-              </TooltipTrigger>
-              <TooltipContent>Settings & Themes</TooltipContent>
-            </Tooltip>
-
-            {/* Admin CMS (Visible when logged in as Admin) */}
+            {/* Admin CMS */}
             {isAdmin && (
               <Tooltip>
                 <TooltipTrigger asChild>
@@ -188,7 +126,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                     }
                     aria-label="Admin CMS Dashboard"
                   >
-                    <ShieldCheck className="w-4 h-4 text-emerald-500" />
+                    <ShieldCheck className="size-4 text-accent" />
                   </Link>
                 </TooltipTrigger>
                 <TooltipContent>Admin CMS Studio (Active)</TooltipContent>
@@ -200,132 +138,103 @@ export const Navbar: React.FC<NavbarProps> = ({
               <SheetTrigger asChild>
                 <button
                   type="button"
-                  className="md:hidden p-1.5 rounded-lg text-[#57606A] hover:text-[#1B2127] hover:bg-[#F6F8FA] border border-[#D0D7DE] transition-colors cursor-pointer"
+                  className="p-2 rounded-sm text-muted-foreground hover:text-foreground hover:bg-card border border-border transition-colors cursor-pointer min-h-[44px] min-w-[44px] flex items-center justify-center"
                   aria-label="Open mobile navigation menu"
                 >
-                  <Menu className="w-4 h-4" />
+                  <Menu className="size-4" />
                 </button>
               </SheetTrigger>
-              <SheetContent side="right" className="w-[280px] sm:w-[350px] p-6 flex flex-col justify-between">
-                <div>
-                  <SheetHeader className="p-0 text-left mb-6">
+              <SheetContent side="right" className="w-[280px] sm:w-[320px] p-6 flex flex-col justify-between bg-sidebar border-l border-border">
+                <div className="space-y-6">
+                  <SheetHeader className="p-0 text-left">
                     <div className="flex items-center gap-3">
-                      <div className="navbar-brand-avatar">V</div>
+                      <HankoStamp size={32} />
                       <div>
-                        <SheetTitle className="text-base font-bold text-foreground">
+                        <SheetTitle className="text-base font-serif font-normal text-foreground">
                           {profile.name}
                         </SheetTitle>
-                        <p className="text-xs text-muted-foreground">{profile.role}</p>
+                        <p className="text-[10px] font-sans font-semibold uppercase tracking-wider text-muted-foreground">
+                          {profile.role}
+                        </p>
                       </div>
                     </div>
                   </SheetHeader>
 
-                  {/* Mobile Links */}
-                  <div className="flex flex-col gap-2">
+                  {/* Navigation Links */}
+                  <div className="space-y-1 pt-2">
                     <Link
                       to="/"
                       onClick={() => setIsMobileOpen(false)}
-                      className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
+                      className={`flex items-center gap-3 px-3 py-2.5 rounded-sm text-xs font-sans font-semibold tracking-wider transition-all min-h-[44px] ${
                         location.pathname === '/'
-                          ? 'bg-muted text-foreground font-bold border border-border'
-                          : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                          ? 'text-accent bg-accent/10 font-bold'
+                          : 'text-foreground/80 hover:text-foreground hover:bg-card'
                       }`}
                     >
-                      <Home className="w-4 h-4 text-[#3894B3]" />
-                      <span>Home</span>
+                      <Home className="size-4 text-accent" strokeWidth={1.5} />
+                      <span>HOME</span>
                     </Link>
 
                     <Link
                       to="/projects"
                       onClick={() => setIsMobileOpen(false)}
-                      className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
+                      className={`flex items-center gap-3 px-3 py-2.5 rounded-sm text-xs font-sans font-semibold tracking-wider transition-all min-h-[44px] ${
                         location.pathname.startsWith('/projects')
-                          ? 'bg-muted text-foreground font-bold border border-border'
-                          : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                          ? 'text-accent bg-accent/10 font-bold'
+                          : 'text-foreground/80 hover:text-foreground hover:bg-card'
                       }`}
                     >
-                      <FolderGit2 className="w-4 h-4 text-[#3894B3]" />
-                      <span>Projects Gallery</span>
+                      <FolderGit2 className="size-4 text-accent" strokeWidth={1.5} />
+                      <span>PROJECTS</span>
                     </Link>
 
                     <Link
                       to="/resume"
                       onClick={() => setIsMobileOpen(false)}
-                      className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
+                      className={`flex items-center gap-3 px-3 py-2.5 rounded-sm text-xs font-sans font-semibold tracking-wider transition-all min-h-[44px] ${
                         location.pathname.startsWith('/resume')
-                          ? 'bg-muted text-foreground font-bold border border-border'
-                          : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                          ? 'text-accent bg-accent/10 font-bold'
+                          : 'text-foreground/80 hover:text-foreground hover:bg-card'
                       }`}
                     >
-                      <FileText className="w-4 h-4 text-[#3894B3]" />
-                      <span>Resume</span>
+                      <FileText className="size-4 text-accent" strokeWidth={1.5} />
+                      <span>RESUME</span>
                     </Link>
 
                     <Link
                       to="/contact"
                       onClick={() => setIsMobileOpen(false)}
-                      className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
+                      className={`flex items-center gap-3 px-3 py-2.5 rounded-sm text-xs font-sans font-semibold tracking-wider transition-all min-h-[44px] ${
                         location.pathname.startsWith('/contact')
-                          ? 'bg-muted text-foreground font-bold border border-border'
-                          : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                          ? 'text-accent bg-accent/10 font-bold'
+                          : 'text-foreground/80 hover:text-foreground hover:bg-card'
                       }`}
                     >
-                      <Mail className="w-4 h-4 text-[#3894B3]" />
-                      <span>Hire Me / Contact</span>
+                      <Mail className="size-4 text-accent" strokeWidth={1.5} />
+                      <span>CONTACT</span>
                     </Link>
+                  </div>
 
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setIsMobileOpen(false);
-                        onOpenSettings?.();
-                      }}
-                      className="flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-all text-left cursor-pointer w-full"
-                    >
-                      <div className="flex items-center gap-3">
-                        <Settings className="w-4 h-4 text-[#3894B3]" />
-                        <span>Settings & Themes</span>
-                      </div>
-                      <Palette className="w-4 h-4 text-muted-foreground" />
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setIsMobileOpen(false);
-                        onOpenCommand();
-                      }}
-                      className="flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-all text-left cursor-pointer"
-                    >
-                      <div className="flex items-center gap-3">
-                        <Command className="w-4 h-4 text-[#3894B3]" />
-                        <span>Search</span>
-                      </div>
-                      <kbd className="px-1.5 py-0.5 rounded bg-card text-[10px] text-muted-foreground font-mono border border-border">⌘K</kbd>
-                    </button>
+                  {/* Theme Switcher in Mobile Drawer */}
+                  <div className="pt-4 border-t border-border">
+                    <span className="text-[10px] font-sans font-bold uppercase tracking-widest text-muted-foreground block mb-2">
+                      APPEARANCE
+                    </span>
+                    <ThemeToggle showLabels={true} className="w-full justify-center" />
                   </div>
                 </div>
 
-                {/* Mobile Footer Actions */}
-                <div className="pt-4 border-t border-border flex items-center justify-between">
-                  <a
-                    href={profile.github}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="flex items-center gap-2 text-xs font-semibold text-muted-foreground hover:text-foreground"
-                  >
-                    <GithubIcon className="w-4 h-4" />
-                    <span>GitHub</span>
-                  </a>
-
-                  <Link
-                    to="/admin"
-                    onClick={() => setIsMobileOpen(false)}
-                    className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground"
-                  >
-                    <ShieldCheck className="w-3.5 h-3.5" />
-                    <span>Admin CMS</span>
-                  </Link>
+                {/* Bottom Studio Motif */}
+                <div className="p-3 rounded-sm border border-border bg-card/40 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <EnsoCircle size={24} className="text-foreground/40" />
+                    <span className="text-[10px] font-sans font-bold tracking-widest text-muted-foreground uppercase">
+                      STUDIO
+                    </span>
+                  </div>
+                  <p className="text-[11px] font-sans text-muted-foreground leading-snug">
+                    Akari Day & Night architectural portfolio.
+                  </p>
                 </div>
               </SheetContent>
             </Sheet>

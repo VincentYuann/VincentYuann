@@ -14,7 +14,6 @@ interface ProjectsPageProps {
   profile: ProfileData;
   onOpenCommand: () => void;
   onOpenProfile?: () => void;
-  onOpenSettings?: () => void;
 }
 
 export const ProjectsPage: React.FC<ProjectsPageProps> = ({
@@ -22,7 +21,6 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({
   profile,
   onOpenCommand,
   onOpenProfile,
-  onOpenSettings,
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
@@ -66,7 +64,7 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({
 
   return (
     <div className="projects-page-container">
-      <Navbar onOpenCommand={onOpenCommand} onOpenProfile={onOpenProfile} onOpenSettings={onOpenSettings} profile={profile} />
+      <Navbar onOpenCommand={onOpenCommand} onOpenProfile={onOpenProfile} profile={profile} />
 
       {/* Main Page Container */}
       <main className="projects-main-content">

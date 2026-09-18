@@ -17,7 +17,6 @@ import {
   Maximize2,
   X,
   FileCode,
-  Sparkles,
   Upload,
 } from 'lucide-react';
 
@@ -25,13 +24,12 @@ interface ResumePageProps {
   profile: ProfileData;
   onOpenCommand: () => void;
   onOpenProfile?: () => void;
-  onOpenSettings?: () => void;
 }
 
 const SUPABASE_PDF_URL = supabase.storage.from('portfolio-assets').getPublicUrl('resumes/resume.pdf').data.publicUrl;
 const SUPABASE_TEX_URL = supabase.storage.from('portfolio-assets').getPublicUrl('resumes/resume.tex').data.publicUrl;
 
-export const ResumePage: React.FC<ResumePageProps> = ({ profile, onOpenCommand, onOpenProfile, onOpenSettings }) => {
+export const ResumePage: React.FC<ResumePageProps> = ({ profile, onOpenCommand, onOpenProfile }) => {
   const [activeTab, setActiveTab] = useState<'rendered' | 'source'>('rendered');
   const { isAdmin } = useAuth();
   const [latexSource, setLatexSource] = useState<string>('');
@@ -108,7 +106,7 @@ export const ResumePage: React.FC<ResumePageProps> = ({ profile, onOpenCommand, 
 
   return (
     <div className="resume-page-container">
-      <Navbar onOpenCommand={onOpenCommand} onOpenProfile={onOpenProfile} onOpenSettings={onOpenSettings} profile={profile} />
+      <Navbar onOpenCommand={onOpenCommand} onOpenProfile={onOpenProfile} profile={profile} />
 
       <main className="resume-main-content">
         {/* Header Title Section */}
@@ -344,23 +342,7 @@ export const ResumePage: React.FC<ResumePageProps> = ({ profile, onOpenCommand, 
           </div>
         </div>
 
-        {/* Architecture Note footer callout */}
-        <div className="resume-callout-banner">
-          <div className="resume-callout-icon-box">
-            <Sparkles className="w-4 h-4" />
-          </div>
-          <div className="text-xs">
-            <h4 className="resume-callout-title">
-              <span>Dual-Mode Verification Pipeline</span>
-              <span className="resume-callout-badge">
-                resume.tex &bull; resume.pdf
-              </span>
-            </h4>
-            <p className="resume-callout-text">
-              Engineered with zero third-party runtime dependencies: compiled PDF assets stream with native high-fidelity vector rendering, while the source LaTeX is parsed into a deterministic lexical token stream in real time with syntax highlighting and line addressing.
-            </p>
-          </div>
-        </div>
+
       </main>
 
       {/* Fullscreen PDF Modal */}

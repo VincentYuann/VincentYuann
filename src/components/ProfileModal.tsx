@@ -10,12 +10,11 @@ import {
   Edit3, 
   FolderKanban, 
   LogOut, 
-  Lock,
-  Palette
+  Palette,
+  Lock
 } from 'lucide-react';
 import { GithubIcon } from './Icons';
 import { ThemeToggle } from './ThemeToggle';
-import { ThemeSelector } from './ThemeSelector';
 import type { ProfileData } from '../lib/useProfile';
 
 interface ProfileModalProps {
@@ -24,7 +23,6 @@ interface ProfileModalProps {
   profile: ProfileData;
   isAdmin: boolean;
   onSignOut?: () => void;
-  onOpenSettings?: () => void;
 }
 
 export const ProfileModal: React.FC<ProfileModalProps> = ({
@@ -33,7 +31,6 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
   profile,
   isAdmin,
   onSignOut,
-  onOpenSettings,
 }) => {
   const navigate = useNavigate();
 
@@ -126,30 +123,16 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
           </div>
 
           {/* Theme & Appearance Switcher */}
-          <div className="p-3 bg-[#FAFBFD] dark:bg-[#0D1117] border border-[#E1E6EB] dark:border-[#30363D] rounded-2xl space-y-2.5">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Palette className="w-4 h-4 text-[#3894B3]" />
-                <div>
-                  <span className="text-xs font-bold text-[#1B2127] dark:text-[#F0F6FC] block">Theme Presets</span>
-                  <span className="text-[10px] text-[#6E7E8E] dark:text-[#8B949E]">Instant color transformations</span>
-                </div>
+          {/* Theme Switcher */}
+          <div className="p-3 bg-[#FAFBFD] dark:bg-[#0D1117] border border-[#E1E6EB] dark:border-[#30363D] rounded-2xl flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Palette className="w-4 h-4 text-[#B5482E]" />
+              <div>
+                <span className="text-xs font-bold text-[#1B2127] dark:text-[#F0F6FC] block">Aesthetic Mode</span>
+                <span className="text-[10px] text-[#6E7E8E] dark:text-[#8B949E]">Day (#F2E9DA) / Night (#1E1F24)</span>
               </div>
-              <ThemeToggle showLabels={false} />
             </div>
-            <ThemeSelector layout="compact" />
-            {onOpenSettings && (
-              <button
-                type="button"
-                onClick={() => {
-                  onClose();
-                  onOpenSettings();
-                }}
-                className="w-full pt-1 text-center text-[11px] font-semibold text-[#3894B3] hover:underline cursor-pointer"
-              >
-                All Themes & Visual Settings →
-              </button>
-            )}
+            <ThemeToggle showLabels={true} />
           </div>
 
           {/* Social & Contact Actions */}

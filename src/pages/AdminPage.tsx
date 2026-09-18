@@ -12,9 +12,6 @@ import {
   Save,
   FileText,
   Code2,
-  Settings,
-  Palette,
-  ShieldCheck,
   Plus,
   X,
   Loader2,
@@ -23,13 +20,34 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { GithubIcon } from '../components/Icons';
-import { ThemeToggle } from '../components/ThemeToggle';
-import { ThemeSelector } from '../components/ThemeSelector';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../lib/useAuth';
 import type { FlagshipProject } from '../data/projects';
 import type { ProfileData } from '../lib/useProfile';
 import '../styles/admin-page.css';
+
+const POPULAR_STACKS = [
+  { name: 'React 19', icon: 'react' },
+  { name: 'TypeScript', icon: 'typescript' },
+  { name: 'Next.js', icon: 'nextjs' },
+  { name: 'Python', icon: 'python' },
+  { name: 'FastAPI', icon: 'fastapi' },
+  { name: 'Node.js', icon: 'nodejs' },
+  { name: 'PostgreSQL', icon: 'postgresql' },
+  { name: 'Prisma 7', icon: 'prisma' },
+  { name: 'Docker', icon: 'docker' },
+  { name: 'Kubernetes', icon: 'kubernetes' },
+  { name: 'Google Gemini', icon: 'google' },
+  { name: 'Qdrant', icon: 'qdrant' },
+  { name: 'Socket.IO', icon: 'socketio' },
+  { name: 'Express 5', icon: 'express' },
+  { name: 'Tailwind CSS', icon: 'tailwindcss' },
+  { name: 'Redis', icon: 'redis' },
+  { name: 'AWS', icon: 'amazonwebservices' },
+  { name: 'Jenkins', icon: 'jenkins' },
+  { name: 'Git', icon: 'git' },
+  { name: 'Linux', icon: 'linux' },
+];
 
 interface AdminPageProps {
   projects: FlagshipProject[];
@@ -47,8 +65,9 @@ export const AdminPage: React.FC<AdminPageProps> = ({
   const { user, isAdmin, loading: authLoading, signInWithGitHub, signOut } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const [activeTab, setActiveTab] = useState<'projects' | 'profile' | 'resume' | 'settings'>('projects');
+  const [activeTab, setActiveTab] = useState<'projects' | 'profile' | 'resume'>('projects');
   const [selectedProjectId, setSelectedProjectId] = useState<string>('new');
+  const [isStackModalOpen, setIsStackModalOpen] = useState(false);
 
   // Resume Upload State
   const [uploadingPdf, setUploadingPdf] = useState(false);
@@ -220,7 +239,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
   // Sync tab & edit parameters with URL query string
   useEffect(() => {
     const tabParam = searchParams.get('tab');
-    if (tabParam === 'profile' || tabParam === 'resume' || tabParam === 'projects' || tabParam === 'settings') {
+    if (tabParam === 'profile' || tabParam === 'resume' || tabParam === 'projects') {
       setActiveTab(tabParam);
     }
     const editParam = searchParams.get('edit');
@@ -229,7 +248,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
     }
   }, [searchParams, projects]);
 
-  const handleTabChange = (tab: 'projects' | 'profile' | 'resume' | 'settings') => {
+  const handleTabChange = (tab: 'projects' | 'profile' | 'resume') => {
     setActiveTab(tab);
     setSearchParams((prev) => {
       const next = new URLSearchParams(prev);
@@ -266,9 +285,10 @@ export const AdminPage: React.FC<AdminPageProps> = ({
     }
   };
 
-  const handleAddTags = () => {
-    if (!tagInput.trim()) return;
-    const newTags = tagInput
+  const handleAddTags = (customString?: string) => {
+    const input = (customString || tagInput).trim();
+    if (!input) return;
+    const newTags = input
       .split(',')
       .map((t) => t.trim())
       .filter(Boolean)
@@ -278,6 +298,16 @@ export const AdminPage: React.FC<AdminPageProps> = ({
       ...newTags.filter((nt) => !prev.some((pt) => pt.name.toLowerCase() === nt.name.toLowerCase())),
     ]);
     setTagInput('');
+    toast.success(`Added ${newTags.length} tech stack item(s)`);
+  };
+
+  const toggleStack = (name: string, icon?: string) => {
+    const existingIndex = tagsList.findIndex((t) => t.name.toLowerCase() === name.toLowerCase());
+    if (existingIndex >= 0) {
+      setTagsList((prev) => prev.filter((_, i) => i !== existingIndex));
+    } else {
+      setTagsList((prev) => [...prev, { name, icon: icon || getDeviconSlug(name) }]);
+    }
   };
 
   const handleRemoveTag = (index: number) => {
@@ -762,19 +792,6 @@ export const AdminPage: React.FC<AdminPageProps> = ({
               <FileText className="w-3.5 h-3.5" />
               <span>Resume & LaTeX</span>
             </button>
-
-            <button
-              type="button"
-              onClick={() => handleTabChange('settings')}
-              className={`admin-tab-btn ${
-                activeTab === 'settings'
-                  ? 'admin-tab-btn-active'
-                  : 'admin-tab-btn-inactive'
-              }`}
-            >
-              <Settings className="w-3.5 h-3.5" />
-              <span>Settings & Theme</span>
-            </button>
           </div>
         </div>
 
@@ -947,24 +964,34 @@ export const AdminPage: React.FC<AdminPageProps> = ({
               />
             </div>
 
-            {/* Technology Stack Tags — Chip UI with Devicon Previews */}
+            {/* Technology Stack Tags — Dedicated Selector Modal & Chips */}
             <div className="space-y-3">
-              <label className="admin-field-label">
-                Technology Stack Tags
-              </label>
+              <div className="flex items-center justify-between">
+                <label className="admin-field-label mb-0">
+                  Technology Stack ({tagsList.length})
+                </label>
+                <button
+                  type="button"
+                  onClick={() => setIsStackModalOpen(true)}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-sm border border-border bg-card hover:bg-muted text-foreground text-[11px] font-sans font-semibold uppercase tracking-wider transition-colors cursor-pointer shadow-2xs"
+                >
+                  <Plus className="size-3.5 text-accent" />
+                  <span>Manage Tech Stacks</span>
+                </button>
+              </div>
 
               {/* Existing Tags as Chips */}
-              {tagsList.length > 0 && (
-                <div className="flex flex-wrap gap-2">
+              {tagsList.length > 0 ? (
+                <div className="flex flex-wrap gap-1.5 p-2 rounded-sm border border-border/80 bg-muted/20">
                   {tagsList.map((tag, idx) => (
                     <span
                       key={idx}
-                      className="inline-flex items-center gap-1.5 pl-2 pr-1 py-1 rounded-lg bg-muted border border-border text-xs font-medium text-foreground"
+                      className="inline-flex items-center gap-1.5 pl-2.5 pr-1.5 py-1 rounded-sm bg-card border border-border text-xs font-medium text-foreground shadow-2xs"
                     >
                       <img
                         src={`https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/${tag.icon}/${tag.icon}-original.svg`}
                         alt={tag.name}
-                        className="w-4 h-4"
+                        className="w-3.5 h-3.5 object-contain shrink-0"
                         onError={(e) => {
                           (e.currentTarget as HTMLImageElement).style.display = 'none';
                         }}
@@ -973,7 +1000,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
                       <button
                         type="button"
                         onClick={() => handleRemoveTag(idx)}
-                        className="p-0.5 rounded hover:bg-destructive/10 hover:text-destructive transition-colors cursor-pointer"
+                        className="p-0.5 rounded hover:bg-destructive/10 hover:text-destructive transition-colors cursor-pointer text-muted-foreground"
                         title={`Remove ${tag.name}`}
                       >
                         <X className="w-3 h-3" />
@@ -981,32 +1008,153 @@ export const AdminPage: React.FC<AdminPageProps> = ({
                     </span>
                   ))}
                 </div>
+              ) : (
+                <div 
+                  onClick={() => setIsStackModalOpen(true)}
+                  className="p-4 rounded-sm border border-dashed border-border text-center text-xs text-muted-foreground cursor-pointer hover:border-accent/50 hover:bg-card/40 transition-colors"
+                >
+                  No technology stacks added yet. Click &ldquo;Manage Tech Stacks&rdquo; to add presets or enter commands.
+                </div>
               )}
 
-              {/* Add Tags Input */}
-              <div className="flex items-center gap-2">
-                <input
-                  type="text"
-                  value={tagInput}
-                  onChange={(e) => setTagInput(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') {
-                      e.preventDefault();
-                      handleAddTags();
-                    }
-                  }}
-                  placeholder="Type tag names (comma-separated), press Enter or click +"
-                  className="admin-input font-mono flex-1"
-                />
-                <button
-                  type="button"
-                  onClick={handleAddTags}
-                  className="inline-flex items-center justify-center w-9 h-9 rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 transition-colors cursor-pointer shrink-0"
-                  title="Add tags"
-                >
-                  <Plus className="w-4 h-4" />
-                </button>
-              </div>
+              {/* Tech Stack Selector Dialog */}
+              {isStackModalOpen && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-fadeIn">
+                  <div 
+                    className="relative w-full max-w-lg bg-card text-card-foreground border border-border rounded-md shadow-2xl p-6 space-y-5 overflow-hidden"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    {/* Header */}
+                    <div className="flex items-center justify-between pb-3 border-b border-border">
+                      <div>
+                        <h3 className="text-base font-serif font-normal text-foreground">
+                          Manage Tech Stacks & Architecture
+                        </h3>
+                        <p className="text-[11px] text-muted-foreground mt-0.5">
+                          1-click presets or enter comma-separated command string
+                        </p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setIsStackModalOpen(false)}
+                        className="p-1 text-muted-foreground hover:text-foreground rounded-sm cursor-pointer"
+                      >
+                        <X className="size-4" />
+                      </button>
+                    </div>
+
+                    {/* Batch Command Input */}
+                    <div className="space-y-1.5">
+                      <label className="text-[10px] font-sans font-semibold uppercase tracking-wider text-muted-foreground block">
+                        Batch Command Input
+                      </label>
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="text"
+                          value={tagInput}
+                          onChange={(e) => setTagInput(e.target.value)}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                              e.preventDefault();
+                              handleAddTags();
+                            }
+                          }}
+                          placeholder="e.g. React 19, Socket.IO, PostgreSQL, Prisma, Docker"
+                          className="admin-input flex-1 font-mono text-xs"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => handleAddTags()}
+                          className="px-3.5 py-2 rounded-sm bg-primary text-primary-foreground text-xs font-sans font-semibold uppercase tracking-wider hover:bg-primary/90 transition-colors cursor-pointer shrink-0"
+                        >
+                          Add
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* 1-Click Popular Presets */}
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-sans font-semibold uppercase tracking-wider text-muted-foreground block">
+                        1-Click Popular Technology Presets
+                      </label>
+                      <div className="flex flex-wrap gap-1.5 max-h-44 overflow-y-auto p-1.5 border border-border/60 rounded-sm bg-muted/20">
+                        {POPULAR_STACKS.map((stack) => {
+                          const isSelected = tagsList.some((t) => t.name.toLowerCase() === stack.name.toLowerCase());
+                          return (
+                            <button
+                              key={stack.name}
+                              type="button"
+                              onClick={() => toggleStack(stack.name, stack.icon)}
+                              className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-sm text-xs font-sans transition-all cursor-pointer border ${
+                                isSelected
+                                  ? 'bg-accent text-white border-accent shadow-2xs font-semibold'
+                                  : 'bg-card text-foreground border-border hover:border-accent/40'
+                              }`}
+                            >
+                              <img
+                                src={`https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/${stack.icon}/${stack.icon}-original.svg`}
+                                alt=""
+                                className="size-3.5 shrink-0"
+                                onError={(e) => {
+                                  (e.currentTarget as HTMLImageElement).style.display = 'none';
+                                }}
+                              />
+                              <span>{stack.name}</span>
+                              {isSelected && <span className="text-[10px] ml-0.5">✓</span>}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                    {/* Currently Selected Stacks */}
+                    <div className="space-y-1.5 pt-3 border-t border-border">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[10px] font-sans font-semibold uppercase tracking-wider text-muted-foreground">
+                          Selected Stacks ({tagsList.length})
+                        </span>
+                        {tagsList.length > 0 && (
+                          <button
+                            type="button"
+                            onClick={() => setTagsList([])}
+                            className="text-[10px] text-destructive hover:underline cursor-pointer"
+                          >
+                            Clear all
+                          </button>
+                        )}
+                      </div>
+                      <div className="flex flex-wrap gap-1.5 min-h-[32px] max-h-24 overflow-y-auto">
+                        {tagsList.map((tag, idx) => (
+                          <span
+                            key={idx}
+                            className="inline-flex items-center gap-1.5 pl-2 pr-1 py-0.5 rounded-sm bg-muted border border-border text-xs text-foreground"
+                          >
+                            <span>{tag.name}</span>
+                            <button
+                              type="button"
+                              onClick={() => handleRemoveTag(idx)}
+                              className="p-0.5 text-muted-foreground hover:text-destructive cursor-pointer"
+                            >
+                              <X className="size-3" />
+                            </button>
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Footer Done Button */}
+                    <div className="pt-3 flex justify-end border-t border-border">
+                      <button
+                        type="button"
+                        onClick={() => setIsStackModalOpen(false)}
+                        className="px-4 py-2 rounded-sm bg-primary text-primary-foreground text-xs font-sans font-semibold uppercase tracking-wider hover:bg-primary/90 transition-colors cursor-pointer"
+                      >
+                        Done & Apply
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Optional Extra Sections */}
@@ -1477,98 +1625,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
           </div>
         )}
 
-        {/* TAB 4: SETTINGS & THEME APPEARANCE */}
-        {activeTab === 'settings' && (
-          <div className="admin-panel-card animate-fadeIn space-y-6">
-            <div className="admin-section-header">
-              <div>
-                <span className="text-xs font-mono font-bold uppercase tracking-wider text-[#3894B3]">
-                  System Preferences
-                </span>
-                <h2 className="admin-section-title">Settings & Theme Appearance</h2>
-              </div>
-              <p className="admin-section-desc">
-                Configure color themes and visual preferences across Vincent&apos;s portfolio. Changes persist instantly across all devices.
-              </p>
-            </div>
 
-            {/* Appearance Card */}
-            <div className="p-5 sm:p-6 bg-[#FAFBFD] dark:bg-[#161B22] border border-[#E1E6EB] dark:border-[#30363D] rounded-2xl space-y-5">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div className="space-y-1">
-                  <div className="flex items-center gap-2">
-                    <Palette className="w-5 h-5 text-[#3894B3]" />
-                    <h3 className="text-sm font-bold text-[#1B2127] dark:text-[#F0F6FC]">
-                      Curated Theme Presets
-                    </h3>
-                  </div>
-                  <p className="text-xs text-[#57606A] dark:text-[#8B949E]">
-                    Managed with <code className="font-mono text-[11px] px-1 py-0.5 rounded bg-white dark:bg-[#21262D] border border-[#D0D7DE] dark:border-[#30363D]">next-themes</code>, cached in <code className="font-mono text-[11px] px-1 py-0.5 rounded bg-white dark:bg-[#21262D] border border-[#D0D7DE] dark:border-[#30363D]">localStorage</code>, and initialized via inline head script for 0ms flash.
-                  </p>
-                </div>
-
-                <ThemeToggle showLabels={true} />
-              </div>
-
-              {/* Interactive Theme Grid */}
-              <ThemeSelector layout="grid" />
-            </div>
-
-            {/* Project Edit & Links Quick Policy */}
-            <div className="p-5 sm:p-6 bg-[#FAFBFD] dark:bg-[#161B22] border border-[#E1E6EB] dark:border-[#30363D] rounded-2xl space-y-3">
-              <div className="flex items-center gap-2">
-                <Code2 className="w-5 h-5 text-[#588A75]" />
-                <h3 className="text-sm font-bold text-[#1B2127] dark:text-[#F0F6FC]">
-                  Project Code & Live Demo URL Policies
-                </h3>
-              </div>
-              <p className="text-xs text-[#57606A] dark:text-[#8B949E] leading-relaxed">
-                When adding or editing flagship systems:
-              </p>
-              <ul className="text-xs text-[#57606A] dark:text-[#8B949E] space-y-1.5 list-disc list-inside">
-                <li>
-                  <strong className="text-[#1B2127] dark:text-[#F0F6FC]">GitHub Repository (Code)</strong>: Recommended for engineering proof. If provided, the card renders a &ldquo;Code&rdquo; button.
-                </li>
-                <li>
-                  <strong className="text-[#1B2127] dark:text-[#F0F6FC]">Live Demo URL</strong>: Completely optional. If left blank, the card cleanly omits the &ldquo;Live Demo&rdquo; button until you deploy.
-                </li>
-                <li>
-                  <strong className="text-[#1B2127] dark:text-[#F0F6FC]">Card Streamlining</strong>: Homepage cards prioritize a brief description, image, and full tech stacks, with the &ldquo;Edit ✎&rdquo; action securely consolidated inside this Admin CMS.
-                </li>
-              </ul>
-
-              <div className="pt-2">
-                <button
-                  type="button"
-                  onClick={() => handleTabChange('projects')}
-                  className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-[#1B2127] dark:bg-[#3894B3] hover:bg-[#3894B3] dark:hover:bg-[#2B6D83] text-white rounded-xl text-xs font-semibold transition-all cursor-pointer shadow-xs"
-                >
-                  <FolderKanban className="w-3.5 h-3.5" />
-                  <span>Go to Project Editor →</span>
-                </button>
-              </div>
-            </div>
-
-            {/* Session Security & Diagnostics */}
-            <div className="p-5 sm:p-6 bg-[#FAFBFD] dark:bg-[#161B22] border border-[#E1E6EB] dark:border-[#30363D] rounded-2xl space-y-3">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <ShieldCheck className="w-5 h-5 text-emerald-600" />
-                  <h3 className="text-sm font-bold text-[#1B2127] dark:text-[#F0F6FC]">
-                    Admin Session Status
-                  </h3>
-                </div>
-                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300 text-xs font-mono font-semibold">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                  Authorized
-                </span>
-              </div>
-              <p className="text-xs text-[#57606A] dark:text-[#8B949E]">
-                Signed in as <strong className="font-mono text-[#1B2127] dark:text-white">{user.email}</strong> via GitHub OAuth. Row-Level Security write policies are active.
-              </p>
-            </div>
-          </div>
-        )}
       </main>
     </div>
   );

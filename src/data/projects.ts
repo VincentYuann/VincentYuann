@@ -68,6 +68,7 @@ export const FLAGSHIP_PROJECTS: FlagshipProject[] = [
     ],
     liveUrl: "https://anim-y.vercel.app",
     githubUrl: "https://github.com/VincentYuann/AnimY",
+    imageUrl: "/images/editorial-lantern-shelf.jpg",
     stoneAccent: "#588A75", // Sage / Moss
   },
   {
@@ -97,6 +98,7 @@ export const FLAGSHIP_PROJECTS: FlagshipProject[] = [
       "Automated testing and multi-stage containerization with Jenkins & Docker Compose",
     ],
     githubUrl: "https://github.com/VincentYuann/foodfinder",
+    imageUrl: "/images/project-card-realtime.jpg",
     stoneAccent: "#2E6171", // Deep Cerulean
   },
   {
@@ -124,6 +126,7 @@ export const FLAGSHIP_PROJECTS: FlagshipProject[] = [
       "Automated lead serialization and instant webhook routing to Discord",
     ],
     githubUrl: "https://github.com/VincentYuann/RAG",
+    imageUrl: "/images/featured-project-pipeline.jpg",
     stoneAccent: "#9E5A3F", // Terracotta / Earth
   },
 ];

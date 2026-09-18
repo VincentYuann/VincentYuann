@@ -21,8 +21,8 @@
 }
 
 @theme inline {
-  --font-serif: 'Newsreader', 'Instrument Serif', Georgia, serif;
-  --font-sans: 'Plus Jakarta Sans', 'Geist Variable', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-serif: 'Canela', 'Iowan Old Style', Georgia, serif;
+  --font-sans: 'Montserrat', Arial, sans-serif;
   --font-heading: var(--font-serif);
   --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   --color-sidebar-ring: var(--sidebar-ring);
@@ -56,16 +56,16 @@
   --color-card: var(--card);
   --color-foreground: var(--foreground);
   --color-background: var(--background);
-  --radius-sm: calc(var(--radius) * 0.6);
-  --radius-md: calc(var(--radius) * 0.8);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) * 1.4);
-  --radius-2xl: calc(var(--radius) * 1.8);
-  --radius-3xl: calc(var(--radius) * 2.2);
-  --radius-4xl: calc(var(--radius) * 2.6);
+  --radius-sm: calc(var(--radius) * 0.8);
+  --radius-md: calc(var(--radius) * 1.5);
+  --radius-lg: calc(var(--radius) * 2.0);
+  --radius-xl: calc(var(--radius) * 2.5);
+  --radius-2xl: calc(var(--radius) * 3.0);
+  --radius-3xl: calc(var(--radius) * 4.0);
+  --radius-4xl: calc(var(--radius) * 5.0);
 }
 
-/* 1. Original / Light Theme: Warm Editorial (Parchment, Panel Cream & Charcoal Navy) */
+/* 1. Light Theme: Canonical Akari Editorial Palette (#F2E9DA, #F7F0E3, #2B2E3A, #D9C9AE, #26262E, #B5482E) */
 :root, .light {
   --background: #F2E9DA;
   --foreground: #2B2E3A;
@@ -75,9 +75,9 @@
   --popover-foreground: #2B2E3A;
   --primary: #26262E;
   --primary-foreground: #F7F0E3;
-  --secondary: #E8DDCA;
+  --secondary: #EDE1CE;
   --secondary-foreground: #2B2E3A;
-  --muted: #E8DDCA;
+  --muted: #EDE1CE;
   --muted-foreground: #6B6559;
   --accent: #B5482E;
   --accent-foreground: #FFFFFF;
@@ -90,50 +90,51 @@
   --chart-3: #2B2E3A;
   --chart-4: #D9C9AE;
   --chart-5: #26262E;
-  --radius: 0.625rem;
-  --sidebar: #EADBCA;
+  --radius: 0.25rem;
+  --sidebar: #F7F0E3;
   --sidebar-foreground: #2B2E3A;
   --sidebar-primary: #26262E;
   --sidebar-primary-foreground: #F7F0E3;
-  --sidebar-accent: #E8DDCA;
+  --sidebar-accent: #EDE1CE;
   --sidebar-accent-foreground: #2B2E3A;
   --sidebar-border: #D9C9AE;
   --sidebar-ring: #B5482E;
 }
 
-/* 2. Dark Theme: Charcoal Slate (Deep Charcoal Navy & Warm Ivory with Terracotta Glow) */
+/* 2. Dark Theme: Canonical Charcoal Night Palette (#1E1F24, #2A2C32, #E8E6DF, #3A3D44, #B5482E) */
 .dark {
-  --background: #1C1E26;
-  --foreground: #F2E9DA;
-  --card: #252834;
-  --card-foreground: #F2E9DA;
-  --popover: #252834;
-  --popover-foreground: #F2E9DA;
-  --primary: #F2E9DA;
-  --primary-foreground: #1C1E26;
-  --secondary: #2E3241;
-  --secondary-foreground: #F2E9DA;
-  --muted: #2E3241;
-  --muted-foreground: #A8A296;
-  --accent: #E06D53;
-  --accent-foreground: #1C1E26;
-  --destructive: #E06D53;
-  --border: #3A3D4D;
-  --input: #3A3D4D;
-  --ring: #E06D53;
-  --chart-1: #E06D53;
-  --chart-2: #A8A296;
-  --chart-3: #F2E9DA;
-  --chart-4: #3A3D4D;
-  --chart-5: #252834;
-  --sidebar: #222530;
-  --sidebar-foreground: #F2E9DA;
-  --sidebar-primary: #F2E9DA;
-  --sidebar-primary-foreground: #1C1E26;
-  --sidebar-accent: #2E3241;
-  --sidebar-accent-foreground: #F2E9DA;
-  --sidebar-border: #3A3D4D;
-  --sidebar-ring: #E06D53;
+  --background: #1E1F24;
+  --foreground: #E8E6DF;
+  --card: #2A2C32;
+  --card-foreground: #E8E6DF;
+  --popover: #2A2C32;
+  --popover-foreground: #E8E6DF;
+  --primary: #E8E6DF;
+  --primary-foreground: #1E1F24;
+  --secondary: #24262C;
+  --secondary-foreground: #E8E6DF;
+  --muted: #24262C;
+  --muted-foreground: #A7A398;
+  --accent: #B5482E;
+  --accent-foreground: #FFFFFF;
+  --destructive: #D86A50;
+  --border: #3A3D44;
+  --input: #3A3D44;
+  --ring: #C65B42;
+  --chart-1: #B5482E;
+  --chart-2: #A7A398;
+  --chart-3: #E8E6DF;
+  --chart-4: #3A3D44;
+  --chart-5: #2A2C32;
+  --radius: 0.25rem;
+  --sidebar: #1E1F24;
+  --sidebar-foreground: #E8E6DF;
+  --sidebar-primary: #E8E6DF;
+  --sidebar-primary-foreground: #1E1F24;
+  --sidebar-accent: #24262C;
+  --sidebar-accent-foreground: #E8E6DF;
+  --sidebar-border: #3A3D44;
+  --sidebar-ring: #C65B42;
 }
 
 @layer base {
@@ -150,10 +151,10 @@
 
 @layer utilities {
   .font-serif {
-    font-family: 'Newsreader', 'Instrument Serif', Georgia, serif;
+    font-family: 'Canela', 'Iowan Old Style', Georgia, serif;
   }
   .font-sans {
-    font-family: 'Plus Jakarta Sans', 'Geist Variable', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-family: 'Montserrat', Arial, sans-serif;
   }
   .font-mono {
     font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
@@ -161,6 +162,80 @@
   .border-hairline {
     border-width: 1px;
     border-color: var(--border);
+  }
+
+  /* Washi Paper Background Layer */
+  .bg-washi {
+    background-image: 
+      radial-gradient(ellipse at top left, var(--card) 0%, transparent 70%),
+      url('/images/washi-paper-texture.jpg');
+    background-repeat: repeat;
+    background-size: 800px auto;
+  }
+
+  /* Double Hairline Frame (Outer hairline with inset inner hairline) */
+  .frame-double {
+    position: relative;
+    border: 1px solid var(--border);
+  }
+  .frame-double::after {
+    content: '';
+    position: absolute;
+    inset: 3px;
+    border: 1px solid var(--border);
+    pointer-events: none;
+    border-radius: inherit;
+  }
+
+  /* Card Stack Effect (Physical Stationery Paper Layering) */
+  .card-stack {
+    position: relative;
+    isolation: isolate;
+  }
+  .card-stack::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    transform: translate(3px, 3px);
+    background-color: var(--card);
+    border: 1px solid var(--border);
+    border-radius: inherit;
+    z-index: -1;
+    opacity: 0.85;
+    pointer-events: none;
+    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .card-stack:hover::before {
+    transform: translate(5px, 5px);
+  }
+
+  /* Prescribed Image Treatments from Reference Board */
+  .image-parchment {
+    position: relative;
+    overflow: hidden;
+  }
+  .image-parchment::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-color: #F2E9DA;
+    mix-blend-mode: multiply;
+    opacity: 0.15;
+    pointer-events: none;
+  }
+  .dark .image-parchment::after {
+    background-color: #1E1F24;
+    mix-blend-mode: soft-light;
+    opacity: 0.25;
+  }
+
+  .image-vignette {
+    mask-image: radial-gradient(circle at center, black 65%, transparent 100%);
+    -webkit-mask-image: radial-gradient(circle at center, black 65%, transparent 100%);
+  }
+
+  .image-faded-contrast {
+    filter: contrast(0.92) brightness(0.98) saturate(0.92);
   }
 }
 
