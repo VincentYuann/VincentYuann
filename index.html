@@ -7,12 +7,31 @@
     <title>Vincent Yuann — Full-Stack & Applied AI Engineer</title>
     <meta name="description" content="Personal portfolio of Vincent Yuann. Exploring full-stack systems, real-time collaboration, and applied AI pipelines." />
     
+    <!-- Anti-Flash Blocking Theme Script (Executes synchronously before first paint) -->
+    <script>
+      (function() {
+        try {
+          var key = 'portfolio-theme';
+          var stored = localStorage.getItem(key);
+          var systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = stored || 'light';
+          var resolved = theme === 'system' ? (systemDark ? 'dark' : 'light') : theme;
+          
+          var doc = document.documentElement;
+          doc.classList.remove('light', 'dark');
+          doc.classList.add(resolved);
+          doc.setAttribute('data-theme', resolved);
+          doc.style.colorScheme = resolved === 'light' ? 'light' : 'dark';
+        } catch (e) {}
+      })();
+    </script>
+
     <!-- Google Fonts for Warm Editorial Aesthetic -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Newsreader:ital,opsz,wght@0,6..72,300..700;1,6..72,300..700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   </head>
-  <body class="bg-[#FBF9F5] text-[#1E2022] selection:bg-[#78B4C9]/30 selection:text-[#0C1B2A] antialiased overflow-x-hidden min-h-screen">
+  <body class="bg-background text-foreground selection:bg-[#B5482E]/20 selection:text-[#2B2E3A] dark:selection:bg-[#E06D53]/30 dark:selection:text-[#F2E9DA] antialiased overflow-x-hidden min-h-screen">
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

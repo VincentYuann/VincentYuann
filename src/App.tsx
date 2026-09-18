@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { HashRouter, Routes, Route } from 'react-router-dom';
+import { ThemeProvider } from 'next-themes';
 import { HomePage } from './pages/HomePage';
 import { ProjectsPage } from './pages/ProjectsPage';
 import { ProjectDetailPage } from './pages/ProjectDetailPage';
@@ -9,6 +10,8 @@ import { ContactPage } from './pages/ContactPage';
 import { ResumePage } from './pages/ResumePage';
 import { CommandPalette } from './components/CommandPalette';
 import { ProfileModal } from './components/ProfileModal';
+import { SettingsModal } from './components/SettingsModal';
+import { Toaster } from 'sonner';
 import { useProjects } from './lib/useProjects';
 import { useProfile } from './lib/useProfile';
 import { useAuth } from './lib/useAuth';
@@ -16,6 +19,7 @@ import { useAuth } from './lib/useAuth';
 export const App: React.FC = () => {
   const [isCommandOpen, setIsCommandOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const { allProjects, flagships, pebbles, refreshProjects } = useProjects();
   const { profile, refreshProfile } = useProfile();
   const { isAdmin, signOut } = useAuth();
@@ -29,6 +33,7 @@ export const App: React.FC = () => {
       }
       if (e.key === 'Escape') {
         setIsCommandOpen(false);
+        setIsSettingsOpen(false);
       }
     };
     window.addEventListener('keydown', handleKeyDown);
@@ -36,9 +41,16 @@ export const App: React.FC = () => {
   }, []);
 
   return (
-    <HashRouter>
-      <div className="min-h-screen bg-white text-gray-900">
-        <Routes>
+    <ThemeProvider 
+      attribute="class" 
+      defaultTheme="system" 
+      enableSystem
+      storageKey="portfolio-theme"
+      themes={['light', 'dark', 'midnight', 'nord', 'tokyo-night', 'emerald', 'sepia']}
+    >
+      <HashRouter>
+        <div className="min-h-screen bg-background text-foreground transition-colors duration-200">
+          <Routes>
           {/* Level 0: Landing Page */}
           <Route
             path="/"
@@ -50,6 +62,7 @@ export const App: React.FC = () => {
                 profile={profile}
                 onOpenCommand={() => setIsCommandOpen(true)}
                 onOpenProfile={() => setIsProfileOpen(true)}
+                onOpenSettings={() => setIsSettingsOpen(true)}
               />
             }
           />
@@ -63,6 +76,7 @@ export const App: React.FC = () => {
                 profile={profile}
                 onOpenCommand={() => setIsCommandOpen(true)}
                 onOpenProfile={() => setIsProfileOpen(true)}
+                onOpenSettings={() => setIsSettingsOpen(true)}
               />
             }
           />
@@ -76,6 +90,7 @@ export const App: React.FC = () => {
                 profile={profile}
                 onOpenCommand={() => setIsCommandOpen(true)}
                 onOpenProfile={() => setIsProfileOpen(true)}
+                onOpenSettings={() => setIsSettingsOpen(true)}
               />
             }
           />
@@ -107,6 +122,7 @@ export const App: React.FC = () => {
                 profile={profile}
                 onOpenCommand={() => setIsCommandOpen(true)}
                 onOpenProfile={() => setIsProfileOpen(true)}
+                onOpenSettings={() => setIsSettingsOpen(true)}
               />
             }
           />
@@ -119,6 +135,7 @@ export const App: React.FC = () => {
                 profile={profile}
                 onOpenCommand={() => setIsCommandOpen(true)}
                 onOpenProfile={() => setIsProfileOpen(true)}
+                onOpenSettings={() => setIsSettingsOpen(true)}
               />
             }
           />
@@ -134,6 +151,7 @@ export const App: React.FC = () => {
                 profile={profile}
                 onOpenCommand={() => setIsCommandOpen(true)}
                 onOpenProfile={() => setIsProfileOpen(true)}
+                onOpenSettings={() => setIsSettingsOpen(true)}
               />
             }
           />
@@ -143,6 +161,7 @@ export const App: React.FC = () => {
         <CommandPalette
           isOpen={isCommandOpen}
           onClose={() => setIsCommandOpen(false)}
+          onOpenSettings={() => setIsSettingsOpen(true)}
           flagships={flagships}
           pebbles={pebbles}
         />
@@ -151,12 +170,23 @@ export const App: React.FC = () => {
         <ProfileModal
           isOpen={isProfileOpen}
           onClose={() => setIsProfileOpen(false)}
+          onOpenSettings={() => setIsSettingsOpen(true)}
           profile={profile}
           isAdmin={isAdmin}
           onSignOut={signOut}
         />
+
+        {/* Global Public Settings & Theme Appearance Modal */}
+        <SettingsModal
+          isOpen={isSettingsOpen}
+          onClose={() => setIsSettingsOpen(false)}
+        />
+
+        {/* Global Sonner Toast Notifications */}
+        <Toaster richColors position="bottom-right" />
       </div>
     </HashRouter>
+    </ThemeProvider>
   );
 };
 

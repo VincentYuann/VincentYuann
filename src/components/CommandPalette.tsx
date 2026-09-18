@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, X, ExternalLink, Terminal, ArrowRight, FolderKanban, Lock, Home, Mail, FileText } from 'lucide-react';
+import { Search, X, ExternalLink, Terminal, ArrowRight, FolderKanban, Lock, Home, Mail, FileText, Settings } from 'lucide-react';
+import { useTheme } from 'next-themes';
 import { GithubIcon } from './Icons';
 import { FLAGSHIP_PROJECTS, RIVER_PEBBLES, PROFILE_INFO, type FlagshipProject, type RiverPebble } from '../data/projects';
+import { THEME_OPTIONS } from './ThemeSelector';
 import '../styles/command-palette.css';
 
 interface CommandPaletteProps {
   isOpen: boolean;
   onClose: () => void;
+  onOpenSettings?: () => void;
   flagships?: FlagshipProject[];
   pebbles?: RiverPebble[];
 }
@@ -15,10 +18,12 @@ interface CommandPaletteProps {
 export const CommandPalette: React.FC<CommandPaletteProps> = ({
   isOpen,
   onClose,
+  onOpenSettings,
   flagships = FLAGSHIP_PROJECTS,
   pebbles = RIVER_PEBBLES,
 }) => {
   const [query, setQuery] = useState('');
+  const { setTheme } = useTheme();
   const navigate = useNavigate();
 
   // Keyboard shortcut listener (Cmd + K or Ctrl + K, and Esc to close)
@@ -52,6 +57,14 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
       p.description.toLowerCase().includes(query.toLowerCase())
   );
 
+  const filteredThemes = query.trim().length > 0 ? THEME_OPTIONS.filter(
+    (t) =>
+      t.name.toLowerCase().includes(query.toLowerCase()) ||
+      t.category.toLowerCase().includes(query.toLowerCase()) ||
+      t.description.toLowerCase().includes(query.toLowerCase()) ||
+      'theme appearance mode color'.includes(query.toLowerCase())
+  ) : [];
+
   return (
     <div
       onClick={onClose}
@@ -68,7 +81,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search all systems, frameworks, or jump to page..."
+            placeholder="Search systems, frameworks, jump to page, or change theme..."
             autoFocus
             className="command-input"
           />
@@ -119,6 +132,58 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
             </div>
             <ArrowRight className="command-item-icon w-3.5 h-3.5 text-[#8C9AA7]" />
           </div>
+
+          {onOpenSettings && (
+            <div
+              onClick={() => {
+                onClose();
+                onOpenSettings();
+              }}
+              className="command-item cursor-pointer"
+            >
+              <div className="command-item-main">
+                <Settings className="w-3.5 h-3.5 text-[#3894B3]" />
+                <div>
+                  <div className="command-item-title">Settings & Appearance</div>
+                  <div className="command-item-sub">Customize color palettes, dark mode, and themes</div>
+                </div>
+              </div>
+              <ArrowRight className="command-item-icon w-3.5 h-3.5 text-[#8C9AA7]" />
+            </div>
+          )}
+
+          {/* Theme Quick Switch (when searching) */}
+          {filteredThemes.length > 0 && (
+            <div className="pt-2">
+              <div className="command-group-heading">
+                Color Themes & Appearance
+              </div>
+              {filteredThemes.map((opt) => (
+                <div
+                  key={opt.id}
+                  onClick={() => {
+                    setTheme(opt.id);
+                    onClose();
+                  }}
+                  className="command-item cursor-pointer"
+                >
+                  <div className="command-item-main">
+                    <span 
+                      className="w-3 h-3 rounded-full border border-black/20 shrink-0" 
+                      style={{ backgroundColor: opt.bgHex }}
+                    />
+                    <div>
+                      <div className="command-item-title">Switch to {opt.name}</div>
+                      <div className="command-item-sub">{opt.description}</div>
+                    </div>
+                  </div>
+                  <span className="text-[10px] font-mono uppercase px-1.5 py-0.5 rounded bg-muted text-muted-foreground">
+                    {opt.category}
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
 
           <div
             onClick={() => {

@@ -2,7 +2,7 @@
 
 /* Contact Page Layout & Value Cards */
 .contact-page-container {
-  @apply min-h-screen bg-[#FAFBFD] text-gray-900 flex flex-col;
+  @apply min-h-screen bg-background text-foreground flex flex-col transition-colors duration-200;
 }
 
 .contact-main-content {
@@ -10,19 +10,19 @@
 }
 
 .contact-breadcrumb-bar {
-  @apply flex items-center gap-3 text-xs;
+  @apply flex items-center gap-3 text-[10px] font-sans uppercase tracking-wider font-semibold;
 }
 
 .contact-back-link {
-  @apply inline-flex items-center gap-1.5 text-[#57606A] hover:text-[#1B2127] font-semibold transition-colors;
+  @apply inline-flex items-center gap-1.5 text-muted-foreground hover:text-foreground transition-colors;
 }
 
 .contact-breadcrumb-divider {
-  @apply text-[#D0D7DE];
+  @apply text-border;
 }
 
 .contact-breadcrumb-current {
-  @apply text-[#1B2127] font-bold;
+  @apply text-foreground font-bold;
 }
 
 .contact-hero-block {
@@ -30,19 +30,19 @@
 }
 
 .contact-status-pill {
-  @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#EBF6F9] border border-[#3894B3]/30 text-[#2B6D83] text-xs font-semibold;
+  @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-accent/10 border border-accent/25 text-foreground text-[10px] font-sans uppercase tracking-wider font-semibold;
 }
 
 .contact-status-pill-icon {
-  @apply w-3.5 h-3.5 text-[#3894B3];
+  @apply w-3.5 h-3.5 text-accent;
 }
 
 .contact-title {
-  @apply text-3xl sm:text-4xl font-serif font-bold text-[#1B2127] tracking-tight;
+  @apply text-3xl sm:text-5xl font-serif font-normal text-foreground tracking-tight;
 }
 
 .contact-subtitle {
-  @apply text-sm text-[#57606A] max-w-2xl leading-relaxed;
+  @apply text-sm sm:text-base text-muted-foreground max-w-2xl leading-relaxed;
 }
 
 .contact-value-grid {
@@ -50,32 +50,32 @@
 }
 
 .contact-value-card {
-  @apply bg-white border border-[#D0D7DE] rounded-xl p-4 space-y-1 shadow-xs;
+  @apply bg-card border border-border rounded-xl p-4 space-y-1 shadow-2xs;
 }
 
 .contact-value-card-title {
-  @apply flex items-center gap-2 text-xs font-bold text-[#1B2127];
+  @apply flex items-center gap-2 text-[11px] font-sans uppercase tracking-wider font-bold text-foreground;
 }
 
 .contact-value-card-text {
-  @apply text-[11px] text-[#57606A] leading-normal;
+  @apply text-xs text-muted-foreground leading-normal;
 }
 
 /* Contact Form Components */
 .contact-form-card {
-  @apply bg-white border border-[#D0D7DE] rounded-2xl p-6 sm:p-8 shadow-xs space-y-5 text-left;
+  @apply bg-card border border-border rounded-2xl p-6 sm:p-8 shadow-2xs space-y-5 text-left;
 }
 
 .contact-form-header {
-  @apply space-y-1 pb-2 border-b border-[#E1E6EB];
+  @apply space-y-1 pb-2 border-b border-border;
 }
 
 .contact-form-title {
-  @apply text-base font-bold text-[#1B2127] flex items-center gap-2;
+  @apply text-base font-serif font-bold text-foreground flex items-center gap-2;
 }
 
 .contact-form-desc {
-  @apply text-xs text-[#57606A];
+  @apply text-xs text-muted-foreground;
 }
 
 .contact-form-grid {
@@ -83,55 +83,55 @@
 }
 
 .contact-form-label {
-  @apply block text-xs font-semibold text-[#57606A] mb-1.5;
+  @apply block text-[10px] font-sans uppercase tracking-wider font-semibold text-muted-foreground mb-1.5;
 }
 
 .contact-form-required {
-  @apply text-red-500;
+  @apply text-accent;
 }
 
 .contact-form-input {
-  @apply w-full px-3.5 py-2.5 text-xs bg-[#F6F8FA] border border-[#D0D7DE] rounded-xl focus:bg-white focus:outline-none focus:border-[#3894B3] transition-colors;
+  @apply w-full px-3.5 py-2.5 text-xs bg-muted/40 border border-border text-foreground rounded-xl focus:bg-card focus:outline-none focus:border-accent transition-colors;
 }
 
 .contact-form-textarea {
-  @apply w-full px-3.5 py-2.5 text-xs bg-[#F6F8FA] border border-[#D0D7DE] rounded-xl focus:bg-white focus:outline-none focus:border-[#3894B3] transition-colors resize-y leading-relaxed font-sans;
+  @apply w-full px-3.5 py-2.5 text-xs bg-muted/40 border border-border text-foreground rounded-xl focus:bg-card focus:outline-none focus:border-accent transition-colors resize-y leading-relaxed font-sans;
 }
 
 .contact-attachment-preview {
-  @apply flex items-center justify-between p-3 bg-[#F0F7FA] border border-[#A0D8E9] rounded-xl text-xs text-[#2B6D83];
+  @apply flex items-center justify-between p-3 bg-accent/10 border border-accent/25 rounded-xl text-xs text-foreground;
 }
 
 .contact-upload-trigger-btn {
-  @apply inline-flex items-center gap-2 px-3.5 py-2 bg-[#F6F8FA] hover:bg-[#E1E6EB] border border-[#D0D7DE] rounded-xl text-xs font-semibold text-[#1B2127] cursor-pointer shadow-xs transition-colors;
+  @apply inline-flex items-center gap-2 px-3.5 py-2 bg-card hover:bg-muted border border-border rounded-xl text-[11px] font-sans uppercase tracking-wider font-semibold text-foreground cursor-pointer shadow-2xs transition-colors;
 }
 
 .contact-submit-btn {
-  @apply w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 bg-[#1B2127] hover:bg-[#2C343E] text-white text-xs font-semibold rounded-xl shadow-xs transition-all cursor-pointer disabled:opacity-50;
+  @apply w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 bg-primary hover:bg-primary/90 text-primary-foreground text-[11px] font-sans uppercase tracking-wider font-bold rounded-xl shadow-xs transition-all cursor-pointer disabled:opacity-50 border border-primary/20;
 }
 
 .contact-error-banner {
-  @apply p-3.5 bg-red-50 text-red-900 border border-red-200 rounded-xl text-xs flex items-center gap-2.5;
+  @apply p-3.5 bg-destructive/10 text-destructive border border-destructive/20 rounded-xl text-xs flex items-center gap-2.5;
   animation: fadeIn 0.25s ease-out forwards;
 }
 
 /* Success State */
 .contact-success-card {
-  @apply p-8 sm:p-10 bg-white border border-[#D0D7DE] rounded-2xl text-center space-y-5 shadow-xs;
+  @apply p-8 sm:p-10 bg-card border border-border rounded-2xl text-center space-y-5 shadow-2xs;
 }
 
 .contact-success-icon-badge {
-  @apply w-14 h-14 rounded-2xl bg-green-50 border border-green-200 text-green-700 flex items-center justify-center mx-auto shadow-xs;
+  @apply w-14 h-14 rounded-2xl bg-accent/10 border border-accent/25 text-accent flex items-center justify-center mx-auto shadow-2xs;
 }
 
 .contact-success-title {
-  @apply text-lg font-serif font-bold text-[#1B2127];
+  @apply text-xl font-serif font-bold text-foreground;
 }
 
 .contact-success-desc {
-  @apply text-xs text-[#57606A] max-w-md mx-auto leading-relaxed;
+  @apply text-xs text-muted-foreground max-w-md mx-auto leading-relaxed;
 }
 
 .contact-success-btn {
-  @apply inline-flex items-center gap-1.5 px-5 py-2.5 bg-[#1B2127] hover:bg-[#2C343E] text-white rounded-xl text-xs font-semibold shadow-xs transition-colors cursor-pointer;
+  @apply inline-flex items-center gap-1.5 px-5 py-2.5 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl text-[11px] font-sans uppercase tracking-wider font-bold shadow-xs transition-colors cursor-pointer border border-primary/20;
 }

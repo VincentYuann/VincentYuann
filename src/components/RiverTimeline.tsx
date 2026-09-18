@@ -58,9 +58,6 @@ export const RiverTimeline: React.FC<RiverTimelineProps> = ({
     <section ref={containerRef} className="timeline-section">
       {/* Section Header */}
       <div className="timeline-header">
-        <span className="timeline-eyebrow">
-          Architecture Milestones
-        </span>
         <h2 className="timeline-title">
           Flagship Systems
         </h2>
@@ -68,10 +65,10 @@ export const RiverTimeline: React.FC<RiverTimelineProps> = ({
           Core full-stack web applications, real-time sync engines, and distributed architectures.
         </p>
         {onOpenGallery && (
-          <div className="pt-2">
+          <div className="pt-3">
             <button
               onClick={() => onOpenGallery('all')}
-              className="inline-flex items-center gap-2 px-3.5 py-1.5 text-xs font-semibold text-[#1B2127] bg-white hover:bg-[#F6F8FA] border border-[#D0D7DE] hover:border-[#8C959F] rounded-xl shadow-xs transition-all cursor-pointer"
+              className="inline-flex items-center gap-2 px-3.5 py-1.5 text-[11px] font-sans uppercase tracking-wider font-semibold text-foreground bg-card hover:bg-muted border border-border hover:border-accent/40 rounded-xl shadow-2xs transition-all cursor-pointer"
             >
               <span>Explore Full Systems Gallery ({allProjects.length || 6}) →</span>
             </button>

@@ -80,17 +80,17 @@ export function tokenizeLatexLine(line: string): LatexToken[] {
 export function getTokenClass(type: LatexToken['type']): string {
   switch (type) {
     case 'comment':
-      return 'text-[#8C959F] italic';
+      return 'text-muted-foreground/70 italic';
     case 'command':
-      return 'text-[#0550AE] font-medium';
+      return 'text-accent font-medium';
     case 'env':
-      return 'text-[#8250DF] font-semibold';
+      return 'text-foreground font-semibold';
     case 'math':
-      return 'text-[#116329]';
+      return 'text-foreground/90 font-mono';
     case 'delimiter':
-      return 'text-[#6E7E8E]';
+      return 'text-muted-foreground';
     case 'text':
     default:
-      return 'text-[#24292F]';
+      return 'text-foreground';
   }
 }

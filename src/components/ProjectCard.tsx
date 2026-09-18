@@ -1,6 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { ExternalLink, ArrowRight, Edit3, Layers } from 'lucide-react';
+import { ExternalLink, ArrowRight, Layers } from 'lucide-react';
 import { GithubIcon } from './Icons';
 import { TechBadge } from './TechBadge';
 import type { FlagshipProject } from '../data/projects';
@@ -17,12 +16,11 @@ interface ProjectCardProps {
 export const ProjectCard: React.FC<ProjectCardProps> = ({ 
   project, 
   isActive, 
-  isAdmin = false,
   onViewDetails 
 }) => {
   return (
     <div className={`project-card ${isActive ? 'active' : ''}`}>
-      {/* Top Bar: Category Pill, Milestone Beacon, & Admin Quick Edit */}
+      {/* Top Bar: Category Pill & Milestone Beacon */}
       <div className="card-header">
         <span 
           className="card-category"
@@ -35,27 +33,14 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
           {project.category}
         </span>
 
-        <div className="flex items-center gap-3">
-          {isAdmin && (
-            <Link
-              to={`/admin?tab=projects&edit=${project.id}`}
-              className="card-admin-edit-btn"
-              title="Edit this project in Admin CMS"
-            >
-              <Edit3 className="w-3 h-3" />
-              <span>Edit ✎</span>
-            </Link>
-          )}
-
-          <div className="card-beacon">
-            <span
-              className="card-beacon-dot"
-              style={{ backgroundColor: isActive ? project.stoneAccent : '#D0D7DE' }}
-            />
-            <span className="card-beacon-text">
-              {isActive ? 'Current Anchor' : 'Milestone'}
-            </span>
-          </div>
+        <div className="card-beacon">
+          <span
+            className="card-beacon-dot"
+            style={{ backgroundColor: isActive ? project.stoneAccent : '#D0D7DE' }}
+          />
+          <span className="card-beacon-text">
+            {isActive ? 'Current Anchor' : 'Milestone'}
+          </span>
         </div>
       </div>
 
@@ -92,15 +77,11 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
                 <ArrowRight className="w-3 h-3" />
               </span>
             </div>
-            <div className="flex items-center justify-between text-[10px] font-mono text-[#6E7E8E]">
-              <span>ID: {project.id}</span>
-              <span>{project.stats?.[0]?.label}: {project.stats?.[0]?.value}</span>
-            </div>
           </div>
         )}
       </div>
 
-      {/* Title & Concise Value Tagline */}
+      {/* Name (Title) & Brief Description */}
       <div className="space-y-1">
         {onViewDetails ? (
           <button
@@ -118,41 +99,47 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
             {project.title}
           </h3>
         )}
-        <p className="card-subtitle">
-          {project.subtitle}
+        <p className="card-subtitle line-clamp-2">
+          {project.subtitle || project.description}
         </p>
       </div>
 
-      {/* Standout Performance & Metrics Badges (High Contrast Grid) */}
-      {project.stats && project.stats.length > 0 && (
-        <div className="card-stats-grid">
-          {project.stats.slice(0, 3).map((stat, idx) => (
-            <div key={idx} className="card-stat-cell">
-              <span className="card-stat-label">
-                {stat.label}
-              </span>
-              <span className="card-stat-val">
-                {stat.value}
-              </span>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {/* Tech Stack Pills (Top Core Technologies) */}
+      {/* Tech Stack Pills (All tags displayed without +1 limit) */}
       <div className="card-tags-list">
-        {project.tags.slice(0, 5).map((tag, idx) => (
+        {project.tags.map((tag, idx) => (
           <TechBadge key={idx} name={tag.name} icon={tag.icon} />
         ))}
-        {project.tags.length > 5 && (
-          <span className="text-[11px] font-mono text-[#57606A] px-1.5 py-0.5 rounded bg-[#F6F8FA] border border-[#E1E6EB]">
-            +{project.tags.length - 5}
-          </span>
-        )}
       </div>
 
-      {/* Action Links */}
+      {/* Action Links: Code & Live (Optional), plus Details */}
       <div className="card-actions">
+        <div className="flex items-center gap-2">
+          {project.githubUrl && (
+            <a
+              href={project.githubUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="card-btn-secondary"
+              title="View GitHub Repository"
+            >
+              <GithubIcon className="w-3.5 h-3.5" />
+              <span>Code</span>
+            </a>
+          )}
+          {project.liveUrl && (
+            <a
+              href={project.liveUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="card-btn-secondary"
+              title="Open Live Demonstration"
+            >
+              <ExternalLink className="w-3.5 h-3.5 text-[#3894B3]" />
+              <span>Live Demo</span>
+            </a>
+          )}
+        </div>
+
         {onViewDetails && (
           <button
             type="button"
@@ -161,30 +148,6 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
           >
             <span>Architecture Deep-Dive →</span>
           </button>
-        )}
-        {project.liveUrl && (
-          <a
-            href={project.liveUrl}
-            target="_blank"
-            rel="noreferrer"
-            className="card-btn-secondary"
-            title="Open Live Demonstration"
-          >
-            <ExternalLink className="w-3.5 h-3.5 text-[#3894B3]" />
-            <span>Live Demo</span>
-          </a>
-        )}
-        {project.githubUrl && (
-          <a
-            href={project.githubUrl}
-            target="_blank"
-            rel="noreferrer"
-            className="card-btn-secondary"
-            title="View GitHub Repository"
-          >
-            <GithubIcon className="w-3.5 h-3.5" />
-            <span>Code</span>
-          </a>
         )}
       </div>
     </div>

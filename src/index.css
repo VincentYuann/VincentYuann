@@ -1,10 +1,9 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+@import "@fontsource-variable/geist";
 
-body {
-  background-color: #ffffff;
-  color: #111827;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-}
+@custom-variant dark (&:is(.dark, .dark *));
 
 @keyframes fadeIn {
   from {
@@ -21,3 +20,162 @@ body {
   animation: fadeIn 0.25s ease-out forwards;
 }
 
+@theme inline {
+  --font-serif: 'Newsreader', 'Instrument Serif', Georgia, serif;
+  --font-sans: 'Plus Jakarta Sans', 'Geist Variable', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-heading: var(--font-serif);
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --color-foreground: var(--foreground);
+  --color-background: var(--background);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+/* 1. Original / Light Theme: Warm Editorial (Parchment, Panel Cream & Charcoal Navy) */
+:root, .light {
+  --background: #F2E9DA;
+  --foreground: #2B2E3A;
+  --card: #F7F0E3;
+  --card-foreground: #2B2E3A;
+  --popover: #F7F0E3;
+  --popover-foreground: #2B2E3A;
+  --primary: #26262E;
+  --primary-foreground: #F7F0E3;
+  --secondary: #E8DDCA;
+  --secondary-foreground: #2B2E3A;
+  --muted: #E8DDCA;
+  --muted-foreground: #6B6559;
+  --accent: #B5482E;
+  --accent-foreground: #FFFFFF;
+  --destructive: #B5482E;
+  --border: #D9C9AE;
+  --input: #D9C9AE;
+  --ring: #B5482E;
+  --chart-1: #B5482E;
+  --chart-2: #6B6559;
+  --chart-3: #2B2E3A;
+  --chart-4: #D9C9AE;
+  --chart-5: #26262E;
+  --radius: 0.625rem;
+  --sidebar: #EADBCA;
+  --sidebar-foreground: #2B2E3A;
+  --sidebar-primary: #26262E;
+  --sidebar-primary-foreground: #F7F0E3;
+  --sidebar-accent: #E8DDCA;
+  --sidebar-accent-foreground: #2B2E3A;
+  --sidebar-border: #D9C9AE;
+  --sidebar-ring: #B5482E;
+}
+
+/* 2. Dark Theme: Charcoal Slate (Deep Charcoal Navy & Warm Ivory with Terracotta Glow) */
+.dark {
+  --background: #1C1E26;
+  --foreground: #F2E9DA;
+  --card: #252834;
+  --card-foreground: #F2E9DA;
+  --popover: #252834;
+  --popover-foreground: #F2E9DA;
+  --primary: #F2E9DA;
+  --primary-foreground: #1C1E26;
+  --secondary: #2E3241;
+  --secondary-foreground: #F2E9DA;
+  --muted: #2E3241;
+  --muted-foreground: #A8A296;
+  --accent: #E06D53;
+  --accent-foreground: #1C1E26;
+  --destructive: #E06D53;
+  --border: #3A3D4D;
+  --input: #3A3D4D;
+  --ring: #E06D53;
+  --chart-1: #E06D53;
+  --chart-2: #A8A296;
+  --chart-3: #F2E9DA;
+  --chart-4: #3A3D4D;
+  --chart-5: #252834;
+  --sidebar: #222530;
+  --sidebar-foreground: #F2E9DA;
+  --sidebar-primary: #F2E9DA;
+  --sidebar-primary-foreground: #1C1E26;
+  --sidebar-accent: #2E3241;
+  --sidebar-accent-foreground: #F2E9DA;
+  --sidebar-border: #3A3D4D;
+  --sidebar-ring: #E06D53;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground transition-colors duration-200;
+  }
+  html {
+    @apply font-sans;
+  }
+}
+
+@layer utilities {
+  .font-serif {
+    font-family: 'Newsreader', 'Instrument Serif', Georgia, serif;
+  }
+  .font-sans {
+    font-family: 'Plus Jakarta Sans', 'Geist Variable', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+  .font-mono {
+    font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+  }
+  .border-hairline {
+    border-width: 1px;
+    border-color: var(--border);
+  }
+}
+
+/* Custom Editorial Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--background);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--muted-foreground);
+}

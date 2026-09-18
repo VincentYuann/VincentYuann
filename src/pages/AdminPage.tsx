@@ -3,8 +3,6 @@ import { Link, useSearchParams } from 'react-router-dom';
 import {
   Lock,
   ArrowLeft,
-  CheckCircle2,
-  AlertCircle,
   Trash2,
   LogOut,
   User,
@@ -12,12 +10,21 @@ import {
   Upload,
   ExternalLink,
   Save,
-  Eye,
-  Edit3,
   FileText,
   Code2,
+  Settings,
+  Palette,
+  ShieldCheck,
+  Plus,
+  X,
+  Loader2,
+  AlertCircle,
+  CheckCircle2,
 } from 'lucide-react';
+import { toast } from 'sonner';
 import { GithubIcon } from '../components/Icons';
+import { ThemeToggle } from '../components/ThemeToggle';
+import { ThemeSelector } from '../components/ThemeSelector';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../lib/useAuth';
 import type { FlagshipProject } from '../data/projects';
@@ -40,9 +47,8 @@ export const AdminPage: React.FC<AdminPageProps> = ({
   const { user, isAdmin, loading: authLoading, signInWithGitHub, signOut } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const [activeTab, setActiveTab] = useState<'projects' | 'profile' | 'resume'>('projects');
+  const [activeTab, setActiveTab] = useState<'projects' | 'profile' | 'resume' | 'settings'>('projects');
   const [selectedProjectId, setSelectedProjectId] = useState<string>('new');
-  const [previewMarkdown, setPreviewMarkdown] = useState(false);
 
   // Resume Upload State
   const [uploadingPdf, setUploadingPdf] = useState(false);
@@ -67,26 +73,22 @@ export const AdminPage: React.FC<AdminPageProps> = ({
 
   // Project Form State
   const [title, setTitle] = useState('');
-  const [id, setId] = useState('');
   const [category, setCategory] = useState('Full-Stack Web App');
   const [subtitle, setSubtitle] = useState('');
-  const [description, setDescription] = useState('');
   const [highlightsText, setHighlightsText] = useState('');
-  const [tagsText, setTagsText] = useState('');
-  const [stat1Label, setStat1Label] = useState('Latency');
-  const [stat1Val, setStat1Val] = useState('<30ms');
-  const [stat2Label, setStat2Label] = useState('Protocol');
-  const [stat2Val, setStat2Val] = useState('WebSockets');
-  const [stat3Label, setStat3Label] = useState('Database');
-  const [stat3Val, setStat3Val] = useState('Postgres RLS');
+  const [tagsList, setTagsList] = useState<{ name: string; icon: string }[]>([]);
+  const [tagInput, setTagInput] = useState('');
   const [githubUrl, setGithubUrl] = useState('');
   const [liveUrl, setLiveUrl] = useState('');
   const [stoneAccent, setStoneAccent] = useState('#3894B3');
   const [isFlagship, setIsFlagship] = useState(true);
-  const [detailsMarkdown, setDetailsMarkdown] = useState('');
   const [uploading, setUploading] = useState(false);
   const [imageUrl, setImageUrl] = useState('');
-  const [statusMsg, setStatusMsg] = useState<{ type: 'success' | 'error' | 'info'; text: string } | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [extraSections, setExtraSections] = useState<{ headline: string; body: string }[]>([]);
+  const [isSavingProfile, setIsSavingProfile] = useState(false);
 
   // Profile Form State
   const [profName, setProfName] = useState(profile?.name || 'Vincent Yuann');
@@ -113,59 +115,112 @@ export const AdminPage: React.FC<AdminPageProps> = ({
     }
   }, [profile]);
 
+  const getDeviconSlug = (name: string): string => {
+    const raw = name.toLowerCase().trim();
+    const map: Record<string, string> = {
+      'c++': 'cplusplus',
+      'cpp': 'cplusplus',
+      'c#': 'csharp',
+      'cs': 'csharp',
+      '.net': 'dot-net',
+      'node': 'nodejs',
+      'node.js': 'nodejs',
+      'nodejs': 'nodejs',
+      'vue': 'vuejs',
+      'vue.js': 'vuejs',
+      'vuejs': 'vuejs',
+      'next': 'nextjs',
+      'next.js': 'nextjs',
+      'nextjs': 'nextjs',
+      'tailwind': 'tailwindcss',
+      'tailwindcss': 'tailwindcss',
+      'postgres': 'postgresql',
+      'postgresql': 'postgresql',
+      'socket.io': 'socketio',
+      'socketio': 'socketio',
+      'express': 'express',
+      'express.js': 'express',
+      'react': 'react',
+      'react.js': 'react',
+      'react native': 'react',
+      'python': 'python',
+      'docker': 'docker',
+      'typescript': 'typescript',
+      'ts': 'typescript',
+      'javascript': 'javascript',
+      'js': 'javascript',
+      'golang': 'go',
+      'go': 'go',
+      'git': 'git',
+      'github': 'github',
+      'fastapi': 'fastapi',
+      'prisma': 'prisma',
+      'supabase': 'supabase',
+      'redis': 'redis',
+      'mongodb': 'mongodb',
+      'graphql': 'graphql',
+      'aws': 'amazonwebservices',
+      'gcp': 'googlecloud',
+      'kubernetes': 'kubernetes',
+      'k8s': 'kubernetes',
+      'linux': 'linux',
+      'html': 'html5',
+      'css': 'css3',
+      'sass': 'sass',
+      'scss': 'sass',
+      'vite': 'vitejs',
+      'vite.js': 'vitejs',
+      'vitejs': 'vitejs',
+      'webpack': 'webpack',
+      'firebase': 'firebase',
+      'flutter': 'flutter',
+      'rust': 'rust',
+      'java': 'java',
+      'kotlin': 'kotlin',
+      'swift': 'swift',
+    };
+    if (map[raw]) return map[raw];
+    return raw.replace(/[^a-z0-9]/g, '');
+  };
+
   const handleSelectProject = (projId: string) => {
     setSelectedProjectId(projId);
-    setStatusMsg(null);
 
     if (projId === 'new') {
       setTitle('');
-      setId('');
       setCategory('Full-Stack Web App');
       setSubtitle('');
-      setDescription('');
       setHighlightsText('');
-      setTagsText('');
-      setStat1Label('Latency');
-      setStat1Val('<30ms');
-      setStat2Label('Protocol');
-      setStat2Val('WebSockets');
-      setStat3Label('Database');
-      setStat3Val('Postgres RLS');
+      setTagsList([]);
+      setTagInput('');
       setGithubUrl('');
       setLiveUrl('');
       setImageUrl('');
       setIsFlagship(true);
-      setDetailsMarkdown('');
       setStoneAccent('#3894B3');
+      setExtraSections([]);
     } else {
       const proj = projects.find((p) => p.id === projId);
       if (!proj) return;
       setTitle(proj.title);
-      setId(proj.id);
       setCategory(proj.category);
-      setSubtitle(proj.subtitle);
-      setDescription(proj.description);
+      setSubtitle(proj.subtitle || proj.description || '');
       setHighlightsText(proj.highlights?.join('\n') || '');
-      setTagsText(proj.tags?.map((t) => t.name).join(', ') || '');
-      setStat1Label(proj.stats?.[0]?.label || 'Metric 1');
-      setStat1Val(proj.stats?.[0]?.value || '');
-      setStat2Label(proj.stats?.[1]?.label || 'Metric 2');
-      setStat2Val(proj.stats?.[1]?.value || '');
-      setStat3Label(proj.stats?.[2]?.label || 'Metric 3');
-      setStat3Val(proj.stats?.[2]?.value || '');
+      setTagsList(proj.tags?.map((t) => ({ name: t.name, icon: t.icon || getDeviconSlug(t.name) })) || []);
+      setTagInput('');
       setGithubUrl(proj.githubUrl || '');
       setLiveUrl(proj.liveUrl || '');
       setImageUrl(proj.imageUrl || '');
       setIsFlagship(proj.isFlagship ?? true);
-      setDetailsMarkdown(proj.detailsMarkdown || '');
       setStoneAccent(proj.stoneAccent || '#3894B3');
+      setExtraSections([]);
     }
   };
 
   // Sync tab & edit parameters with URL query string
   useEffect(() => {
     const tabParam = searchParams.get('tab');
-    if (tabParam === 'profile' || tabParam === 'resume' || tabParam === 'projects') {
+    if (tabParam === 'profile' || tabParam === 'resume' || tabParam === 'projects' || tabParam === 'settings') {
       setActiveTab(tabParam);
     }
     const editParam = searchParams.get('edit');
@@ -174,9 +229,8 @@ export const AdminPage: React.FC<AdminPageProps> = ({
     }
   }, [searchParams, projects]);
 
-  const handleTabChange = (tab: 'projects' | 'profile' | 'resume') => {
+  const handleTabChange = (tab: 'projects' | 'profile' | 'resume' | 'settings') => {
     setActiveTab(tab);
-    setStatusMsg(null);
     setSearchParams((prev) => {
       const next = new URLSearchParams(prev);
       next.set('tab', tab);
@@ -191,7 +245,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
 
     try {
       setUploading(true);
-      setStatusMsg({ type: 'info', text: 'Uploading image to Supabase Storage...' });
+      toast.info('Uploading image to Supabase Storage...');
       const fileExt = file.name.split('.').pop();
       const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
       const filePath = `project-covers/${fileName}`;
@@ -204,104 +258,153 @@ export const AdminPage: React.FC<AdminPageProps> = ({
 
       const { data } = supabase.storage.from('portfolio-assets').getPublicUrl(filePath);
       setImageUrl(data.publicUrl);
-      setStatusMsg({ type: 'success', text: 'Image uploaded successfully to Supabase Storage bucket!' });
+      toast.success('Image uploaded successfully!');
     } catch (err: any) {
-      setStatusMsg({ type: 'error', text: `Upload failed: ${err.message}` });
+      toast.error(`Upload failed: ${err.message}`);
     } finally {
       setUploading(false);
     }
   };
 
-  const handleSaveProject = async () => {
-    if (!id.trim() || !title.trim()) {
-      setStatusMsg({ type: 'error', text: 'Error: Project ID (slug) and Title are required.' });
-      return;
-    }
-
-    setStatusMsg({ type: 'info', text: 'Saving project to Supabase PostgreSQL database...' });
-    const highlights = highlightsText
-      .split('\n')
-      .map((s) => s.trim())
-      .filter(Boolean);
-
-    const tags = tagsText
+  const handleAddTags = () => {
+    if (!tagInput.trim()) return;
+    const newTags = tagInput
       .split(',')
       .map((t) => t.trim())
       .filter(Boolean)
-      .map((t) => ({ name: t, icon: t.toLowerCase().replace(/[^a-z0-9]/g, '') }));
+      .map((t) => ({ name: t, icon: getDeviconSlug(t) }));
+    setTagsList((prev) => [
+      ...prev,
+      ...newTags.filter((nt) => !prev.some((pt) => pt.name.toLowerCase() === nt.name.toLowerCase())),
+    ]);
+    setTagInput('');
+  };
 
-    const stats = [
-      { label: stat1Label, value: stat1Val },
-      { label: stat2Label, value: stat2Val },
-      { label: stat3Label, value: stat3Val },
-    ].filter((s) => s.label && s.value);
+  const handleRemoveTag = (index: number) => {
+    setTagsList((prev) => prev.filter((_, i) => i !== index));
+  };
 
-    const record = {
-      id: id.toLowerCase().replace(/\s+/g, '-'),
-      title,
-      subtitle,
-      category,
-      description,
-      highlights,
-      tags,
-      stats,
-      stone_accent: stoneAccent,
-      github_url: githubUrl || null,
-      live_url: liveUrl || null,
-      image_url: imageUrl || null,
-      is_flagship: isFlagship,
-      details_markdown: detailsMarkdown || null,
-      is_published: true,
-      updated_at: new Date().toISOString(),
-    };
+  const handleSaveProject = async () => {
+    if (!title.trim()) {
+      toast.error('Title is required.');
+      return;
+    }
 
-    const { error } = await supabase.from('projects').upsert(record);
-    if (error) {
-      setStatusMsg({ type: 'error', text: `Save failed: ${error.message}` });
-    } else {
-      setStatusMsg({ type: 'success', text: `Project "${title}" saved successfully to Supabase!` });
-      onRefreshProjects();
-      setSelectedProjectId(record.id);
+    // Enforce unique title
+    const duplicate = projects.find(
+      (p) =>
+        (selectedProjectId === 'new' ? true : p.id !== selectedProjectId) &&
+        p.title.toLowerCase().trim() === title.toLowerCase().trim()
+    );
+    if (duplicate) {
+      toast.error(`A project with the title "${duplicate.title}" already exists. Titles must be unique.`);
+      return;
+    }
+
+    const projectId = selectedProjectId !== 'new'
+      ? selectedProjectId
+      : title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+
+    if (!projectId) {
+      toast.error('Could not generate a valid project ID from the title.');
+      return;
+    }
+
+    setIsSaving(true);
+    try {
+      const sectionHighlights = extraSections
+        .filter((s) => s.headline.trim() || s.body.trim())
+        .map((s) => (s.headline.trim() && s.body.trim() ? `${s.headline.trim()}: ${s.body.trim()}` : s.headline.trim() || s.body.trim()));
+
+      const highlights = [
+        ...highlightsText.split('\n').map((s) => s.trim()).filter(Boolean),
+        ...sectionHighlights,
+      ];
+
+      const record = {
+        id: projectId,
+        title,
+        subtitle,
+        category,
+        description: subtitle, // Subtitle doubles as description for backward compat
+        highlights,
+        tags: tagsList,
+        stats: [],
+        stone_accent: stoneAccent,
+        github_url: githubUrl || null,
+        live_url: liveUrl || null,
+        image_url: imageUrl || null,
+        is_flagship: isFlagship,
+        details_markdown: null,
+        is_published: true,
+        updated_at: new Date().toISOString(),
+      };
+
+      const { error } = await supabase.from('projects').upsert(record);
+      if (error) {
+        toast.error(`Save failed: ${error.message}`);
+      } else {
+        toast.success(`Project "${title}" saved successfully!`);
+        onRefreshProjects();
+        setSelectedProjectId(record.id);
+      }
+    } catch (err: any) {
+      toast.error(`Save failed: ${err.message || 'Unexpected error'}`);
+    } finally {
+      setIsSaving(false);
     }
   };
 
   const handleDeleteProject = async () => {
     if (selectedProjectId === 'new') return;
-    if (!window.confirm(`Are you sure you want to permanently delete "${title}"?`)) return;
+    setShowDeleteDialog(false);
+    setIsDeleting(true);
 
-    setStatusMsg({ type: 'info', text: 'Deleting project...' });
-    const { error } = await supabase.from('projects').delete().eq('id', selectedProjectId);
-    if (error) {
-      setStatusMsg({ type: 'error', text: `Delete failed: ${error.message}` });
-    } else {
-      setStatusMsg({ type: 'success', text: `Project "${title}" deleted successfully.` });
-      onRefreshProjects();
-      handleSelectProject('new');
+    try {
+      const { error } = await supabase.from('projects').delete().eq('id', selectedProjectId);
+      if (error) {
+        toast.error(`Delete failed: ${error.message}`);
+      } else {
+        toast.success(`Project "${title}" deleted successfully.`);
+        onRefreshProjects();
+        handleSelectProject('new');
+      }
+    } catch (err: any) {
+      toast.error(`Delete failed: ${err.message || 'Unexpected error'}`);
+    } finally {
+      setIsDeleting(false);
     }
   };
 
   const handleSaveProfile = async () => {
-    setStatusMsg({ type: 'info', text: 'Saving profile details to Supabase...' });
-    const profileRecord = {
-      id: 'default_profile',
-      name: profName,
-      role: profRole,
-      status: profStatus,
-      tagline: profTagline,
-      about: profAbout,
-      location: profLocation,
-      email: profEmail,
-      github: profGithub,
-      linkedin: profLinkedin,
-      updated_at: new Date().toISOString(),
-    };
+    setIsSavingProfile(true);
+    toast.info('Saving profile details...');
+    try {
+      const profileRecord = {
+        id: 'default_profile',
+        name: profName,
+        role: profRole,
+        status: profStatus,
+        tagline: profTagline,
+        about: profAbout,
+        location: profLocation,
+        email: profEmail,
+        github: profGithub,
+        linkedin: profLinkedin,
+        updated_at: new Date().toISOString(),
+      };
 
-    const { error } = await supabase.from('profile_info').upsert(profileRecord);
-    if (error) {
-      setStatusMsg({ type: 'error', text: `Profile save failed: ${error.message}` });
-    } else {
-      setStatusMsg({ type: 'success', text: 'Profile information updated successfully!' });
-      if (onRefreshProfile) onRefreshProfile();
+      const { error } = await supabase.from('profile_info').upsert(profileRecord);
+      if (error) {
+        toast.error(`Profile save failed: ${error.message}`);
+      } else {
+        toast.success('Profile information updated successfully!');
+        if (onRefreshProfile) onRefreshProfile();
+      }
+    } catch (err: any) {
+      toast.error(`Profile save failed: ${err.message || 'Unexpected error'}`);
+    } finally {
+      setIsSavingProfile(false);
     }
   };
 
@@ -384,18 +487,18 @@ export const AdminPage: React.FC<AdminPageProps> = ({
     if (!file) return;
 
     if (!file.name.toLowerCase().endsWith('.pdf') && file.type !== 'application/pdf') {
-      setStatusMsg({ type: 'error', text: 'Validation Error: Please select a valid PDF file (.pdf).' });
+      toast.error('Please select a valid PDF file (.pdf).');
       return;
     }
 
     if (file.size > 15 * 1024 * 1024) {
-      setStatusMsg({ type: 'error', text: 'Validation Error: PDF file exceeds 15MB limit.' });
+      toast.error('PDF file exceeds 15MB limit.');
       return;
     }
 
     try {
       setUploadingPdf(true);
-      setStatusMsg({ type: 'info', text: 'Uploading resume.pdf to Supabase Storage bucket...' });
+      toast.info('Uploading resume PDF...');
       const filePath = `resumes/resume.pdf`;
 
       const { error: uploadError } = await supabase.storage
@@ -417,12 +520,9 @@ export const AdminPage: React.FC<AdminPageProps> = ({
         updatedAt: dateStr,
       });
 
-      setStatusMsg({
-        type: 'success',
-        text: `Success: "${file.name}" (${sizeStr}) uploaded and deployed to Supabase Storage bucket!`,
-      });
+      toast.success(`"${file.name}" (${sizeStr}) uploaded successfully!`);
     } catch (err: any) {
-      setStatusMsg({ type: 'error', text: `PDF upload failed: ${err.message}` });
+      toast.error(`PDF upload failed: ${err.message}`);
     } finally {
       setUploadingPdf(false);
     }
@@ -433,13 +533,13 @@ export const AdminPage: React.FC<AdminPageProps> = ({
     if (!file) return;
 
     if (!file.name.toLowerCase().endsWith('.tex') && !file.name.toLowerCase().endsWith('.txt')) {
-      setStatusMsg({ type: 'error', text: 'Validation Error: Please select a valid LaTeX file (.tex or .txt).' });
+      toast.error('Please select a valid LaTeX file (.tex or .txt).');
       return;
     }
 
     try {
       setUploadingTex(true);
-      setStatusMsg({ type: 'info', text: 'Reading and validating LaTeX file...' });
+      toast.info('Reading and validating LaTeX file...');
       const text = await file.text();
 
       // Basic LaTeX sanity validation
@@ -453,7 +553,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
         }
       }
 
-      setStatusMsg({ type: 'info', text: 'Uploading resume.tex to Supabase Storage bucket...' });
+      toast.info('Uploading LaTeX file...');
       const filePath = `resumes/resume.tex`;
       const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
 
@@ -473,12 +573,9 @@ export const AdminPage: React.FC<AdminPageProps> = ({
         updatedAt: dateStr,
       });
 
-      setStatusMsg({
-        type: 'success',
-        text: `Success: "${file.name}" (${sizeStr}) uploaded and deployed to Supabase Storage bucket!`,
-      });
+      toast.success(`"${file.name}" (${sizeStr}) uploaded successfully!`);
     } catch (err: any) {
-      setStatusMsg({ type: 'error', text: `LaTeX upload failed: ${err.message}` });
+      toast.error(`LaTeX upload failed: ${err.message}`);
     } finally {
       setUploadingTex(false);
     }
@@ -486,12 +583,12 @@ export const AdminPage: React.FC<AdminPageProps> = ({
 
   const handleSaveTexSource = async () => {
     if (!currentTexSource.trim()) {
-      setStatusMsg({ type: 'error', text: 'Error: Cannot save empty LaTeX source code.' });
+      toast.error('Cannot save empty LaTeX source code.');
       return;
     }
 
     try {
-      setStatusMsg({ type: 'info', text: 'Saving LaTeX source changes to Supabase Storage...' });
+      toast.info('Saving LaTeX source...');
       const filePath = `resumes/resume.tex`;
       const blob = new Blob([currentTexSource], { type: 'text/plain;charset=utf-8' });
 
@@ -510,12 +607,9 @@ export const AdminPage: React.FC<AdminPageProps> = ({
         updatedAt: dateStr,
       });
 
-      setStatusMsg({
-        type: 'success',
-        text: `Success: LaTeX source code (${sizeStr}) saved and synced to Supabase Storage!`,
-      });
+      toast.success(`LaTeX source (${sizeStr}) saved successfully!`);
     } catch (err: any) {
-      setStatusMsg({ type: 'error', text: `Failed to save LaTeX: ${err.message}` });
+      toast.error(`Failed to save LaTeX: ${err.message}`);
     }
   };
 
@@ -668,6 +762,19 @@ export const AdminPage: React.FC<AdminPageProps> = ({
               <FileText className="w-3.5 h-3.5" />
               <span>Resume & LaTeX</span>
             </button>
+
+            <button
+              type="button"
+              onClick={() => handleTabChange('settings')}
+              className={`admin-tab-btn ${
+                activeTab === 'settings'
+                  ? 'admin-tab-btn-active'
+                  : 'admin-tab-btn-inactive'
+              }`}
+            >
+              <Settings className="w-3.5 h-3.5" />
+              <span>Settings & Theme</span>
+            </button>
           </div>
         </div>
 
@@ -694,29 +801,6 @@ export const AdminPage: React.FC<AdminPageProps> = ({
       </header>
 
       <main className="admin-main-content">
-        {statusMsg && (
-          <div
-            className={`admin-status-banner ${
-              statusMsg.type === 'success'
-                ? 'admin-status-banner-success'
-                : statusMsg.type === 'error'
-                ? 'admin-status-banner-error'
-                : 'admin-status-banner-info'
-            }`}
-          >
-            <div className="flex items-center gap-2">
-              {statusMsg.type === 'success' && <CheckCircle2 className="w-4 h-4 text-green-600 shrink-0" />}
-              {statusMsg.type === 'error' && <AlertCircle className="w-4 h-4 text-red-600 shrink-0" />}
-              <span className="font-medium">{statusMsg.text}</span>
-            </div>
-            <button
-              onClick={() => setStatusMsg(null)}
-              className="admin-status-close-btn"
-            >
-              ×
-            </button>
-          </div>
-        )}
 
         {activeTab === 'projects' && (
           <div className="admin-panel-card">
@@ -757,17 +841,22 @@ export const AdminPage: React.FC<AdminPageProps> = ({
                   <Link
                     to={`/projects/${selectedProjectId}`}
                     target="_blank"
-                    className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-[#1B2127] bg-[#F6F8FA] hover:bg-[#E1E6EB] border border-[#D0D7DE] rounded-xl transition-colors"
+                    className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-foreground bg-card hover:bg-muted border border-border rounded-xl transition-colors"
                   >
-                    <ExternalLink className="w-3.5 h-3.5 text-[#3894B3]" />
+                    <ExternalLink className="w-3.5 h-3.5 text-primary" />
                     <span>View Live Page</span>
                   </Link>
                   <button
-                    onClick={handleDeleteProject}
-                    className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-red-600 bg-red-50 hover:bg-red-100 border border-red-200 rounded-xl transition-colors cursor-pointer"
+                    onClick={() => setShowDeleteDialog(true)}
+                    disabled={isDeleting}
+                    className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-red-600 bg-red-50 hover:bg-red-100 border border-red-200 rounded-xl transition-colors cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
                   >
-                    <Trash2 className="w-3.5 h-3.5" />
-                    <span>Delete</span>
+                    {isDeleting ? (
+                      <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                    ) : (
+                      <Trash2 className="w-3.5 h-3.5" />
+                    )}
+                    <span>{isDeleting ? 'Deleting...' : 'Delete'}</span>
                   </button>
                 </div>
               )}
@@ -796,23 +885,11 @@ export const AdminPage: React.FC<AdminPageProps> = ({
               </span>
             </div>
 
+            {/* Core Identity Fields */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
               <div>
                 <label className="admin-field-label">
-                  Project ID (slug identifier)
-                </label>
-                <input
-                  type="text"
-                  value={id}
-                  onChange={(e) => setId(e.target.value)}
-                  placeholder="e.g. foodfinder"
-                  className="admin-input font-mono"
-                />
-              </div>
-
-              <div>
-                <label className="admin-field-label">
-                  Display Title
+                  Display Title <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
@@ -821,11 +898,16 @@ export const AdminPage: React.FC<AdminPageProps> = ({
                   placeholder="e.g. FoodFinder"
                   className="admin-input font-serif font-bold text-sm"
                 />
+                {selectedProjectId === 'new' && title.trim() && (
+                  <span className="text-[10px] font-mono text-muted-foreground mt-1 block">
+                    Slug: {title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')}
+                  </span>
+                )}
               </div>
 
               <div>
                 <label className="admin-field-label">
-                  Category Tag
+                  Category Tag <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
@@ -835,34 +917,23 @@ export const AdminPage: React.FC<AdminPageProps> = ({
                   className="admin-input"
                 />
               </div>
-
-              <div>
-                <label className="admin-field-label">
-                  Subtitle Tagline
-                </label>
-                <input
-                  type="text"
-                  value={subtitle}
-                  onChange={(e) => setSubtitle(e.target.value)}
-                  placeholder="Short punchy summary"
-                  className="admin-input"
-                />
-              </div>
             </div>
 
+            {/* Subtitle / Summary */}
             <div>
               <label className="admin-field-label">
-                Executive Problem Statement & Summary
+                Subtitle / Summary <span className="text-red-500">*</span>
               </label>
               <textarea
-                rows={3}
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                placeholder="What problem does this system solve? What was the architectural core?"
+                rows={2}
+                value={subtitle}
+                onChange={(e) => setSubtitle(e.target.value)}
+                placeholder="A brief summary of the project — this appears as the preview tagline on cards"
                 className="admin-textarea"
               />
             </div>
 
+            {/* Key Architecture Patterns & Highlights */}
             <div>
               <label className="admin-field-label">
                 Key Architecture Patterns & Highlights (one per line)
@@ -871,113 +942,134 @@ export const AdminPage: React.FC<AdminPageProps> = ({
                 rows={3}
                 value={highlightsText}
                 onChange={(e) => setHighlightsText(e.target.value)}
-                placeholder="Sub-30ms WebSocket synchronization...&#10;Prisma 7 relational schema migrations...&#10;Multi-stage Docker CI/CD..."
+                placeholder={"Sub-30ms WebSocket synchronization...\nPrisma 7 relational schema migrations...\nMulti-stage Docker CI/CD..."}
                 className="admin-textarea font-mono"
               />
             </div>
 
-            <div className="space-y-2">
+            {/* Technology Stack Tags — Chip UI with Devicon Previews */}
+            <div className="space-y-3">
+              <label className="admin-field-label">
+                Technology Stack Tags
+              </label>
+
+              {/* Existing Tags as Chips */}
+              {tagsList.length > 0 && (
+                <div className="flex flex-wrap gap-2">
+                  {tagsList.map((tag, idx) => (
+                    <span
+                      key={idx}
+                      className="inline-flex items-center gap-1.5 pl-2 pr-1 py-1 rounded-lg bg-muted border border-border text-xs font-medium text-foreground"
+                    >
+                      <img
+                        src={`https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/${tag.icon}/${tag.icon}-original.svg`}
+                        alt={tag.name}
+                        className="w-4 h-4"
+                        onError={(e) => {
+                          (e.currentTarget as HTMLImageElement).style.display = 'none';
+                        }}
+                      />
+                      <span>{tag.name}</span>
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveTag(idx)}
+                        className="p-0.5 rounded hover:bg-destructive/10 hover:text-destructive transition-colors cursor-pointer"
+                        title={`Remove ${tag.name}`}
+                      >
+                        <X className="w-3 h-3" />
+                      </button>
+                    </span>
+                  ))}
+                </div>
+              )}
+
+              {/* Add Tags Input */}
+              <div className="flex items-center gap-2">
+                <input
+                  type="text"
+                  value={tagInput}
+                  onChange={(e) => setTagInput(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      e.preventDefault();
+                      handleAddTags();
+                    }
+                  }}
+                  placeholder="Type tag names (comma-separated), press Enter or click +"
+                  className="admin-input font-mono flex-1"
+                />
+                <button
+                  type="button"
+                  onClick={handleAddTags}
+                  className="inline-flex items-center justify-center w-9 h-9 rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 transition-colors cursor-pointer shrink-0"
+                  title="Add tags"
+                >
+                  <Plus className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+
+            {/* Optional Extra Sections */}
+            <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <label className="block text-xs font-bold text-[#57606A]">
-                  Longform Engineering Log & Deep-Dive (Markdown)
+                <label className="admin-field-label mb-0">
+                  Additional Sections (optional)
                 </label>
                 <button
                   type="button"
-                  onClick={() => setPreviewMarkdown(!previewMarkdown)}
-                  className="inline-flex items-center gap-1.5 text-xs text-[#3894B3] font-semibold hover:underline cursor-pointer"
+                  onClick={() => setExtraSections((prev) => [...prev, { headline: '', body: '' }])}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-primary hover:bg-primary/10 border border-primary/30 rounded-xl transition-colors cursor-pointer"
                 >
-                  {previewMarkdown ? <Edit3 className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
-                  <span>{previewMarkdown ? 'Switch to Raw Editor' : 'Preview Formatted Output'}</span>
+                  <Plus className="w-3.5 h-3.5" />
+                  <span>Add Section</span>
                 </button>
               </div>
 
-              {previewMarkdown ? (
-                <div className="admin-markdown-preview">
-                  {detailsMarkdown || 'No markdown content entered.'}
+              {extraSections.map((section, idx) => (
+                <div key={idx} className="p-3 rounded-xl border border-border bg-muted/30 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] font-mono text-muted-foreground uppercase tracking-wider">Section {idx + 1}</span>
+                    <button
+                      type="button"
+                      onClick={() => setExtraSections((prev) => prev.filter((_, i) => i !== idx))}
+                      className="p-1 rounded-lg hover:bg-destructive/10 text-muted-foreground hover:text-destructive transition-colors cursor-pointer"
+                      title="Remove section"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                  <input
+                    type="text"
+                    value={section.headline}
+                    onChange={(e) => {
+                      const updated = [...extraSections];
+                      updated[idx] = { ...updated[idx], headline: e.target.value };
+                      setExtraSections(updated);
+                    }}
+                    placeholder="Section headline"
+                    className="admin-input text-xs font-bold"
+                  />
+                  <textarea
+                    rows={2}
+                    value={section.body}
+                    onChange={(e) => {
+                      const updated = [...extraSections];
+                      updated[idx] = { ...updated[idx], body: e.target.value };
+                      setExtraSections(updated);
+                    }}
+                    placeholder="Section description"
+                    className="admin-textarea text-xs"
+                  />
                 </div>
-              ) : (
-                <textarea
-                  rows={6}
-                  value={detailsMarkdown}
-                  onChange={(e) => setDetailsMarkdown(e.target.value)}
-                  placeholder="## Architecture Overview&#10;&#10;Detailed breakdown of design patterns, benchmarks, and lessons learned..."
-                  className="admin-textarea font-mono"
-                />
-              )}
+              ))}
             </div>
 
-            <div>
-              <label className="admin-field-label">
-                Technology Stack Tags (comma-separated, auto-maps Devicon logos)
-              </label>
-              <input
-                type="text"
-                value={tagsText}
-                onChange={(e) => setTagsText(e.target.value)}
-                placeholder="React 19, Socket.IO, PostgreSQL, Prisma, Docker, Jenkins, Python"
-                className="admin-input font-mono"
-              />
-            </div>
-
-            <div className="admin-metrics-box">
-              <span className="block text-xs font-bold text-[#57606A] uppercase tracking-wider">
-                System Metrics & Benchmarks Grid (Up to 3 Cells)
-              </span>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                <div className="space-y-1">
-                  <input
-                    type="text"
-                    value={stat1Label}
-                    onChange={(e) => setStat1Label(e.target.value)}
-                    placeholder="Metric Label 1"
-                    className="w-full px-2.5 py-1.5 bg-white border border-[#D0D7DE] rounded-lg text-xs"
-                  />
-                  <input
-                    type="text"
-                    value={stat1Val}
-                    onChange={(e) => setStat1Val(e.target.value)}
-                    placeholder="Value 1"
-                    className="w-full px-2.5 py-1.5 bg-white border border-[#D0D7DE] rounded-lg text-xs font-bold font-mono"
-                  />
-                </div>
-                <div className="space-y-1">
-                  <input
-                    type="text"
-                    value={stat2Label}
-                    onChange={(e) => setStat2Label(e.target.value)}
-                    placeholder="Metric Label 2"
-                    className="w-full px-2.5 py-1.5 bg-white border border-[#D0D7DE] rounded-lg text-xs"
-                  />
-                  <input
-                    type="text"
-                    value={stat2Val}
-                    onChange={(e) => setStat2Val(e.target.value)}
-                    placeholder="Value 2"
-                    className="w-full px-2.5 py-1.5 bg-white border border-[#D0D7DE] rounded-lg text-xs font-bold font-mono"
-                  />
-                </div>
-                <div className="space-y-1">
-                  <input
-                    type="text"
-                    value={stat3Label}
-                    onChange={(e) => setStat3Label(e.target.value)}
-                    placeholder="Metric Label 3"
-                    className="w-full px-2.5 py-1.5 bg-white border border-[#D0D7DE] rounded-lg text-xs"
-                  />
-                  <input
-                    type="text"
-                    value={stat3Val}
-                    onChange={(e) => setStat3Val(e.target.value)}
-                    placeholder="Value 3"
-                    className="w-full px-2.5 py-1.5 bg-white border border-[#D0D7DE] rounded-lg text-xs font-bold font-mono"
-                  />
-                </div>
-              </div>
-            </div>
-
+            {/* External Links */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
               <div>
-                <label className="block font-bold text-[#57606A] mb-1">GitHub Repository URL</label>
+                <label className="admin-field-label">
+                  GitHub Repository URL <span className="text-red-500">*</span>
+                </label>
                 <input
                   type="text"
                   value={githubUrl}
@@ -987,42 +1079,45 @@ export const AdminPage: React.FC<AdminPageProps> = ({
                 />
               </div>
               <div>
-                <label className="block font-bold text-[#57606A] mb-1">Live Demo URL</label>
+                <label className="admin-field-label">
+                  Live Demo URL <span className="text-muted-foreground font-normal">(optional)</span>
+                </label>
                 <input
                   type="text"
                   value={liveUrl}
                   onChange={(e) => setLiveUrl(e.target.value)}
-                  placeholder="https://..."
+                  placeholder="https://... (leave blank if not deployed)"
                   className="admin-input font-mono"
                 />
               </div>
             </div>
 
+            {/* Screenshot / Architecture Diagram Upload */}
             <div className="admin-image-upload-box">
-              <label className="block text-xs font-bold text-[#57606A] uppercase tracking-wider">
-                Screenshot / Architecture Diagram (Supabase Storage: <code>portfolio-assets</code>)
+              <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider">
+                Screenshot / Architecture Diagram
               </label>
 
               <div className="flex flex-wrap items-center gap-3">
-                <label className="inline-flex items-center gap-2 px-4 py-2 bg-white hover:bg-[#F6F8FA] border border-[#D0D7DE] rounded-xl text-xs font-semibold text-[#1B2127] cursor-pointer shadow-xs transition-all">
-                  <Upload className="w-3.5 h-3.5 text-[#3894B3]" />
+                <label className="inline-flex items-center gap-2 px-4 py-2 bg-card hover:bg-muted border border-border rounded-xl text-xs font-semibold text-foreground cursor-pointer shadow-xs transition-all">
+                  <Upload className="w-3.5 h-3.5 text-primary" />
                   <span>Upload Screenshot</span>
                   <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
                 </label>
-                {uploading && <span className="text-xs text-[#57606A] animate-pulse">Uploading to Supabase...</span>}
+                {uploading && <span className="text-xs text-muted-foreground animate-pulse">Uploading...</span>}
                 {imageUrl && <span className="text-xs text-green-700 font-semibold">✓ Image Linked</span>}
               </div>
 
               {imageUrl && (
-                <div className="p-3 bg-white border border-[#D0D7DE] rounded-xl flex items-center gap-4">
-                  <img src={imageUrl} alt="Uploaded preview" className="w-20 h-14 object-cover rounded-lg border border-[#E1E6EB]" />
+                <div className="p-3 bg-card border border-border rounded-xl flex items-center gap-4">
+                  <img src={imageUrl} alt="Uploaded preview" className="w-20 h-14 object-cover rounded-lg border border-border" />
                   <div className="flex-1 truncate">
-                    <span className="text-xs font-mono text-[#57606A] truncate block">{imageUrl}</span>
+                    <span className="text-xs font-mono text-muted-foreground truncate block">{imageUrl}</span>
                   </div>
                   <button
                     type="button"
                     onClick={() => setImageUrl('')}
-                    className="text-xs text-red-600 font-semibold hover:underline cursor-pointer"
+                    className="text-xs text-destructive font-semibold hover:underline cursor-pointer"
                   >
                     Remove
                   </button>
@@ -1030,16 +1125,60 @@ export const AdminPage: React.FC<AdminPageProps> = ({
               )}
             </div>
 
-            <div className="pt-4 border-t border-[#E1E6EB] flex justify-end">
+            {/* Save Button with Protective Loading State */}
+            <div className="pt-4 border-t border-border flex justify-end">
               <button
                 type="button"
                 onClick={handleSaveProject}
-                className="admin-save-btn"
+                disabled={isSaving}
+                className="admin-save-btn disabled:opacity-60 disabled:cursor-not-allowed"
               >
-                <Save className="w-4 h-4" />
-                <span>Save Project to Supabase</span>
+                {isSaving ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <Save className="w-4 h-4" />
+                )}
+                <span>{isSaving ? 'Saving...' : 'Save Project'}</span>
               </button>
             </div>
+
+            {/* Delete Confirmation Dialog */}
+            {showDeleteDialog && (
+              <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs" onClick={() => setShowDeleteDialog(false)}>
+                <div className="bg-card border border-border rounded-2xl shadow-2xl p-6 max-w-sm w-full space-y-4" onClick={(e) => e.stopPropagation()}>
+                  <div className="space-y-1.5">
+                    <h3 className="text-sm font-bold text-foreground">Delete Project</h3>
+                    <p className="text-xs text-muted-foreground">
+                      Are you sure you want to permanently delete <strong>"{title}"</strong>? This action cannot be undone.
+                    </p>
+                  </div>
+                  <div className="flex items-center justify-end gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setShowDeleteDialog(false)}
+                      className="px-4 py-2 rounded-xl text-xs font-semibold text-foreground bg-muted hover:bg-muted/80 border border-border transition-colors cursor-pointer"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleDeleteProject}
+                      disabled={isDeleting}
+                      className="px-4 py-2 rounded-xl text-xs font-semibold text-white bg-red-600 hover:bg-red-700 transition-colors cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
+                    >
+                      {isDeleting ? (
+                        <span className="flex items-center gap-1.5">
+                          <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                          Deleting...
+                        </span>
+                      ) : (
+                        'Delete Permanently'
+                      )}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         )}
 
@@ -1151,10 +1290,15 @@ export const AdminPage: React.FC<AdminPageProps> = ({
               <button
                 type="button"
                 onClick={handleSaveProfile}
-                className="admin-save-btn"
+                disabled={isSavingProfile}
+                className="admin-save-btn disabled:opacity-60 disabled:cursor-not-allowed"
               >
-                <Save className="w-4 h-4" />
-                <span>Save Profile Info</span>
+                {isSavingProfile ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <Save className="w-4 h-4" />
+                )}
+                <span>{isSavingProfile ? 'Saving...' : 'Save Profile Info'}</span>
               </button>
             </div>
           </div>
@@ -1329,6 +1473,99 @@ export const AdminPage: React.FC<AdminPageProps> = ({
                   />
                 )}
               </div>
+            </div>
+          </div>
+        )}
+
+        {/* TAB 4: SETTINGS & THEME APPEARANCE */}
+        {activeTab === 'settings' && (
+          <div className="admin-panel-card animate-fadeIn space-y-6">
+            <div className="admin-section-header">
+              <div>
+                <span className="text-xs font-mono font-bold uppercase tracking-wider text-[#3894B3]">
+                  System Preferences
+                </span>
+                <h2 className="admin-section-title">Settings & Theme Appearance</h2>
+              </div>
+              <p className="admin-section-desc">
+                Configure color themes and visual preferences across Vincent&apos;s portfolio. Changes persist instantly across all devices.
+              </p>
+            </div>
+
+            {/* Appearance Card */}
+            <div className="p-5 sm:p-6 bg-[#FAFBFD] dark:bg-[#161B22] border border-[#E1E6EB] dark:border-[#30363D] rounded-2xl space-y-5">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2">
+                    <Palette className="w-5 h-5 text-[#3894B3]" />
+                    <h3 className="text-sm font-bold text-[#1B2127] dark:text-[#F0F6FC]">
+                      Curated Theme Presets
+                    </h3>
+                  </div>
+                  <p className="text-xs text-[#57606A] dark:text-[#8B949E]">
+                    Managed with <code className="font-mono text-[11px] px-1 py-0.5 rounded bg-white dark:bg-[#21262D] border border-[#D0D7DE] dark:border-[#30363D]">next-themes</code>, cached in <code className="font-mono text-[11px] px-1 py-0.5 rounded bg-white dark:bg-[#21262D] border border-[#D0D7DE] dark:border-[#30363D]">localStorage</code>, and initialized via inline head script for 0ms flash.
+                  </p>
+                </div>
+
+                <ThemeToggle showLabels={true} />
+              </div>
+
+              {/* Interactive Theme Grid */}
+              <ThemeSelector layout="grid" />
+            </div>
+
+            {/* Project Edit & Links Quick Policy */}
+            <div className="p-5 sm:p-6 bg-[#FAFBFD] dark:bg-[#161B22] border border-[#E1E6EB] dark:border-[#30363D] rounded-2xl space-y-3">
+              <div className="flex items-center gap-2">
+                <Code2 className="w-5 h-5 text-[#588A75]" />
+                <h3 className="text-sm font-bold text-[#1B2127] dark:text-[#F0F6FC]">
+                  Project Code & Live Demo URL Policies
+                </h3>
+              </div>
+              <p className="text-xs text-[#57606A] dark:text-[#8B949E] leading-relaxed">
+                When adding or editing flagship systems:
+              </p>
+              <ul className="text-xs text-[#57606A] dark:text-[#8B949E] space-y-1.5 list-disc list-inside">
+                <li>
+                  <strong className="text-[#1B2127] dark:text-[#F0F6FC]">GitHub Repository (Code)</strong>: Recommended for engineering proof. If provided, the card renders a &ldquo;Code&rdquo; button.
+                </li>
+                <li>
+                  <strong className="text-[#1B2127] dark:text-[#F0F6FC]">Live Demo URL</strong>: Completely optional. If left blank, the card cleanly omits the &ldquo;Live Demo&rdquo; button until you deploy.
+                </li>
+                <li>
+                  <strong className="text-[#1B2127] dark:text-[#F0F6FC]">Card Streamlining</strong>: Homepage cards prioritize a brief description, image, and full tech stacks, with the &ldquo;Edit ✎&rdquo; action securely consolidated inside this Admin CMS.
+                </li>
+              </ul>
+
+              <div className="pt-2">
+                <button
+                  type="button"
+                  onClick={() => handleTabChange('projects')}
+                  className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-[#1B2127] dark:bg-[#3894B3] hover:bg-[#3894B3] dark:hover:bg-[#2B6D83] text-white rounded-xl text-xs font-semibold transition-all cursor-pointer shadow-xs"
+                >
+                  <FolderKanban className="w-3.5 h-3.5" />
+                  <span>Go to Project Editor →</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Session Security & Diagnostics */}
+            <div className="p-5 sm:p-6 bg-[#FAFBFD] dark:bg-[#161B22] border border-[#E1E6EB] dark:border-[#30363D] rounded-2xl space-y-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <ShieldCheck className="w-5 h-5 text-emerald-600" />
+                  <h3 className="text-sm font-bold text-[#1B2127] dark:text-[#F0F6FC]">
+                    Admin Session Status
+                  </h3>
+                </div>
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300 text-xs font-mono font-semibold">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                  Authorized
+                </span>
+              </div>
+              <p className="text-xs text-[#57606A] dark:text-[#8B949E]">
+                Signed in as <strong className="font-mono text-[#1B2127] dark:text-white">{user.email}</strong> via GitHub OAuth. Row-Level Security write policies are active.
+              </p>
             </div>
           </div>
         )}

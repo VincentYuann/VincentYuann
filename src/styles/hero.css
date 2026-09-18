@@ -2,64 +2,56 @@
 
 /* Hero Section: Editorial Narrative Header */
 .hero-wrapper {
-  @apply w-full max-w-4xl mx-auto px-4 sm:px-8 pt-8 sm:pt-12 pb-6;
+  @apply w-full max-w-4xl mx-auto px-4 sm:px-8 pt-10 sm:pt-16 pb-8;
 }
 
 .hero-content {
-  @apply mb-6 space-y-5;
-}
-
-.hero-badge-row {
-  @apply flex flex-wrap items-center gap-2.5 mb-2;
-}
-
-.hero-badge {
-  @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#EBF6F9] border border-[#3894B3]/30 text-xs font-semibold text-[#2B6D83] shadow-2xs;
+  @apply mb-8 space-y-6;
 }
 
 .hero-admin-pill {
-  @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 hover:bg-amber-100 border border-amber-200 text-amber-800 text-xs font-mono font-semibold transition-colors cursor-pointer shadow-2xs;
+  @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-accent/10 hover:bg-accent/20 border border-accent/30 text-accent text-xs font-mono font-semibold transition-colors cursor-pointer mb-2 shadow-2xs;
 }
 
 .hero-headline {
-  @apply text-3xl sm:text-5xl font-serif font-bold text-[#1B2127] tracking-tight leading-[1.15];
+  @apply text-4xl sm:text-6xl font-serif font-normal text-foreground tracking-tight leading-[1.12];
 }
 
 .hero-subtext {
-  @apply text-sm sm:text-base text-[#57606A] max-w-2xl leading-relaxed font-normal;
+  @apply text-base sm:text-lg text-muted-foreground max-w-2xl leading-relaxed font-normal;
 }
 
 /* Technical Specialization Focus Chips */
 .hero-focus-chips {
-  @apply flex flex-wrap items-center gap-2 pt-1;
+  @apply flex flex-wrap items-center gap-2 pt-2;
 }
 
 .hero-focus-chip {
-  @apply inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#FAFBFD] border border-[#D0D7DE] text-[11px] font-mono text-[#24292F] font-medium;
+  @apply inline-flex items-center gap-2 px-3 py-1 rounded-full bg-card border border-border text-[10px] font-sans uppercase tracking-wider text-foreground font-semibold transition-colors;
 }
 
 .hero-focus-dot {
-  @apply w-1.5 h-1.5 rounded-full;
+  @apply w-1.5 h-1.5 rounded-full shrink-0;
 }
 
-/* Quick Metrics Grid */
+/* Quick Metrics Grid: Hairlines over shadows */
 .hero-metrics-grid {
-  @apply grid grid-cols-3 gap-3 pt-5 border-t border-[#E1E6EB];
+  @apply grid grid-cols-3 gap-3 pt-6 border-t border-border;
 }
 
 .hero-metric-card {
-  @apply p-3 sm:p-4 rounded-xl bg-[#FAFBFD] border border-[#E1E6EB] text-center sm:text-left transition-all hover:border-[#8C959F];
+  @apply p-3.5 sm:p-4 rounded-xl bg-card border border-border text-center sm:text-left transition-colors hover:border-accent/40;
 }
 
 .hero-metric-val {
-  @apply text-lg sm:text-2xl font-bold font-mono text-[#1B2127] tracking-tight;
+  @apply text-xl sm:text-2xl font-serif font-bold text-foreground tracking-tight;
 }
 
 .hero-metric-label {
-  @apply text-[11px] font-semibold text-[#6E7E8E] uppercase tracking-wider mt-0.5;
+  @apply text-[10px] sm:text-[11px] font-sans font-semibold text-muted-foreground uppercase tracking-wider mt-1;
 }
 
 /* Stream Hint */
 .hero-stream-hint {
-  @apply mt-6 flex items-center gap-2 text-xs font-mono text-[#6E7E8E];
+  @apply mt-8 flex items-center gap-2.5 text-xs font-sans;
 }

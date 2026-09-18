@@ -27,9 +27,6 @@ export const Footer: React.FC<FooterProps> = ({ profile, showCta = true }) => {
     <footer className="footer-container" id="contact">
       <div className="footer-grid">
         <div className="footer-main-col">
-          <span className="footer-eyebrow">
-            Get in touch
-          </span>
           <h3 className="footer-heading">
             Let's build something exceptional together.
           </h3>
@@ -43,12 +40,12 @@ export const Footer: React.FC<FooterProps> = ({ profile, showCta = true }) => {
 
           {/* Short & Concise Call-to-Action Card */}
           {showCta && (
-            <div className="p-5 rounded-2xl bg-[#FAFBFD] border border-[#E1E6EB] mb-6 space-y-3 shadow-xs">
+            <div className="p-5 rounded-2xl bg-card border border-border mb-6 space-y-3 shadow-2xs">
               <div className="space-y-1">
-                <h4 className="text-base font-serif font-bold text-[#1B2127]">
+                <h4 className="text-base font-serif font-bold text-foreground">
                   Have a challenge or an open role?
                 </h4>
-                <p className="text-xs text-[#57606A] leading-relaxed max-w-lg">
+                <p className="text-xs text-muted-foreground leading-relaxed max-w-lg">
                   Building real-time systems, applied AI, or looking for an engineer who values craft—let's talk.
                 </p>
               </div>
@@ -56,7 +53,7 @@ export const Footer: React.FC<FooterProps> = ({ profile, showCta = true }) => {
               <div className="flex flex-wrap items-center gap-3 pt-0.5">
                 <Link
                   to="/contact"
-                  className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#1B2127] text-white text-xs font-semibold hover:bg-[#3894B3] shadow-xs transition-all cursor-pointer group"
+                  className="footer-btn-primary group"
                 >
                   <span>Hire Me / Get in Touch</span>
                   <span className="group-hover:translate-x-0.5 transition-transform">→</span>
@@ -64,10 +61,10 @@ export const Footer: React.FC<FooterProps> = ({ profile, showCta = true }) => {
 
                 <Link
                   to="/projects"
-                  className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border border-[#D0D7DE] bg-white text-[#1B2127] text-xs font-semibold hover:bg-[#F6F8FA] transition-all"
+                  className="footer-btn-secondary"
                 >
                   <span>Browse Systems</span>
-                  <ArrowUpRight className="w-3.5 h-3.5 text-[#6E7E8E]" />
+                  <ArrowUpRight className="w-3.5 h-3.5 text-muted-foreground" />
                 </Link>
               </div>
             </div>

@@ -14,6 +14,7 @@ interface ProjectDetailPageProps {
   profile: ProfileData;
   onOpenCommand: () => void;
   onOpenProfile?: () => void;
+  onOpenSettings?: () => void;
 }
 
 export const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({
@@ -21,6 +22,7 @@ export const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({
   profile,
   onOpenCommand,
   onOpenProfile,
+  onOpenSettings,
 }) => {
   const { id } = useParams<{ id: string }>();
 
@@ -40,7 +42,7 @@ export const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({
   if (!project) {
     return (
       <div className="detail-page-container">
-        <Navbar onOpenCommand={onOpenCommand} onOpenProfile={onOpenProfile} profile={profile} />
+        <Navbar onOpenCommand={onOpenCommand} onOpenProfile={onOpenProfile} onOpenSettings={onOpenSettings} profile={profile} />
         <main className="detail-notfound-main">
           <div className="detail-notfound-card">
             <div className="detail-notfound-badge">
@@ -66,7 +68,7 @@ export const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({
 
   return (
     <div className="detail-page-container">
-      <Navbar onOpenCommand={onOpenCommand} onOpenProfile={onOpenProfile} profile={profile} />
+      <Navbar onOpenCommand={onOpenCommand} onOpenProfile={onOpenProfile} onOpenSettings={onOpenSettings} profile={profile} />
 
       <main className="detail-main-content">
         {/* Breadcrumb & Navigation Bar */}

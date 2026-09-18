@@ -25,12 +25,13 @@ interface ResumePageProps {
   profile: ProfileData;
   onOpenCommand: () => void;
   onOpenProfile?: () => void;
+  onOpenSettings?: () => void;
 }
 
 const SUPABASE_PDF_URL = supabase.storage.from('portfolio-assets').getPublicUrl('resumes/resume.pdf').data.publicUrl;
 const SUPABASE_TEX_URL = supabase.storage.from('portfolio-assets').getPublicUrl('resumes/resume.tex').data.publicUrl;
 
-export const ResumePage: React.FC<ResumePageProps> = ({ profile, onOpenCommand, onOpenProfile }) => {
+export const ResumePage: React.FC<ResumePageProps> = ({ profile, onOpenCommand, onOpenProfile, onOpenSettings }) => {
   const [activeTab, setActiveTab] = useState<'rendered' | 'source'>('rendered');
   const { isAdmin } = useAuth();
   const [latexSource, setLatexSource] = useState<string>('');
@@ -107,7 +108,7 @@ export const ResumePage: React.FC<ResumePageProps> = ({ profile, onOpenCommand, 
 
   return (
     <div className="resume-page-container">
-      <Navbar onOpenCommand={onOpenCommand} onOpenProfile={onOpenProfile} profile={profile} />
+      <Navbar onOpenCommand={onOpenCommand} onOpenProfile={onOpenProfile} onOpenSettings={onOpenSettings} profile={profile} />
 
       <main className="resume-main-content">
         {/* Header Title Section */}

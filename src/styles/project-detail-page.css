@@ -2,7 +2,7 @@
 
 /* Project Detail Page: Level 2 Architectural Deep-Dive */
 .detail-page-container {
-  @apply min-h-screen bg-[#FAFBFD] text-gray-900 flex flex-col;
+  @apply min-h-screen bg-background text-foreground flex flex-col transition-colors duration-200;
 }
 
 /* 404 Not Found State */
@@ -15,23 +15,23 @@
 }
 
 .detail-notfound-badge {
-  @apply w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center mx-auto text-gray-500 font-mono text-lg;
+  @apply w-12 h-12 rounded-full bg-muted flex items-center justify-center mx-auto text-muted-foreground font-mono text-lg;
 }
 
 .detail-notfound-title {
-  @apply text-2xl font-serif font-bold text-[#1B2127];
+  @apply text-2xl font-serif font-bold text-foreground;
 }
 
 .detail-notfound-text {
-  @apply text-xs text-[#57606A];
+  @apply text-xs text-muted-foreground;
 }
 
 .detail-notfound-code {
-  @apply font-mono bg-gray-100 px-1 py-0.5 rounded;
+  @apply font-mono bg-muted px-1 py-0.5 rounded;
 }
 
 .detail-notfound-link {
-  @apply inline-flex items-center gap-2 px-4 py-2 bg-[#1B2127] text-white text-xs font-semibold rounded-xl hover:bg-[#2C343E] transition-colors;
+  @apply inline-flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground text-xs font-semibold rounded-xl hover:bg-primary/90 transition-colors;
 }
 
 /* Main Detail Content */
@@ -41,31 +41,31 @@
 
 /* Top Navigation Bar */
 .detail-top-nav {
-  @apply flex flex-wrap items-center justify-between gap-4 border-b border-[#E1E6EB] pb-4;
+  @apply flex flex-wrap items-center justify-between gap-4 border-b border-border pb-4;
 }
 
 .detail-back-link {
-  @apply flex items-center gap-1.5 text-xs font-semibold text-[#57606A] hover:text-[#1B2127] transition-colors bg-white px-3 py-1.5 rounded-lg border border-[#D0D7DE] shadow-xs;
+  @apply flex items-center gap-1.5 text-[11px] font-sans uppercase tracking-wider font-semibold text-muted-foreground hover:text-foreground transition-colors bg-card px-3 py-1.5 rounded-lg border border-border shadow-2xs;
 }
 
 .detail-breadcrumb-trail {
-  @apply hidden sm:flex items-center gap-2 text-xs text-[#6E7E8E];
+  @apply hidden sm:flex items-center gap-2 text-[10px] font-sans uppercase tracking-wider text-muted-foreground font-medium;
 }
 
 .detail-breadcrumb-level {
-  @apply text-[#3894B3];
+  @apply text-accent;
 }
 
 .detail-breadcrumb-id {
-  @apply font-mono text-[#1B2127] font-medium;
+  @apply font-mono text-foreground font-medium;
 }
 
 .detail-category-badge {
-  @apply text-[11px] font-semibold tracking-wider uppercase px-2.5 py-1 rounded-md;
+  @apply text-[10px] font-sans font-semibold tracking-wider uppercase px-2.5 py-1 rounded-md;
 }
 
 .detail-flagship-badge {
-  @apply text-[11px] uppercase font-bold tracking-wider px-2.5 py-1 rounded bg-[#3894B3]/10 text-[#3894B3] border border-[#3894B3]/25;
+  @apply text-[10px] font-sans uppercase font-bold tracking-wider px-2.5 py-1 rounded bg-accent/10 text-accent border border-accent/25;
 }
 
 /* Hero Section */
@@ -82,11 +82,11 @@
 }
 
 .detail-title {
-  @apply text-3xl sm:text-5xl font-serif font-bold text-[#1B2127] tracking-tight;
+  @apply text-3xl sm:text-5xl font-serif font-normal text-foreground tracking-tight leading-tight;
 }
 
 .detail-subtitle {
-  @apply text-lg sm:text-xl text-[#57606A] font-light leading-relaxed max-w-3xl;
+  @apply text-base sm:text-lg text-muted-foreground font-normal leading-relaxed max-w-3xl;
 }
 
 .detail-cta-row {
@@ -94,16 +94,16 @@
 }
 
 .detail-cta-github {
-  @apply inline-flex items-center gap-2 px-5 py-2.5 text-xs sm:text-sm font-semibold text-white bg-[#1B2127] hover:bg-[#2C343E] rounded-xl shadow-sm transition-all;
+  @apply inline-flex items-center gap-2 px-4 sm:px-5 py-2.5 text-[11px] font-sans uppercase tracking-wider font-bold text-primary-foreground bg-primary hover:bg-primary/90 rounded-xl shadow-xs transition-all border border-primary/20;
 }
 
 .detail-cta-demo {
-  @apply inline-flex items-center gap-2 px-5 py-2.5 text-xs sm:text-sm font-semibold text-[#1B2127] bg-white hover:bg-[#F6F8FA] border border-[#D0D7DE] rounded-xl shadow-xs transition-all;
+  @apply inline-flex items-center gap-2 px-4 sm:px-5 py-2.5 text-[11px] font-sans uppercase tracking-wider font-semibold text-foreground bg-card hover:bg-muted border border-border rounded-xl shadow-2xs transition-all;
 }
 
 /* Image Showcase */
 .detail-image-card {
-  @apply rounded-2xl border border-[#D0D7DE] bg-white overflow-hidden shadow-xs;
+  @apply rounded-2xl border border-border bg-card overflow-hidden shadow-2xs;
 }
 
 .detail-image-img {
@@ -111,11 +111,11 @@
 }
 
 .detail-image-footer {
-  @apply px-5 py-3 bg-[#FAFBFC] border-t border-[#E1E6EB] text-xs text-[#57606A] flex items-center justify-between;
+  @apply px-5 py-3 bg-muted/30 border-t border-border text-xs text-muted-foreground flex items-center justify-between;
 }
 
 .detail-image-footer-code {
-  @apply font-mono text-[11px] text-[#6E7E8E];
+  @apply font-mono text-[11px] text-muted-foreground;
 }
 
 /* Common Section Blocks */
@@ -124,7 +124,7 @@
 }
 
 .detail-section-label {
-  @apply flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#6E7E8E];
+  @apply flex items-center gap-2 text-[11px] font-sans font-bold uppercase tracking-wider text-muted-foreground;
 }
 
 /* Benchmarks Grid */
@@ -133,20 +133,20 @@
 }
 
 .detail-benchmark-cell {
-  @apply p-4 rounded-xl bg-white border border-[#D0D7DE] space-y-1 shadow-xs hover:border-[#8C959F] transition-colors;
+  @apply p-4 rounded-xl bg-card border border-border space-y-1 shadow-2xs hover:border-accent/40 transition-colors;
 }
 
 .detail-benchmark-label {
-  @apply text-xs font-medium text-[#6E7E8E] uppercase tracking-wider;
+  @apply text-[10px] font-sans font-semibold text-muted-foreground uppercase tracking-wider;
 }
 
 .detail-benchmark-value {
-  @apply text-lg sm:text-xl font-bold text-[#1B2127] font-mono;
+  @apply text-lg sm:text-xl font-bold text-foreground font-mono;
 }
 
 /* Description Panel */
 .detail-description-card {
-  @apply p-6 rounded-2xl bg-white border border-[#D0D7DE] text-[#24292F] text-base leading-relaxed shadow-xs;
+  @apply p-6 rounded-2xl bg-card border border-border text-foreground text-sm sm:text-base leading-relaxed shadow-2xs;
 }
 
 /* Invariants List */
@@ -155,11 +155,11 @@
 }
 
 .detail-invariant-card {
-  @apply flex items-start gap-3 p-4 rounded-xl bg-white border border-[#D0D7DE] text-sm text-[#24292F] shadow-xs;
+  @apply flex items-start gap-3 p-4 rounded-xl bg-card border border-border text-sm text-foreground shadow-2xs;
 }
 
 .detail-invariant-check {
-  @apply w-4 h-4 text-[#588A75] shrink-0 mt-0.5;
+  @apply w-4 h-4 text-accent shrink-0 mt-0.5;
 }
 
 .detail-invariant-text {
@@ -168,19 +168,19 @@
 
 /* Tags Panel */
 .detail-tags-card {
-  @apply flex flex-wrap gap-2.5 p-4 bg-white border border-[#D0D7DE] rounded-2xl shadow-xs;
+  @apply flex flex-wrap gap-2.5 p-4 bg-card border border-border rounded-2xl shadow-2xs;
 }
 
 /* Markdown Log Panel */
 .detail-markdown-card {
-  @apply p-6 sm:p-8 rounded-2xl bg-white border border-[#D0D7DE] text-sm sm:text-base text-[#24292F] space-y-4 whitespace-pre-line leading-relaxed font-sans shadow-xs;
+  @apply p-6 sm:p-8 rounded-2xl bg-card border border-border text-sm sm:text-base text-foreground space-y-4 whitespace-pre-line leading-relaxed font-sans shadow-2xs;
 }
 
 /* Pagination Footer */
 .detail-pagination-footer {
-  @apply pt-8 border-t border-[#E1E6EB] flex items-center justify-between gap-4;
+  @apply pt-8 border-t border-border flex items-center justify-between gap-4;
 }
 
 .detail-pagination-btn {
-  @apply flex items-center gap-2 px-4 py-2 bg-white border border-[#D0D7DE] hover:border-[#8C959F] rounded-xl text-xs font-semibold text-[#57606A] hover:text-[#1B2127] shadow-xs transition-all;
+  @apply flex items-center gap-2 px-4 py-2 bg-card border border-border hover:border-accent/40 rounded-xl text-[11px] font-sans uppercase tracking-wider font-semibold text-muted-foreground hover:text-foreground shadow-2xs transition-all;
 }

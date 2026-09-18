@@ -2,23 +2,23 @@
 
 /* Command Palette: Basic Layout */
 .command-backdrop {
-  @apply fixed inset-0 z-50 flex items-start justify-center pt-20 px-4 bg-black/50;
+  @apply fixed inset-0 z-50 flex items-start justify-center pt-20 px-4 bg-black/60 backdrop-blur-xs;
 }
 
 .command-modal {
-  @apply relative w-full max-w-lg rounded-lg bg-white border border-gray-300 shadow-lg overflow-hidden;
+  @apply relative w-full max-w-lg rounded-xl bg-card border border-border text-foreground shadow-2xl overflow-hidden;
 }
 
 .command-search-header {
-  @apply flex items-center gap-3 px-4 py-3 border-b border-gray-200;
+  @apply flex items-center gap-3 px-4 py-3 border-b border-border;
 }
 
 .command-search-input {
-  @apply w-full bg-transparent text-sm text-gray-900 placeholder-gray-400 focus:outline-none font-mono;
+  @apply w-full bg-transparent text-sm text-foreground placeholder:text-muted-foreground focus:outline-none font-mono;
 }
 
 .command-close-btn {
-  @apply p-1 text-gray-400 hover:text-gray-700 cursor-pointer;
+  @apply p-1 text-muted-foreground hover:text-foreground cursor-pointer;
 }
 
 .command-results-list {
@@ -26,11 +26,11 @@
 }
 
 .command-group-heading {
-  @apply px-3 py-1 text-[10px] uppercase font-mono tracking-wider text-gray-400;
+  @apply px-3 py-1 text-[10px] uppercase font-mono tracking-wider text-muted-foreground;
 }
 
 .command-item {
-  @apply flex items-center justify-between px-3 py-2 rounded hover:bg-gray-100 cursor-pointer text-xs;
+  @apply flex items-center justify-between px-3 py-2 rounded-lg hover:bg-muted cursor-pointer text-xs transition-colors;
 }
 
 .command-item-main {
@@ -38,15 +38,15 @@
 }
 
 .command-item-title {
-  @apply font-medium text-gray-900;
+  @apply font-medium text-foreground;
 }
 
 .command-item-sub {
-  @apply text-[11px] text-gray-500;
+  @apply text-[11px] text-muted-foreground;
 }
 
 .command-item-meta {
-  @apply flex items-center gap-2 text-gray-400;
+  @apply flex items-center gap-2 text-muted-foreground;
 }
 
 .command-item-icon {
@@ -54,5 +54,5 @@
 }
 
 .command-footer {
-  @apply px-4 py-2 bg-gray-50 border-t border-gray-200 flex justify-between text-[11px] font-mono text-gray-400;
+  @apply px-4 py-2 bg-muted/40 border-t border-border flex justify-between text-[11px] font-mono text-muted-foreground;
 }

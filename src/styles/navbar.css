@@ -2,7 +2,7 @@
 
 /* Navbar: Sticky Top Navigation */
 .navbar-wrapper {
-  @apply border-b border-[#E1E6EB] bg-white/95 backdrop-blur-md sticky top-0 z-30 px-4 sm:px-8 py-3.5 flex items-center justify-between transition-all;
+  @apply border-b border-border bg-background/90 backdrop-blur-md sticky top-0 z-30 px-4 sm:px-8 py-3 flex items-center justify-between transition-colors;
 }
 
 .navbar-brand-group {
@@ -14,15 +14,15 @@
 }
 
 .navbar-brand-avatar {
-  @apply w-8 h-8 rounded-full bg-[#1B2127] text-white flex items-center justify-center font-serif text-sm font-bold shadow-xs group-hover:scale-105 transition-transform;
+  @apply w-8 h-8 rounded-full bg-accent text-white flex items-center justify-center font-serif text-sm font-bold shadow-xs group-hover:scale-105 transition-transform;
 }
 
 .navbar-brand-name {
-  @apply text-sm font-bold text-[#1B2127] block leading-tight group-hover:text-[#3894B3] transition-colors;
+  @apply text-base font-serif font-bold text-foreground block leading-tight group-hover:text-accent transition-colors;
 }
 
 .navbar-brand-role {
-  @apply text-[11px] text-[#6E7E8E] font-medium hidden sm:block;
+  @apply text-[10px] font-sans uppercase tracking-wider text-muted-foreground font-semibold hidden sm:block;
 }
 
 .navbar-actions {
@@ -30,57 +30,57 @@
 }
 
 .navbar-status-pill {
-  @apply hidden lg:flex items-center gap-2 px-2.5 py-1 rounded-full bg-[#EBF6F9] border border-[#3894B3]/30 text-[#2B6D83] text-[11px] font-medium;
+  @apply hidden lg:flex items-center gap-2 px-2.5 py-1 rounded-full bg-accent/10 border border-accent/25 text-foreground text-[10px] font-sans uppercase tracking-wider font-semibold;
 }
 
 .navbar-status-dot {
-  @apply w-1.5 h-1.5 rounded-full bg-[#3894B3] animate-pulse;
+  @apply w-1.5 h-1.5 rounded-full bg-accent animate-pulse;
 }
 
 .navbar-link {
-  @apply px-2.5 py-1.5 text-xs font-semibold rounded-lg border transition-all;
+  @apply px-3 py-1.5 text-[11px] font-sans uppercase tracking-wider font-semibold rounded-lg transition-all;
 }
 
 .navbar-link-active {
-  @apply bg-[#F6F8FA] text-[#1B2127] border-[#D0D7DE] font-bold;
+  @apply bg-card text-accent border border-accent/30 font-bold shadow-2xs;
 }
 
 .navbar-link-inactive {
-  @apply text-[#57606A] hover:text-[#1B2127] hover:bg-[#F6F8FA] border-[#D0D7DE];
+  @apply text-muted-foreground hover:text-foreground hover:bg-card/60 border border-transparent;
 }
 
 .navbar-search-btn {
-  @apply flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-[#F6F8FA] hover:bg-[#E1E6EB] border border-[#D0D7DE] text-xs text-[#57606A] hover:text-[#1B2127] transition-all cursor-pointer shadow-xs;
+  @apply flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-card hover:bg-muted border border-border text-xs text-muted-foreground hover:text-foreground transition-all cursor-pointer shadow-2xs;
 }
 
 .navbar-search-icon {
-  @apply w-3.5 h-3.5 text-[#6E7E8E];
+  @apply w-3.5 h-3.5 text-muted-foreground;
 }
 
 .navbar-search-label {
-  @apply hidden md:inline;
+  @apply hidden md:inline text-[11px] font-sans uppercase tracking-wider;
 }
 
 .navbar-search-kbd {
-  @apply px-1 py-0.5 rounded bg-white text-[10px] text-[#4A5560] font-mono border border-[#D0D7DE];
+  @apply px-1 py-0.5 rounded bg-muted text-[10px] text-muted-foreground font-mono border border-border;
 }
 
 .navbar-cluster-divider {
-  @apply flex items-center gap-1 sm:gap-2 ml-1 pl-1 sm:pl-2 border-l border-[#E1E6EB];
+  @apply flex items-center gap-1 sm:gap-2 ml-1 pl-1 sm:pl-2 border-l border-border;
 }
 
 .navbar-hire-btn {
-  @apply px-3 py-1.5 rounded-lg bg-[#1B2127] hover:bg-[#3894B3] text-white text-xs font-semibold transition-all shadow-xs flex items-center gap-1;
+  @apply px-3.5 py-1.5 rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground text-[11px] font-sans uppercase tracking-wider font-bold transition-all shadow-xs flex items-center gap-1.5 border border-primary/20;
 }
 
 .navbar-icon-btn {
-  @apply p-1.5 rounded-md text-[#57606A] hover:text-[#1B2127] hover:bg-[#F6F8FA] transition-colors;
+  @apply p-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-card transition-colors;
 }
 
 .navbar-icon-btn-admin-active {
-  @apply p-1.5 rounded-md transition-colors text-[#1B2127] bg-[#F6F8FA];
+  @apply p-1.5 rounded-md transition-colors text-accent bg-accent/10 border border-accent/20;
 }
 
 .navbar-icon-btn-admin-inactive {
-  @apply p-1.5 rounded-md transition-colors text-[#8C959F] hover:text-[#1B2127] hover:bg-[#F6F8FA];
+  @apply p-1.5 rounded-md transition-colors text-muted-foreground hover:text-foreground hover:bg-card;
 }
