@@ -1,5 +1,5 @@
 import React from 'react';
-import { ExternalLink, ArrowRight, Layers } from 'lucide-react';
+import { ArrowRight, Layers } from 'lucide-react';
 import { GithubIcon } from './Icons';
 import { TechBadge } from './TechBadge';
 import { CornerBrackets } from './JapaneseMotifs';
@@ -20,11 +20,11 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
   onViewDetails 
 }) => {
   return (
-    <div className={`project-card relative z-0 ${isActive ? 'active card-stack' : ''}`}>
+    <article className={`project-card relative z-0 ${isActive ? 'active' : ''}`}>
       {/* Top Bar: Category Pill & System Indicator */}
       <div className="card-header relative z-10">
         <span 
-          className="card-category text-[10px] font-sans font-semibold uppercase tracking-wider px-2.5 py-1 rounded-sm border"
+          className="card-category text-[10px] font-sans font-semibold uppercase tracking-wider px-2 py-0.5 rounded-sm border"
           style={{
             backgroundColor: `${project.stoneAccent || '#B5482E'}12`,
             color: project.stoneAccent || '#B5482E',
@@ -40,17 +40,13 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
             style={{ backgroundColor: project.stoneAccent || '#B5482E' }}
           />
           <span className="card-beacon-text font-sans text-[10px] tracking-wider uppercase font-semibold text-muted-foreground">
-            {isActive ? 'Featured System' : 'Architecture'}
+            {isActive ? 'Flagship' : 'Architecture'}
           </span>
         </div>
       </div>
 
       {/* Visual Showcase: Architectural Screenshot with Corner Brackets & Parchment Treatment */}
-      <div 
-        onClick={() => onViewDetails?.(project)}
-        className="card-visual-frame cursor-pointer group/frame relative image-parchment image-faded-contrast"
-        title={`Inspect ${project.title} Architecture`}
-      >
+      <div className="card-visual-frame relative image-parchment image-faded-contrast">
         <CornerBrackets size={10} className="z-10" />
         {project.imageUrl ? (
           <img 
@@ -69,48 +65,38 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
               <span className="card-blueprint-title" style={{ color: project.stoneAccent }}>
                 {project.title}
               </span>
-              <span className="card-blueprint-hint">
-                <span>Click to inspect system deep-dive</span>
-                <ArrowRight className="size-3" />
-              </span>
             </div>
           </div>
         )}
       </div>
 
-      {/* Name (Title) & Brief Description */}
+      {/* Name (Title) & Concise Description */}
       <div className="space-y-1 relative z-10">
-        {onViewDetails ? (
-          <button
-            type="button"
-            onClick={() => onViewDetails(project)}
-            className="text-left group/title cursor-pointer w-full"
-          >
-            <h3 className="card-title group-hover/title:text-accent flex items-center justify-between text-foreground">
-              <span>{project.title}</span>
-              <ArrowRight className="size-4 text-muted-foreground group-hover/title:text-accent group-hover/title:translate-x-1 transition-all" />
-            </h3>
-          </button>
-        ) : (
-          <h3 className="card-title text-foreground">
-            {project.title}
+        <button
+          type="button"
+          onClick={() => onViewDetails?.(project)}
+          className="text-left group/title cursor-pointer w-full"
+        >
+          <h3 className="card-title group-hover/title:text-accent flex items-center justify-between text-foreground">
+            <span>{project.title}</span>
+            <ArrowRight className="size-4 text-muted-foreground group-hover/title:text-accent group-hover/title:translate-x-1 transition-all" />
           </h3>
-        )}
+        </button>
         <p className="card-subtitle line-clamp-2 text-muted-foreground">
           {project.subtitle || project.description}
         </p>
       </div>
 
-      {/* Tech Stack Pills */}
+      {/* Tech Stack Pills (Clean, chunked to top 4) */}
       <div className="card-tags-list relative z-10">
-        {project.tags.map((tag, idx) => (
+        {project.tags.slice(0, 4).map((tag, idx) => (
           <TechBadge key={idx} name={tag.name} icon={tag.icon} />
         ))}
       </div>
 
-      {/* Action Links: Code & Live (Optional), plus Details */}
+      {/* Action Links: GitHub + Architecture Deep-Dive */}
       <div className="card-actions relative z-10">
-        <div className="flex items-center gap-2">
+        <div>
           {project.githubUrl && (
             <a
               href={project.githubUrl}
@@ -121,18 +107,6 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
             >
               <GithubIcon className="size-3.5" />
               <span>Code</span>
-            </a>
-          )}
-          {project.liveUrl && (
-            <a
-              href={project.liveUrl}
-              target="_blank"
-              rel="noreferrer"
-              className="card-btn-secondary"
-              title="Open Live Demonstration"
-            >
-              <ExternalLink className="size-3.5 text-accent" />
-              <span>Live Demo</span>
             </a>
           )}
         </div>
@@ -148,6 +122,6 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
           </button>
         )}
       </div>
-    </div>
+    </article>
   );
 };

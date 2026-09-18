@@ -50,7 +50,7 @@
 }
 
 .contact-value-card {
-  @apply bg-card border border-border rounded-xl p-4 space-y-1 shadow-2xs;
+  @apply bg-card border border-border rounded-sm p-4 space-y-1 shadow-2xs;
 }
 
 .contact-value-card-title {
@@ -63,7 +63,7 @@
 
 /* Contact Form Components */
 .contact-form-card {
-  @apply bg-card border border-border rounded-2xl p-6 sm:p-8 shadow-2xs space-y-5 text-left;
+  @apply bg-card border border-border rounded-sm p-6 sm:p-8 shadow-2xs space-y-5 text-left;
 }
 
 .contact-form-header {
@@ -91,37 +91,37 @@
 }
 
 .contact-form-input {
-  @apply w-full px-3.5 py-2.5 text-xs bg-muted/40 border border-border text-foreground rounded-xl focus:bg-card focus:outline-none focus:border-accent transition-colors;
+  @apply w-full px-3.5 py-2.5 text-xs bg-muted/40 border border-border text-foreground rounded-sm focus:bg-card focus:outline-none focus:border-accent transition-colors;
 }
 
 .contact-form-textarea {
-  @apply w-full px-3.5 py-2.5 text-xs bg-muted/40 border border-border text-foreground rounded-xl focus:bg-card focus:outline-none focus:border-accent transition-colors resize-y leading-relaxed font-sans;
+  @apply w-full px-3.5 py-2.5 text-xs bg-muted/40 border border-border text-foreground rounded-sm focus:bg-card focus:outline-none focus:border-accent transition-colors resize-y leading-relaxed font-sans;
 }
 
 .contact-attachment-preview {
-  @apply flex items-center justify-between p-3 bg-accent/10 border border-accent/25 rounded-xl text-xs text-foreground;
+  @apply flex items-center justify-between p-3 bg-accent/10 border border-accent/25 rounded-sm text-xs text-foreground;
 }
 
 .contact-upload-trigger-btn {
-  @apply inline-flex items-center gap-2 px-3.5 py-2 bg-card hover:bg-muted border border-border rounded-xl text-[11px] font-sans uppercase tracking-wider font-semibold text-foreground cursor-pointer shadow-2xs transition-colors;
+  @apply inline-flex items-center gap-2 px-3.5 py-2 bg-card hover:bg-muted border border-border rounded-sm text-[11px] font-sans uppercase tracking-wider font-semibold text-foreground cursor-pointer shadow-2xs transition-colors;
 }
 
 .contact-submit-btn {
-  @apply w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 bg-primary hover:bg-primary/90 text-primary-foreground text-[11px] font-sans uppercase tracking-wider font-bold rounded-xl shadow-xs transition-all cursor-pointer disabled:opacity-50 border border-primary/20;
+  @apply w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 bg-primary hover:bg-primary/90 text-primary-foreground text-[11px] font-sans uppercase tracking-wider font-bold rounded-sm shadow-xs transition-all cursor-pointer disabled:opacity-50 border border-primary/20;
 }
 
 .contact-error-banner {
-  @apply p-3.5 bg-destructive/10 text-destructive border border-destructive/20 rounded-xl text-xs flex items-center gap-2.5;
+  @apply p-3.5 bg-destructive/10 text-destructive border border-destructive/20 rounded-sm text-xs flex items-center gap-2.5;
   animation: fadeIn 0.25s ease-out forwards;
 }
 
 /* Success State */
 .contact-success-card {
-  @apply p-8 sm:p-10 bg-card border border-border rounded-2xl text-center space-y-5 shadow-2xs;
+  @apply p-8 sm:p-10 bg-card border border-border rounded-sm text-center space-y-5 shadow-2xs;
 }
 
 .contact-success-icon-badge {
-  @apply w-14 h-14 rounded-2xl bg-accent/10 border border-accent/25 text-accent flex items-center justify-center mx-auto shadow-2xs;
+  @apply w-14 h-14 rounded-sm bg-accent/10 border border-accent/25 text-accent flex items-center justify-center mx-auto shadow-2xs;
 }
 
 .contact-success-title {
@@ -133,5 +133,5 @@
 }
 
 .contact-success-btn {
-  @apply inline-flex items-center gap-1.5 px-5 py-2.5 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl text-[11px] font-sans uppercase tracking-wider font-bold shadow-xs transition-colors cursor-pointer border border-primary/20;
+  @apply inline-flex items-center gap-1.5 px-5 py-2.5 bg-primary hover:bg-primary/90 text-primary-foreground rounded-sm text-[11px] font-sans uppercase tracking-wider font-bold shadow-xs transition-colors cursor-pointer border border-primary/20;
 }

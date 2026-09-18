@@ -142,7 +142,7 @@ export const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({
                 rel="noreferrer"
                 className="detail-cta-demo"
               >
-                <ExternalLink className="w-4 h-4 text-[#3894B3]" />
+                <ExternalLink className="w-4 h-4 text-accent" />
                 <span>Open Live Production Demo ↗</span>
               </a>
             )}
@@ -169,7 +169,7 @@ export const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({
         {project.stats && project.stats.length > 0 && (
           <div className="detail-section-block">
             <div className="detail-section-label">
-              <Activity className="w-4 h-4 text-[#3894B3]" />
+              <Activity className="w-4 h-4 text-accent" />
               <span>Verified System Benchmarks</span>
             </div>
             <div className="detail-benchmarks-grid">
@@ -193,7 +193,7 @@ export const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({
         {/* Executive Problem Statement */}
         <div className="detail-section-block">
           <div className="detail-section-label">
-            <Cpu className="w-4 h-4 text-[#588A75]" />
+            <Cpu className="w-4 h-4 text-accent" />
             <span>Executive Problem Formulation & Impact</span>
           </div>
           <div className="detail-description-card">
@@ -205,7 +205,7 @@ export const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({
         {project.highlights && project.highlights.length > 0 && (
           <div className="detail-section-block">
             <div className="detail-section-label">
-              <ShieldCheck className="w-4 h-4 text-[#3894B3]" />
+              <ShieldCheck className="w-4 h-4 text-accent" />
               <span>Engineered Architectural Invariants</span>
             </div>
             <div className="detail-invariants-grid">
@@ -226,7 +226,7 @@ export const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({
         {project.tags && project.tags.length > 0 && (
           <div className="detail-section-block">
             <div className="detail-section-label">
-              <Layers className="w-4 h-4 text-[#A35D43]" />
+              <Layers className="w-4 h-4 text-accent" />
               <span>Technology Stack & Integrations</span>
             </div>
             <div className="detail-tags-card">
@@ -241,7 +241,7 @@ export const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({
         {project.detailsMarkdown && (
           <div className="detail-section-block pt-4">
             <div className="detail-section-label">
-              <Sparkles className="w-4 h-4 text-[#3894B3]" />
+              <Sparkles className="w-4 h-4 text-accent" />
               <span>Deep-Dive Engineering Log & Documentation</span>
             </div>
             <div className="detail-markdown-card">

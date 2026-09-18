@@ -40,21 +40,87 @@ export interface RiverPebble {
   tags?: TechTag[];
 }
 
-export const FLAGSHIP_PROJECTS: FlagshipProject[] = [
+export const FLAGSHIP_PROJECTS: FlagshipProject[] = [];
+
+export const RIVER_PEBBLES: RiverPebble[] = [];
+
+/**
+ * Curated template projects for 1-click administrative database seeding.
+ * These are not rendered directly; projects render dynamically from Supabase.
+ */
+export const DEFAULT_CURATED_PROJECTS: FlagshipProject[] = [
+  {
+    id: "modular-rag",
+    title: "Modular RAG AI",
+    category: "Applied AI Pipeline",
+    subtitle: "Autonomous enterprise research & Qdrant vector retrieval",
+    description:
+      "Production RAG pipeline pairing Gemini 3.5 & 3.7 with Qdrant vector retrieval, autonomous background company research, and instant CRM lead routing.",
+    tags: [
+      { name: "FastAPI", icon: "fastapi" },
+      { name: "Python", icon: "python" },
+      { name: "Gemini", icon: "google" },
+      { name: "Qdrant", icon: "qdrant" },
+      { name: "Docker", icon: "docker" },
+    ],
+    stats: [
+      { label: "Engine", value: "Qdrant HNSW" },
+      { label: "LLM Stack", value: "Dual Gemini" },
+      { label: "Orchestration", value: "LlamaIndex" },
+    ],
+    highlights: [
+      "Customer-facing Gemini 3.5 Flash Lite FAQ agent with strict citation grounding",
+      "Background Gemini 3.7 reasoning agent executing autonomous company dossiers",
+      "Automated lead serialization and instant webhook routing to Discord",
+    ],
+    githubUrl: "https://github.com/VincentYuann/RAG",
+    imageUrl: "/images/botanical-ink-accent.jpg",
+    stoneAccent: "#B5482E", // Terracotta
+    isFlagship: true,
+  },
+  {
+    id: "foodfinder",
+    title: "FoodFinder",
+    category: "Real-Time Distributed System",
+    subtitle: "Collaborative restaurant discovery & live room voting",
+    description:
+      "Full-duplex WebSocket platform for group dining discovery with low-latency room synchronization, ballot casting, and distributed PostgreSQL persistence.",
+    tags: [
+      { name: "React", icon: "react" },
+      { name: "Socket.IO", icon: "socketio" },
+      { name: "PostgreSQL", icon: "postgresql" },
+      { name: "Prisma", icon: "prisma" },
+      { name: "Express", icon: "express" },
+      { name: "Docker", icon: "docker" },
+    ],
+    stats: [
+      { label: "Sync Latency", value: "<30ms" },
+      { label: "Protocol", value: "WebSockets" },
+      { label: "Pipeline", value: "Jenkins CI/CD" },
+    ],
+    highlights: [
+      "Event-driven room orchestration and state reconciliation with Socket.IO",
+      "Prisma relational model optimized for concurrent ballot casting",
+      "Automated testing and multi-stage containerization with Jenkins & Docker Compose",
+    ],
+    githubUrl: "https://github.com/VincentYuann/foodfinder",
+    imageUrl: "/images/hero-akari-workspace.jpg",
+    stoneAccent: "#2B2E3A", // Slate Night
+    isFlagship: true,
+  },
   {
     id: "anim-y",
     title: "AnimY",
     category: "Full-Stack Web App",
-    subtitle: "Anime tracking & exploration platform with OAuth",
+    subtitle: "Responsive media tracking platform with OAuth & RLS",
     description:
-      "A responsive anime discovery web app featuring real-time seasonal browsing, custom watchlists, OAuth authentication, and zero cumulative layout shift (CLS).",
+      "Zero cumulative layout shift (0.00 CLS) discovery web app featuring real-time seasonal browsing, custom watchlists, and Supabase Row-Level Security.",
     tags: [
-      { name: "React 19", icon: "react" },
+      { name: "React", icon: "react" },
+      { name: "TypeScript", icon: "typescript" },
       { name: "Vite", icon: "vitejs" },
-      { name: "TanStack Query v5", icon: "reactquery" },
       { name: "Supabase RLS", icon: "supabase" },
       { name: "Express", icon: "express" },
-      { name: "TypeScript", icon: "typescript" },
     ],
     stats: [
       { label: "Layout Shift", value: "0.00 CLS" },
@@ -70,90 +136,7 @@ export const FLAGSHIP_PROJECTS: FlagshipProject[] = [
     githubUrl: "https://github.com/VincentYuann/AnimY",
     imageUrl: "/images/editorial-lantern-shelf.jpg",
     stoneAccent: "#588A75", // Sage / Moss
-  },
-  {
-    id: "foodfinder",
-    title: "FoodFinder",
-    category: "Real-Time Distributed System",
-    subtitle: "Real-time collaborative restaurant voting & discovery",
-    description:
-      "A full-duplex collaborative application where friend groups search nearby dining options, assemble shared shortlists, and resolve mealtime indecision through live room voting.",
-    tags: [
-      { name: "React 19", icon: "react" },
-      { name: "Socket.IO", icon: "socketio" },
-      { name: "PostgreSQL", icon: "postgresql" },
-      { name: "Prisma 7", icon: "prisma" },
-      { name: "Express 5", icon: "express" },
-      { name: "Docker", icon: "docker" },
-      { name: "Jenkins", icon: "jenkins" },
-    ],
-    stats: [
-      { label: "Sync Latency", value: "<30ms" },
-      { label: "Protocol", value: "WebSockets" },
-      { label: "Pipeline", value: "Jenkins CI/CD" },
-    ],
-    highlights: [
-      "Event-driven room orchestration and state reconciliation with Socket.IO",
-      "Prisma 7 relational model optimized for concurrent ballot casting",
-      "Automated testing and multi-stage containerization with Jenkins & Docker Compose",
-    ],
-    githubUrl: "https://github.com/VincentYuann/foodfinder",
-    imageUrl: "/images/project-card-realtime.jpg",
-    stoneAccent: "#2E6171", // Deep Cerulean
-  },
-  {
-    id: "modular-rag",
-    title: "Modular RAG AI",
-    category: "Applied AI Pipeline",
-    subtitle: "Production LLM lead qualification & vector search",
-    description:
-      "An enterprise-ready Retrieval-Augmented Generation assistant leveraging Gemini 3.5 & 3.7 with Qdrant vector retrieval, automated background company research, and instant sales routing.",
-    tags: [
-      { name: "FastAPI", icon: "fastapi" },
-      { name: "Python", icon: "python" },
-      { name: "Google Gemini", icon: "google" },
-      { name: "Qdrant", icon: "qdrant" },
-      { name: "Docker", icon: "docker" },
-    ],
-    stats: [
-      { label: "Engine", value: "Qdrant HNSW" },
-      { label: "LLM Stack", value: "Dual Gemini" },
-      { label: "Orchestration", value: "LlamaIndex" },
-    ],
-    highlights: [
-      "Customer-facing Gemini 3.5 Flash Lite FAQ agent with strict citation grounding",
-      "Background Gemini 3.7 reasoning agent executing autonomous company dossiers",
-      "Automated lead serialization and instant webhook routing to Discord",
-    ],
-    githubUrl: "https://github.com/VincentYuann/RAG",
-    imageUrl: "/images/featured-project-pipeline.jpg",
-    stoneAccent: "#9E5A3F", // Terracotta / Earth
-  },
-];
-
-export const RIVER_PEBBLES: RiverPebble[] = [
-  {
-    id: "smart-money",
-    title: "SmartMoneyConcept",
-    description: "Algorithmic financial candle analysis, order blocks, and liquidity sweep detection.",
-    tag: "Python • Quant",
-    icon: "python",
-    githubUrl: "https://github.com/VincentYuann/SmartMoneyConcept",
-  },
-  {
-    id: "jenkins-pipeline",
-    title: "Jenkins DevOps Suite",
-    description: "Declarative CI/CD pipeline automation for Dockerized microservice deployments.",
-    tag: "DevOps • Docker",
-    icon: "jenkins",
-  },
-  {
-    id: "coding-practices",
-    title: "Flask REST & Sandboxes",
-    description: "Architectural practice repository covering REST API patterns, state design, and auth.",
-    tag: "Flask • React",
-    icon: "flask",
-    githubUrl: "https://github.com/VincentYuann/CodingPractices",
+    isFlagship: true,
   },
 ];
 

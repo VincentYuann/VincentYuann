@@ -10,7 +10,7 @@
 }
 
 .login-back-btn {
-  @apply inline-flex items-center gap-2 text-xs font-semibold text-muted-foreground hover:text-foreground bg-card border border-border px-3 py-1.5 rounded-lg shadow-xs transition-all;
+  @apply inline-flex items-center gap-2 text-xs font-semibold text-muted-foreground hover:text-foreground bg-card border border-border px-3 py-1.5 rounded-sm shadow-xs transition-all;
 }
 
 .login-inner-container {
@@ -22,11 +22,11 @@
 }
 
 .login-icon-badge {
-  @apply w-12 h-12 rounded-2xl bg-primary text-primary-foreground flex items-center justify-center mx-auto shadow-md;
+  @apply w-12 h-12 rounded-sm bg-primary text-primary-foreground flex items-center justify-center mx-auto shadow-md;
 }
 
 .login-icon-glyph {
-  @apply w-5 h-5 text-[#3894B3];
+  @apply w-5 h-5 text-primary-foreground;
 }
 
 .login-title {
@@ -38,7 +38,7 @@
 }
 
 .login-card {
-  @apply bg-card py-8 px-6 sm:px-8 border border-border rounded-2xl shadow-sm space-y-6;
+  @apply bg-card py-8 px-6 sm:px-8 border border-border rounded-sm shadow-sm space-y-6;
 }
 
 .login-user-box {
@@ -54,19 +54,19 @@
 }
 
 .login-admin-banner {
-  @apply p-3 bg-green-500/10 text-green-700 dark:text-green-300 border border-green-500/20 rounded-xl text-xs flex items-center justify-center gap-2;
+  @apply p-3 bg-green-500/10 text-green-700 dark:text-green-300 border border-green-500/20 rounded-sm text-xs flex items-center justify-center gap-2;
 }
 
 .login-go-admin-btn {
-  @apply w-full flex items-center justify-center py-2.5 px-4 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl text-xs font-semibold shadow-xs transition-colors;
+  @apply w-full flex items-center justify-center py-2.5 px-4 bg-primary hover:bg-primary/90 text-primary-foreground rounded-sm text-xs font-semibold shadow-xs transition-colors;
 }
 
 .login-unauthorized-banner {
-  @apply p-3 bg-amber-500/10 text-amber-700 dark:text-amber-300 border border-amber-500/20 rounded-xl text-xs space-y-2 text-left;
+  @apply p-3 bg-amber-500/10 text-amber-700 dark:text-amber-300 border border-amber-500/20 rounded-sm text-xs space-y-2 text-left;
 }
 
 .login-oauth-btn {
-  @apply w-full flex items-center justify-center gap-2.5 py-3.5 px-4 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-xs shadow-sm transition-all cursor-pointer disabled:opacity-50;
+  @apply w-full flex items-center justify-center gap-2.5 py-3.5 px-4 rounded-sm bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-xs shadow-sm transition-all cursor-pointer disabled:opacity-50;
 }
 
 .login-oauth-hint {
@@ -74,11 +74,11 @@
 }
 
 .login-alert-success {
-  @apply p-3 rounded-xl text-xs flex items-center gap-2 bg-green-500/10 text-green-700 dark:text-green-300 border border-green-500/20;
+  @apply p-3 rounded-sm text-xs flex items-center gap-2 bg-green-500/10 text-green-700 dark:text-green-300 border border-green-500/20;
 }
 
 .login-alert-error {
-  @apply p-3 rounded-xl text-xs flex items-center gap-2 bg-destructive/10 text-destructive border border-destructive/20;
+  @apply p-3 rounded-sm text-xs flex items-center gap-2 bg-destructive/10 text-destructive border border-destructive/20;
 }
 
 .login-footer-notice {

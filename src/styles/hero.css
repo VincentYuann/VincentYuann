@@ -2,7 +2,7 @@
 
 /* Hero Section: Editorial Narrative Header */
 .hero-wrapper {
-  @apply w-full max-w-5xl mx-auto px-4 sm:px-8 pt-8 sm:pt-14 pb-8;
+  @apply w-full max-w-6xl mx-auto px-4 sm:px-8 pt-8 sm:pt-14 pb-8;
 }
 
 .hero-content {
@@ -40,7 +40,7 @@
 }
 
 .hero-metric-card {
-  @apply p-3.5 sm:p-4 rounded-xl bg-card border border-border text-center sm:text-left transition-colors hover:border-accent/40;
+  @apply p-3.5 sm:p-4 rounded-sm bg-card border border-border text-center sm:text-left transition-colors hover:border-accent/40;
 }
 
 .hero-metric-val {

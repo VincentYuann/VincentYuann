@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { Edit3, ArrowRight, ArrowDown, Activity, Cpu, Database } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { CornerBrackets } from './JapaneseMotifs';
 import { PROFILE_INFO } from '../data/projects';
 import type { ProfileData } from '../lib/useProfile';
 import '../styles/hero.css';
@@ -132,21 +131,25 @@ export const Hero: React.FC<HeroProps> = ({ profile, isAdmin = false }) => {
           </div>
         </div>
 
-        {/* Right Column: Signature 16:9 Akari Workspace Visual Frame with Corner Brackets & Double Frame */}
-        <div className="lg:col-span-5">
-          <div className="frame-double rounded-lg bg-card p-1.5 relative group">
-            <CornerBrackets size={14} className="z-10" />
-            <div className="relative rounded-md overflow-hidden image-parchment image-faded-contrast">
-              <img
-                src="/images/hero-akari-workspace.jpg"
-                alt="Akari-inspired creative engineering studio workspace"
-                className="w-full aspect-[4/3] sm:aspect-[16/9] lg:aspect-[4/3] object-cover object-center transition-transform duration-500 group-hover:scale-102"
-                loading="eager"
-              />
-              <div className="absolute bottom-2.5 left-3 right-3 flex items-center justify-between text-white/95 text-[10px] font-sans tracking-wider uppercase drop-shadow-xs z-10">
-                <span className="font-semibold">Tokyo / Studio Space</span>
-                <span className="text-white/80 text-[10px]">Akari 2700K Glow</span>
-              </div>
+        {/* Right Column: Natural Blended Botanical Ink Art (Dissolves into Washi Canvas) */}
+        <div className="lg:col-span-5 relative flex items-center justify-center py-4 lg:py-0">
+          <div className="relative w-full max-w-md lg:max-w-none flex items-center justify-center group">
+            {/* Soft Warm Ambient Radial Glow */}
+            <div className="absolute inset-0 bg-radial from-amber-500/10 via-transparent to-transparent blur-2xl pointer-events-none" />
+
+            {/* Natural Blended Botanical Ink Illustration */}
+            <img
+              src="/images/botanical-ink-accent.jpg"
+              alt="Japanese Botanical Ink Painting"
+              className="w-full max-h-[340px] sm:max-h-[400px] object-contain object-center blend-ink-art select-none pointer-events-none transition-all duration-700 group-hover:scale-102"
+              loading="eager"
+            />
+
+            {/* Subtle Editorial Studio Seal & Coordinate Pill */}
+            <div className="absolute bottom-2 right-2 sm:bottom-4 sm:right-4 flex items-center gap-2 px-3 py-1.5 rounded-sm bg-card/75 backdrop-blur-xs border border-border/80 text-[10px] font-sans tracking-widest text-muted-foreground uppercase shadow-2xs">
+              <span className="text-accent font-semibold">自然の美</span>
+              <span className="text-border">/</span>
+              <span>BOTANICAL INK · WASHI</span>
             </div>
           </div>
         </div>

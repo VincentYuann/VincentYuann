@@ -14,7 +14,7 @@
 }
 
 .resume-badge {
-  @apply flex items-center gap-2 text-xs font-semibold text-[#3894B3] uppercase tracking-wider mb-2;
+  @apply flex items-center gap-2 text-xs font-semibold text-accent uppercase tracking-wider mb-2;
 }
 
 .resume-title {
@@ -31,15 +31,15 @@
 }
 
 .resume-primary-btn {
-  @apply inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground text-xs font-semibold transition-all shadow-xs;
+  @apply inline-flex items-center gap-2 px-4 py-2 rounded-sm bg-primary hover:bg-primary/90 text-primary-foreground text-xs font-semibold transition-all shadow-xs;
 }
 
 .resume-secondary-btn {
-  @apply inline-flex items-center gap-2 px-3.5 py-2 rounded-lg bg-card border border-border text-foreground hover:bg-muted text-xs font-medium transition-all shadow-xs;
+  @apply inline-flex items-center gap-2 px-3.5 py-2 rounded-sm bg-card border border-border text-foreground hover:bg-muted text-xs font-medium transition-all shadow-xs;
 }
 
 .resume-copy-btn {
-  @apply inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-card border border-border text-foreground hover:bg-muted text-xs font-medium transition-all shadow-xs;
+  @apply inline-flex items-center gap-1.5 px-3.5 py-2 rounded-sm bg-card border border-border text-foreground hover:bg-muted text-xs font-medium transition-all shadow-xs;
 }
 
 .resume-admin-cluster {
@@ -47,12 +47,12 @@
 }
 
 .resume-admin-link {
-  @apply inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-[#3894B3]/10 border border-[#3894B3]/30 text-[#3894B3] hover:bg-[#3894B3] hover:text-white text-xs font-semibold transition-all shadow-xs;
+  @apply inline-flex items-center gap-1.5 px-3 py-2 rounded-sm bg-accent/10 border border-accent/30 text-accent hover:bg-accent hover:text-white text-xs font-semibold transition-all shadow-xs;
 }
 
 /* Viewer Container & Toolbar */
 .resume-viewer-card {
-  @apply mt-6 bg-card border border-border rounded-xl shadow-xs overflow-hidden;
+  @apply mt-6 bg-card border border-border rounded-sm shadow-xs overflow-hidden;
 }
 
 .resume-viewer-bar {
@@ -60,11 +60,11 @@
 }
 
 .resume-tab-group {
-  @apply inline-flex p-1 bg-muted rounded-lg border border-border;
+  @apply inline-flex p-1 bg-muted rounded-sm border border-border;
 }
 
 .resume-tab-btn {
-  @apply flex items-center gap-2 px-3.5 py-1.5 rounded-md text-xs font-semibold transition-all cursor-pointer;
+  @apply flex items-center gap-2 px-3.5 py-1.5 rounded-sm text-xs font-semibold transition-all cursor-pointer;
 }
 
 .resume-tab-btn-active {
@@ -76,7 +76,7 @@
 }
 
 .resume-viewer-action-btn {
-  @apply flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-card border border-border text-foreground hover:bg-muted font-medium transition-all cursor-pointer;
+  @apply flex items-center gap-1.5 px-3 py-1.5 rounded-sm bg-card border border-border text-foreground hover:bg-muted font-medium transition-all cursor-pointer;
 }
 
 .resume-view-container {
@@ -89,7 +89,7 @@
 }
 
 .resume-pdf-skeleton {
-  @apply absolute inset-4 z-10 bg-card rounded-lg border border-border p-6 sm:p-10 flex flex-col justify-between animate-pulse overflow-hidden shadow-xs;
+  @apply absolute inset-4 z-10 bg-card rounded-sm border border-border p-6 sm:p-10 flex flex-col justify-between animate-pulse overflow-hidden shadow-xs;
 }
 
 .resume-skeleton-inner {
@@ -109,7 +109,7 @@
 }
 
 .resume-skeleton-bar {
-  @apply bg-muted rounded-md;
+  @apply bg-muted rounded-sm;
 }
 
 .resume-skeleton-title {
@@ -121,11 +121,11 @@
 }
 
 .resume-pdf-object {
-  @apply w-full h-full rounded-lg shadow-md border border-border;
+  @apply w-full h-full rounded-sm shadow-md border border-border;
 }
 
 .resume-pdf-fallback {
-  @apply flex flex-col items-center justify-center p-8 sm:p-12 text-center bg-card rounded-xl border border-border max-w-md mx-auto my-12;
+  @apply flex flex-col items-center justify-center p-8 sm:p-12 text-center bg-card rounded-sm border border-border max-w-md mx-auto my-12;
 }
 
 /* LaTeX Source View */
@@ -151,11 +151,11 @@
 
 /* Callout Banner */
 .resume-callout-banner {
-  @apply mt-8 bg-card border border-border rounded-xl p-5 flex items-start gap-4 shadow-xs;
+  @apply mt-8 bg-card border border-border rounded-sm p-5 flex items-start gap-4 shadow-xs;
 }
 
 .resume-callout-icon-box {
-  @apply w-9 h-9 rounded-lg bg-[#3894B3]/10 border border-[#3894B3]/20 flex items-center justify-center text-[#3894B3] shrink-0 mt-0.5;
+  @apply w-9 h-9 rounded-sm bg-accent/10 border border-accent/20 flex items-center justify-center text-accent shrink-0 mt-0.5;
 }
 
 .resume-callout-title {
@@ -163,7 +163,7 @@
 }
 
 .resume-callout-badge {
-  @apply px-2 py-0.5 rounded-full bg-muted text-muted-foreground border border-border font-mono text-[10px];
+  @apply px-2 py-0.5 rounded-sm bg-muted text-muted-foreground border border-border font-mono text-[10px];
 }
 
 .resume-callout-text {
@@ -184,5 +184,5 @@
 }
 
 .resume-fullscreen-object {
-  @apply w-full h-full max-w-5xl rounded-lg shadow-2xl bg-card border border-border;
+  @apply w-full h-full max-w-5xl rounded-sm shadow-2xl bg-card border border-border;
 }

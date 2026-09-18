@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowUpRight, Settings } from 'lucide-react';
 import { PROFILE_INFO } from '../data/projects';
+import { DiamondDivider } from './JapaneseMotifs';
 import '../styles/footer.css';
 
 import type { ProfileData } from '../lib/useProfile';
@@ -25,6 +26,7 @@ export const Footer: React.FC<FooterProps> = ({ profile, showCta = true }) => {
   };
   return (
     <footer className="footer-container" id="contact">
+      <DiamondDivider className="mb-12" />
       <div className="footer-grid">
         <div className="footer-main-col">
           <h3 className="footer-heading">
@@ -40,7 +42,7 @@ export const Footer: React.FC<FooterProps> = ({ profile, showCta = true }) => {
 
           {/* Short & Concise Call-to-Action Card */}
           {showCta && (
-            <div className="p-5 rounded-2xl bg-card border border-border mb-6 space-y-3 shadow-2xs">
+            <div className="p-5 rounded-sm bg-card border border-border mb-6 space-y-3 shadow-2xs">
               <div className="space-y-1">
                 <h4 className="text-base font-serif font-bold text-foreground">
                   Have a challenge or an open role?

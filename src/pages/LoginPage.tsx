@@ -56,7 +56,7 @@ export const LoginPage: React.FC = () => {
                 <CheckCircle2 className="w-5 h-5" />
               </div>
               <div>
-                <h3 className="text-sm font-bold text-[#1B2127]">GitHub Account Connected</h3>
+                <h3 className="text-sm font-bold text-foreground">GitHub Account Connected</h3>
                 <p className="login-email-text">{user.email}</p>
               </div>
 

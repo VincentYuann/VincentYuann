@@ -2,7 +2,7 @@
 
 /* Footer: Warm Editorial Layout */
 .footer-container {
-  @apply w-full max-w-4xl mx-auto px-4 py-16 border-t border-border mt-16;
+  @apply w-full max-w-4xl mx-auto px-4 py-12 mt-12;
 }
 
 .footer-grid {
@@ -26,11 +26,11 @@
 }
 
 .footer-btn-primary {
-  @apply inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-primary text-primary-foreground text-[11px] font-sans uppercase tracking-wider font-bold hover:bg-primary/90 transition-colors shadow-xs border border-primary/20;
+  @apply inline-flex items-center gap-1.5 px-3.5 py-2 rounded-sm bg-primary text-primary-foreground text-[11px] font-sans uppercase tracking-wider font-bold hover:bg-primary/90 transition-colors shadow-xs border border-primary/20;
 }
 
 .footer-btn-secondary {
-  @apply inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-border bg-card text-foreground text-[11px] font-sans uppercase tracking-wider font-semibold hover:bg-muted transition-colors shadow-2xs;
+  @apply inline-flex items-center gap-1.5 px-3.5 py-2 rounded-sm border border-border bg-card text-foreground text-[11px] font-sans uppercase tracking-wider font-semibold hover:bg-muted transition-colors shadow-2xs;
 }
 
 .footer-side-col {
@@ -38,7 +38,7 @@
 }
 
 .footer-colophon-box {
-  @apply p-4 rounded-xl border border-border bg-card;
+  @apply p-4 rounded-sm border border-border bg-card;
 }
 
 .footer-colophon-title {

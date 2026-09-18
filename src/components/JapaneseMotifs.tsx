@@ -129,3 +129,37 @@ export const CornerBrackets: React.FC<{
     </div>
   );
 };
+
+/**
+ * Japanese Rule / Separator with Centered Diamond (◇)
+ * From "Day theme and components.png" Rule / Separator specification.
+ */
+export const DiamondDivider: React.FC<{
+  className?: string;
+}> = ({ className = '' }) => {
+  return (
+    <div className={`relative flex items-center justify-center my-8 ${className}`} role="separator">
+      <div className="w-full border-t border-border" />
+      <div className="absolute px-3 bg-background flex items-center justify-center">
+        <span className="size-2 rotate-45 border border-accent/70 bg-background" />
+      </div>
+    </div>
+  );
+};
+
+/**
+ * Double Hairline Frame Container
+ * From "Day theme and components.png" Double Hairline Frame specification.
+ */
+export const DoubleHairlineFrame: React.FC<{
+  children: React.ReactNode;
+  className?: string;
+}> = ({ children, className = '' }) => {
+  return (
+    <div className={`p-1 border border-border/80 rounded-sm bg-card/60 ${className}`}>
+      <div className="p-4 border border-border/60 rounded-sm">
+        {children}
+      </div>
+    </div>
+  );
+};

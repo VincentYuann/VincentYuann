@@ -171,7 +171,7 @@ export const ContactForm: React.FC<ContactFormProps> = ({
 
       <div className="contact-form-header">
         <h3 className="contact-form-title">
-          <Mail className="w-4 h-4 text-[#3894B3]" />
+          <Mail className="w-4 h-4 text-accent" />
           <span>Send a Direct Message / Hire Inquiry</span>
         </h3>
         <p className="contact-form-desc">
@@ -228,21 +228,21 @@ export const ContactForm: React.FC<ContactFormProps> = ({
 
       {/* Optional File Attachment */}
       <div className="space-y-2">
-        <label className="block text-xs font-semibold text-[#57606A]">
-          File Attachment <span className="text-[#8C959F] font-normal">(Optional — Job Spec, Resume, Architecture Diagram up to 5MB)</span>
+        <label className="block text-xs font-semibold text-foreground">
+          File Attachment <span className="text-muted-foreground font-normal">(Optional — Job Spec, Resume, Architecture Diagram up to 5MB)</span>
         </label>
 
         {attachment ? (
           <div className="contact-attachment-preview">
             <div className="flex items-center gap-2 truncate">
-              <FileText className="w-4 h-4 shrink-0 text-[#3894B3]" />
+              <FileText className="w-4 h-4 shrink-0 text-accent" />
               <span className="font-semibold truncate">{attachment.filename}</span>
-              <span className="text-[#57606A] font-mono text-[11px]">({formatFileSize(attachment.size)})</span>
+              <span className="text-muted-foreground font-mono text-[11px]">({formatFileSize(attachment.size)})</span>
             </div>
             <button
               type="button"
               onClick={removeAttachment}
-              className="p-1 hover:bg-white rounded-lg text-[#57606A] hover:text-red-600 transition-colors cursor-pointer"
+              className="p-1 hover:bg-muted rounded-sm text-muted-foreground hover:text-destructive transition-colors cursor-pointer"
               title="Remove attachment"
             >
               <X className="w-4 h-4" />
@@ -262,28 +262,28 @@ export const ContactForm: React.FC<ContactFormProps> = ({
               htmlFor="file-upload-input"
               className="contact-upload-trigger-btn"
             >
-              <Paperclip className="w-3.5 h-3.5 text-[#57606A]" />
+              <Paperclip className="w-3.5 h-3.5 text-muted-foreground" />
               <span>Attach a Document / PDF</span>
             </label>
-            <span className="text-[11px] text-[#8C959F]">PDF, DOCX, PNG, JPG under 5MB</span>
+            <span className="text-[11px] text-muted-foreground">PDF, DOCX, PNG, JPG under 5MB</span>
           </div>
         )}
 
         {fileError && (
-          <p className="text-[11px] text-red-600 font-medium">{fileError}</p>
+          <p className="text-[11px] text-destructive font-medium">{fileError}</p>
         )}
       </div>
 
       {/* Error Alert */}
       {errorMessage && (
         <div className="contact-error-banner">
-          <AlertCircle className="w-4 h-4 shrink-0 text-red-600" />
+          <AlertCircle className="w-4 h-4 shrink-0 text-destructive" />
           <span className="font-medium">{errorMessage}</span>
         </div>
       )}
 
       {/* Submit Button & Security Assurance */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-3 border-t border-[#E1E6EB]">
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-3 border-t border-border">
         <button
           type="submit"
           disabled={isSubmitting}
@@ -302,8 +302,8 @@ export const ContactForm: React.FC<ContactFormProps> = ({
           )}
         </button>
 
-        <div className="flex items-center gap-1.5 text-[11px] text-[#6E7E8E]">
-          <ShieldCheck className="w-3.5 h-3.5 text-[#3894B3]" />
+        <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
+          <ShieldCheck className="w-3.5 h-3.5 text-accent" />
           <span>Server-side rate limited & spam protected</span>
         </div>
       </div>

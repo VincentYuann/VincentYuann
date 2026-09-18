@@ -17,37 +17,18 @@ import {
   Loader2,
   AlertCircle,
   CheckCircle2,
+  Database,
+  Sparkles,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { GithubIcon } from '../components/Icons';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../lib/useAuth';
+import { POPULAR_STACKS, getDeviconSlug, normalizeTechName } from '../lib/techIcons';
+import { DEFAULT_CURATED_PROJECTS } from '../data/projects';
 import type { FlagshipProject } from '../data/projects';
 import type { ProfileData } from '../lib/useProfile';
 import '../styles/admin-page.css';
-
-const POPULAR_STACKS = [
-  { name: 'React 19', icon: 'react' },
-  { name: 'TypeScript', icon: 'typescript' },
-  { name: 'Next.js', icon: 'nextjs' },
-  { name: 'Python', icon: 'python' },
-  { name: 'FastAPI', icon: 'fastapi' },
-  { name: 'Node.js', icon: 'nodejs' },
-  { name: 'PostgreSQL', icon: 'postgresql' },
-  { name: 'Prisma 7', icon: 'prisma' },
-  { name: 'Docker', icon: 'docker' },
-  { name: 'Kubernetes', icon: 'kubernetes' },
-  { name: 'Google Gemini', icon: 'google' },
-  { name: 'Qdrant', icon: 'qdrant' },
-  { name: 'Socket.IO', icon: 'socketio' },
-  { name: 'Express 5', icon: 'express' },
-  { name: 'Tailwind CSS', icon: 'tailwindcss' },
-  { name: 'Redis', icon: 'redis' },
-  { name: 'AWS', icon: 'amazonwebservices' },
-  { name: 'Jenkins', icon: 'jenkins' },
-  { name: 'Git', icon: 'git' },
-  { name: 'Linux', icon: 'linux' },
-];
 
 interface AdminPageProps {
   projects: FlagshipProject[];
@@ -99,7 +80,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
   const [tagInput, setTagInput] = useState('');
   const [githubUrl, setGithubUrl] = useState('');
   const [liveUrl, setLiveUrl] = useState('');
-  const [stoneAccent, setStoneAccent] = useState('#3894B3');
+  const [stoneAccent, setStoneAccent] = useState('#B5482E');
   const [isFlagship, setIsFlagship] = useState(true);
   const [uploading, setUploading] = useState(false);
   const [imageUrl, setImageUrl] = useState('');
@@ -108,6 +89,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [extraSections, setExtraSections] = useState<{ headline: string; body: string }[]>([]);
   const [isSavingProfile, setIsSavingProfile] = useState(false);
+  const [isSeeding, setIsSeeding] = useState(false);
 
   // Profile Form State
   const [profName, setProfName] = useState(profile?.name || 'Vincent Yuann');
@@ -134,74 +116,6 @@ export const AdminPage: React.FC<AdminPageProps> = ({
     }
   }, [profile]);
 
-  const getDeviconSlug = (name: string): string => {
-    const raw = name.toLowerCase().trim();
-    const map: Record<string, string> = {
-      'c++': 'cplusplus',
-      'cpp': 'cplusplus',
-      'c#': 'csharp',
-      'cs': 'csharp',
-      '.net': 'dot-net',
-      'node': 'nodejs',
-      'node.js': 'nodejs',
-      'nodejs': 'nodejs',
-      'vue': 'vuejs',
-      'vue.js': 'vuejs',
-      'vuejs': 'vuejs',
-      'next': 'nextjs',
-      'next.js': 'nextjs',
-      'nextjs': 'nextjs',
-      'tailwind': 'tailwindcss',
-      'tailwindcss': 'tailwindcss',
-      'postgres': 'postgresql',
-      'postgresql': 'postgresql',
-      'socket.io': 'socketio',
-      'socketio': 'socketio',
-      'express': 'express',
-      'express.js': 'express',
-      'react': 'react',
-      'react.js': 'react',
-      'react native': 'react',
-      'python': 'python',
-      'docker': 'docker',
-      'typescript': 'typescript',
-      'ts': 'typescript',
-      'javascript': 'javascript',
-      'js': 'javascript',
-      'golang': 'go',
-      'go': 'go',
-      'git': 'git',
-      'github': 'github',
-      'fastapi': 'fastapi',
-      'prisma': 'prisma',
-      'supabase': 'supabase',
-      'redis': 'redis',
-      'mongodb': 'mongodb',
-      'graphql': 'graphql',
-      'aws': 'amazonwebservices',
-      'gcp': 'googlecloud',
-      'kubernetes': 'kubernetes',
-      'k8s': 'kubernetes',
-      'linux': 'linux',
-      'html': 'html5',
-      'css': 'css3',
-      'sass': 'sass',
-      'scss': 'sass',
-      'vite': 'vitejs',
-      'vite.js': 'vitejs',
-      'vitejs': 'vitejs',
-      'webpack': 'webpack',
-      'firebase': 'firebase',
-      'flutter': 'flutter',
-      'rust': 'rust',
-      'java': 'java',
-      'kotlin': 'kotlin',
-      'swift': 'swift',
-    };
-    if (map[raw]) return map[raw];
-    return raw.replace(/[^a-z0-9]/g, '');
-  };
-
   const handleSelectProject = (projId: string) => {
     setSelectedProjectId(projId);
 
@@ -216,7 +130,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
       setLiveUrl('');
       setImageUrl('');
       setIsFlagship(true);
-      setStoneAccent('#3894B3');
+      setStoneAccent('#B5482E');
       setExtraSections([]);
     } else {
       const proj = projects.find((p) => p.id === projId);
@@ -231,7 +145,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
       setLiveUrl(proj.liveUrl || '');
       setImageUrl(proj.imageUrl || '');
       setIsFlagship(proj.isFlagship ?? true);
-      setStoneAccent(proj.stoneAccent || '#3894B3');
+      setStoneAccent(proj.stoneAccent || '#B5482E');
       setExtraSections([]);
     }
   };
@@ -290,23 +204,26 @@ export const AdminPage: React.FC<AdminPageProps> = ({
     if (!input) return;
     const newTags = input
       .split(',')
-      .map((t) => t.trim())
+      .map((t) => normalizeTechName(t.trim()))
       .filter(Boolean)
       .map((t) => ({ name: t, icon: getDeviconSlug(t) }));
     setTagsList((prev) => [
       ...prev,
-      ...newTags.filter((nt) => !prev.some((pt) => pt.name.toLowerCase() === nt.name.toLowerCase())),
+      ...newTags.filter((nt) => !prev.some((pt) => normalizeTechName(pt.name).toLowerCase() === nt.name.toLowerCase())),
     ]);
     setTagInput('');
     toast.success(`Added ${newTags.length} tech stack item(s)`);
   };
 
   const toggleStack = (name: string, icon?: string) => {
-    const existingIndex = tagsList.findIndex((t) => t.name.toLowerCase() === name.toLowerCase());
+    const cleanName = normalizeTechName(name);
+    const existingIndex = tagsList.findIndex(
+      (t) => normalizeTechName(t.name).toLowerCase() === cleanName.toLowerCase()
+    );
     if (existingIndex >= 0) {
       setTagsList((prev) => prev.filter((_, i) => i !== existingIndex));
     } else {
-      setTagsList((prev) => [...prev, { name, icon: icon || getDeviconSlug(name) }]);
+      setTagsList((prev) => [...prev, { name: cleanName, icon: icon || getDeviconSlug(cleanName) }]);
     }
   };
 
@@ -403,6 +320,43 @@ export const AdminPage: React.FC<AdminPageProps> = ({
       toast.error(`Delete failed: ${err.message || 'Unexpected error'}`);
     } finally {
       setIsDeleting(false);
+    }
+  };
+
+  const handleSeedCuratedProjects = async () => {
+    try {
+      setIsSeeding(true);
+      toast.info('Seeding curated flagship systems to Supabase...');
+      const rows = DEFAULT_CURATED_PROJECTS.map((p, idx) => ({
+        id: p.id,
+        title: p.title,
+        subtitle: p.subtitle,
+        category: p.category,
+        description: p.description,
+        highlights: p.highlights || [],
+        stats: p.stats || [],
+        tags: p.tags || [],
+        stone_accent: p.stoneAccent || '#B5482E',
+        github_url: p.githubUrl || null,
+        live_url: p.liveUrl || null,
+        image_url: p.imageUrl || null,
+        details_markdown: p.detailsMarkdown || null,
+        is_flagship: p.isFlagship ?? true,
+        is_published: true,
+        order_index: idx + 1,
+        updated_at: new Date().toISOString(),
+      }));
+
+      const { error } = await supabase.from('projects').upsert(rows, { onConflict: 'id' });
+      if (error) throw error;
+
+      toast.success('Curated flagships seeded successfully to Supabase!');
+      onRefreshProjects();
+    } catch (err: any) {
+      console.error('Error seeding projects:', err);
+      toast.error(err?.message || 'Failed to seed projects to Supabase');
+    } finally {
+      setIsSeeding(false);
     }
   };
 
@@ -659,7 +613,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
       <div className="admin-gate-container">
         <div className="admin-gate-card">
           <div className="admin-gate-icon">
-            <Lock className="w-5 h-5 text-[#A0D8E9]" />
+            <Lock className="w-5 h-5 text-primary-foreground" />
           </div>
           <div className="space-y-1">
             <h1 className="admin-gate-title">Admin Access Required</h1>
@@ -678,7 +632,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
             </button>
           </div>
 
-          <div className="pt-4 border-t border-[#E1E6EB]">
+          <div className="pt-4 border-t border-border">
             <Link to="/" className="admin-gate-back">
               ← Return to Portfolio Website
             </Link>
@@ -698,7 +652,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
           <div className="space-y-1">
             <h1 className="admin-gate-title">Unauthorized Account</h1>
             <p className="admin-gate-text">
-              Signed in as <strong className="font-mono text-[#1B2127]">{user.email}</strong>. This identity is not authorized to edit database records.
+              Signed in as <strong className="font-mono text-foreground">{user.email}</strong>. This identity is not authorized to edit database records.
             </p>
           </div>
           <div className="admin-unauth-actions">
@@ -821,6 +775,33 @@ export const AdminPage: React.FC<AdminPageProps> = ({
 
         {activeTab === 'projects' && (
           <div className="admin-panel-card">
+            {projects.length === 0 && (
+              <div className="mb-6 p-4.5 bg-muted/40 border border-dashed border-border rounded-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2 text-sm font-serif font-medium text-foreground">
+                    <Database className="w-4 h-4 text-accent" />
+                    <span>Supabase Project Archive is Empty</span>
+                  </div>
+                  <p className="text-xs text-muted-foreground leading-relaxed">
+                    Populate your live database with Vincent's curated technical flagships (Modular RAG AI, FoodFinder, AnimY, Portfolio Engine) in one click.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={handleSeedCuratedProjects}
+                  disabled={isSeeding}
+                  className="inline-flex items-center gap-2 px-3.5 py-2 bg-primary hover:bg-primary/90 text-primary-foreground text-xs font-medium rounded-sm transition-colors cursor-pointer disabled:opacity-50 whitespace-nowrap shrink-0"
+                >
+                  {isSeeding ? (
+                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                  ) : (
+                    <Sparkles className="w-3.5 h-3.5" />
+                  )}
+                  <span>Seed Curated Flagships</span>
+                </button>
+              </div>
+            )}
+
             <div className="admin-select-row">
               <div>
                 <label className="admin-field-label-upper">
@@ -841,7 +822,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
                         </option>
                       ))}
                   </optgroup>
-                  <optgroup label="Riverbank Pebbles & Tooling">
+                  <optgroup label="Sandboxes & Labs">
                     {projects
                       .filter((p) => !p.isFlagship)
                       .map((p) => (
@@ -858,7 +839,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
                   <Link
                     to={`/projects/${selectedProjectId}`}
                     target="_blank"
-                    className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-foreground bg-card hover:bg-muted border border-border rounded-xl transition-colors"
+                    className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-foreground bg-card hover:bg-muted border border-border rounded-sm transition-colors"
                   >
                     <ExternalLink className="w-3.5 h-3.5 text-primary" />
                     <span>View Live Page</span>
@@ -866,7 +847,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
                   <button
                     onClick={() => setShowDeleteDialog(true)}
                     disabled={isDeleting}
-                    className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-red-600 bg-red-50 hover:bg-red-100 border border-red-200 rounded-xl transition-colors cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
+                    className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-destructive bg-destructive/10 hover:bg-destructive/20 border border-destructive/30 rounded-sm transition-colors cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
                   >
                     {isDeleting ? (
                       <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -885,20 +866,20 @@ export const AdminPage: React.FC<AdminPageProps> = ({
                   type="checkbox"
                   checked={isFlagship}
                   onChange={(e) => setIsFlagship(e.target.checked)}
-                  className="w-4 h-4 rounded text-[#3894B3] border-[#D0D7DE] focus:ring-[#3894B3]"
+                  className="w-4 h-4 rounded-sm text-accent border-border focus:ring-accent accent-accent"
                 />
                 <div>
-                  <span className="text-xs font-bold text-[#1B2127] block">
-                    Mark as Flagship Boulder Milestone
+                  <span className="text-xs font-bold text-foreground block">
+                    Mark as Flagship Architecture System
                   </span>
-                  <span className="text-[11px] text-[#57606A]">
-                    When checked, appears as a prominent sculpted boulder on the main chronological river stream.
+                  <span className="text-[11px] text-muted-foreground">
+                    When checked, appears as a prominent featured project in the main architecture showcase.
                   </span>
                 </div>
               </label>
 
-              <span className="text-[11px] font-mono font-bold px-2.5 py-1 rounded bg-white border border-[#D0D7DE] text-[#1B2127]">
-                {isFlagship ? 'Status: Flagship Boulder' : 'Status: Riverbank Pebble'}
+              <span className="text-[11px] font-mono font-bold px-2.5 py-1 rounded-sm bg-muted border border-border text-foreground">
+                {isFlagship ? 'Status: Flagship' : 'Status: Archive'}
               </span>
             </div>
 
@@ -983,30 +964,36 @@ export const AdminPage: React.FC<AdminPageProps> = ({
               {/* Existing Tags as Chips */}
               {tagsList.length > 0 ? (
                 <div className="flex flex-wrap gap-1.5 p-2 rounded-sm border border-border/80 bg-muted/20">
-                  {tagsList.map((tag, idx) => (
-                    <span
-                      key={idx}
-                      className="inline-flex items-center gap-1.5 pl-2.5 pr-1.5 py-1 rounded-sm bg-card border border-border text-xs font-medium text-foreground shadow-2xs"
-                    >
-                      <img
-                        src={`https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/${tag.icon}/${tag.icon}-original.svg`}
-                        alt={tag.name}
-                        className="w-3.5 h-3.5 object-contain shrink-0"
-                        onError={(e) => {
-                          (e.currentTarget as HTMLImageElement).style.display = 'none';
-                        }}
-                      />
-                      <span>{tag.name}</span>
-                      <button
-                        type="button"
-                        onClick={() => handleRemoveTag(idx)}
-                        className="p-0.5 rounded hover:bg-destructive/10 hover:text-destructive transition-colors cursor-pointer text-muted-foreground"
-                        title={`Remove ${tag.name}`}
+                  {tagsList.map((tag, idx) => {
+                    const clean = normalizeTechName(tag.name);
+                    const icon = tag.icon || getDeviconSlug(clean);
+                    return (
+                      <span
+                        key={idx}
+                        className="inline-flex items-center gap-1.5 pl-2.5 pr-1.5 py-1 rounded-sm bg-card border border-border text-xs font-medium text-foreground shadow-2xs"
                       >
-                        <X className="w-3 h-3" />
-                      </button>
-                    </span>
-                  ))}
+                        {icon ? (
+                          <img
+                            src={`https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/${icon}/${icon}-original.svg`}
+                            alt={clean}
+                            className="w-3.5 h-3.5 object-contain shrink-0"
+                            onError={(e) => {
+                              (e.currentTarget as HTMLImageElement).style.display = 'none';
+                            }}
+                          />
+                        ) : null}
+                        <span>{clean}</span>
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveTag(idx)}
+                          className="p-0.5 rounded hover:bg-destructive/10 hover:text-destructive transition-colors cursor-pointer text-muted-foreground"
+                          title={`Remove ${clean}`}
+                        >
+                          <X className="w-3 h-3" />
+                        </button>
+                      </span>
+                    );
+                  })}
                 </div>
               ) : (
                 <div 
@@ -1059,7 +1046,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
                               handleAddTags();
                             }
                           }}
-                          placeholder="e.g. React 19, Socket.IO, PostgreSQL, Prisma, Docker"
+                          placeholder="e.g. React, Socket.IO, PostgreSQL, Prisma, Docker"
                           className="admin-input flex-1 font-mono text-xs"
                         />
                         <button
@@ -1079,7 +1066,9 @@ export const AdminPage: React.FC<AdminPageProps> = ({
                       </label>
                       <div className="flex flex-wrap gap-1.5 max-h-44 overflow-y-auto p-1.5 border border-border/60 rounded-sm bg-muted/20">
                         {POPULAR_STACKS.map((stack) => {
-                          const isSelected = tagsList.some((t) => t.name.toLowerCase() === stack.name.toLowerCase());
+                          const isSelected = tagsList.some(
+                            (t) => normalizeTechName(t.name).toLowerCase() === stack.name.toLowerCase()
+                          );
                           return (
                             <button
                               key={stack.name}
@@ -1124,21 +1113,24 @@ export const AdminPage: React.FC<AdminPageProps> = ({
                         )}
                       </div>
                       <div className="flex flex-wrap gap-1.5 min-h-[32px] max-h-24 overflow-y-auto">
-                        {tagsList.map((tag, idx) => (
-                          <span
-                            key={idx}
-                            className="inline-flex items-center gap-1.5 pl-2 pr-1 py-0.5 rounded-sm bg-muted border border-border text-xs text-foreground"
-                          >
-                            <span>{tag.name}</span>
-                            <button
-                              type="button"
-                              onClick={() => handleRemoveTag(idx)}
-                              className="p-0.5 text-muted-foreground hover:text-destructive cursor-pointer"
+                        {tagsList.map((tag, idx) => {
+                          const clean = normalizeTechName(tag.name);
+                          return (
+                            <span
+                              key={idx}
+                              className="inline-flex items-center gap-1.5 pl-2 pr-1 py-0.5 rounded-sm bg-muted border border-border text-xs text-foreground"
                             >
-                              <X className="size-3" />
-                            </button>
-                          </span>
-                        ))}
+                              <span>{clean}</span>
+                              <button
+                                type="button"
+                                onClick={() => handleRemoveTag(idx)}
+                                className="p-0.5 text-muted-foreground hover:text-destructive cursor-pointer"
+                              >
+                                <X className="size-3" />
+                              </button>
+                            </span>
+                          );
+                        })}
                       </div>
                     </div>
 
@@ -1166,7 +1158,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
                 <button
                   type="button"
                   onClick={() => setExtraSections((prev) => [...prev, { headline: '', body: '' }])}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-primary hover:bg-primary/10 border border-primary/30 rounded-xl transition-colors cursor-pointer"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-primary hover:bg-primary/10 border border-primary/30 rounded-sm transition-colors cursor-pointer"
                 >
                   <Plus className="w-3.5 h-3.5" />
                   <span>Add Section</span>
@@ -1174,13 +1166,13 @@ export const AdminPage: React.FC<AdminPageProps> = ({
               </div>
 
               {extraSections.map((section, idx) => (
-                <div key={idx} className="p-3 rounded-xl border border-border bg-muted/30 space-y-2">
+                <div key={idx} className="p-3 rounded-sm border border-border bg-muted/30 space-y-2">
                   <div className="flex items-center justify-between">
                     <span className="text-[10px] font-mono text-muted-foreground uppercase tracking-wider">Section {idx + 1}</span>
                     <button
                       type="button"
                       onClick={() => setExtraSections((prev) => prev.filter((_, i) => i !== idx))}
-                      className="p-1 rounded-lg hover:bg-destructive/10 text-muted-foreground hover:text-destructive transition-colors cursor-pointer"
+                      className="p-1 rounded-sm hover:bg-destructive/10 text-muted-foreground hover:text-destructive transition-colors cursor-pointer"
                       title="Remove section"
                     >
                       <X className="w-3.5 h-3.5" />
@@ -1247,7 +1239,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
               </label>
 
               <div className="flex flex-wrap items-center gap-3">
-                <label className="inline-flex items-center gap-2 px-4 py-2 bg-card hover:bg-muted border border-border rounded-xl text-xs font-semibold text-foreground cursor-pointer shadow-xs transition-all">
+                <label className="inline-flex items-center gap-2 px-4 py-2 bg-card hover:bg-muted border border-border rounded-sm text-xs font-semibold text-foreground cursor-pointer shadow-xs transition-all">
                   <Upload className="w-3.5 h-3.5 text-primary" />
                   <span>Upload Screenshot</span>
                   <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
@@ -1257,8 +1249,8 @@ export const AdminPage: React.FC<AdminPageProps> = ({
               </div>
 
               {imageUrl && (
-                <div className="p-3 bg-card border border-border rounded-xl flex items-center gap-4">
-                  <img src={imageUrl} alt="Uploaded preview" className="w-20 h-14 object-cover rounded-lg border border-border" />
+                <div className="p-3 bg-card border border-border rounded-sm flex items-center gap-4">
+                  <img src={imageUrl} alt="Uploaded preview" className="w-20 h-14 object-cover rounded-sm border border-border" />
                   <div className="flex-1 truncate">
                     <span className="text-xs font-mono text-muted-foreground truncate block">{imageUrl}</span>
                   </div>
@@ -1293,9 +1285,9 @@ export const AdminPage: React.FC<AdminPageProps> = ({
             {/* Delete Confirmation Dialog */}
             {showDeleteDialog && (
               <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs" onClick={() => setShowDeleteDialog(false)}>
-                <div className="bg-card border border-border rounded-2xl shadow-2xl p-6 max-w-sm w-full space-y-4" onClick={(e) => e.stopPropagation()}>
+                <div className="bg-card border border-border rounded-md shadow-2xl p-6 max-w-sm w-full space-y-4" onClick={(e) => e.stopPropagation()}>
                   <div className="space-y-1.5">
-                    <h3 className="text-sm font-bold text-foreground">Delete Project</h3>
+                    <h3 className="text-sm font-bold text-foreground font-serif">Delete Project</h3>
                     <p className="text-xs text-muted-foreground">
                       Are you sure you want to permanently delete <strong>"{title}"</strong>? This action cannot be undone.
                     </p>
@@ -1304,7 +1296,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
                     <button
                       type="button"
                       onClick={() => setShowDeleteDialog(false)}
-                      className="px-4 py-2 rounded-xl text-xs font-semibold text-foreground bg-muted hover:bg-muted/80 border border-border transition-colors cursor-pointer"
+                      className="px-4 py-2 rounded-sm text-xs font-semibold text-foreground bg-muted hover:bg-muted/80 border border-border transition-colors cursor-pointer"
                     >
                       Cancel
                     </button>
@@ -1312,7 +1304,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
                       type="button"
                       onClick={handleDeleteProject}
                       disabled={isDeleting}
-                      className="px-4 py-2 rounded-xl text-xs font-semibold text-white bg-red-600 hover:bg-red-700 transition-colors cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
+                      className="px-4 py-2 rounded-sm text-xs font-semibold text-destructive-foreground bg-destructive hover:bg-destructive/90 transition-colors cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
                     >
                       {isDeleting ? (
                         <span className="flex items-center gap-1.5">
@@ -1402,7 +1394,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
               />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 border-t border-[#E1E6EB] pt-4 text-xs font-mono">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 border-t border-border pt-4 text-xs font-mono">
               <div>
                 <label className="admin-field-label font-sans">Contact Email</label>
                 <input
@@ -1434,7 +1426,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
               </div>
             </div>
 
-            <div className="pt-4 border-t border-[#E1E6EB] flex justify-end">
+            <div className="pt-4 border-t border-border flex justify-end">
               <button
                 type="button"
                 onClick={handleSaveProfile}
@@ -1457,11 +1449,11 @@ export const AdminPage: React.FC<AdminPageProps> = ({
           <div className="space-y-8 animate-fadeIn">
             {/* PDF Upload Card */}
             <div className="admin-panel-card">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#E1E6EB]">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-border">
                 <div>
                   <div className="flex items-center gap-2.5 flex-wrap">
-                    <h3 className="text-base font-bold text-[#1B2127] flex items-center gap-2">
-                      <FileText className="w-5 h-5 text-[#3894B3]" />
+                    <h3 className="text-base font-bold text-foreground flex items-center gap-2">
+                      <FileText className="w-5 h-5 text-accent" />
                       <span>Rendered Resume (PDF)</span>
                     </h3>
                     {/* Live Upload Status Badge */}
@@ -1472,7 +1464,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
                       </span>
                     ) : pdfUploadStatus.status === 'checking' ? (
                       <span className="admin-badge-checking">
-                        <span className="w-2 h-2 rounded-full bg-gray-400 animate-pulse" />
+                        <span className="w-2 h-2 rounded-full bg-muted-foreground animate-pulse" />
                         <span>Checking status...</span>
                       </span>
                     ) : (
@@ -1483,7 +1475,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
                     )}
                   </div>
                   <p className="admin-section-desc mt-1">
-                    Upload your compiled PDF to Supabase Storage (<code className="bg-[#F6F8FA] px-1 py-0.5 rounded text-[11px]">portfolio-assets/resumes/resume.pdf</code>).
+                    Upload your compiled PDF to Supabase Storage (<code className="bg-muted px-1 py-0.5 rounded-sm text-[11px] font-mono">portfolio-assets/resumes/resume.pdf</code>).
                   </p>
                 </div>
 
@@ -1502,9 +1494,9 @@ export const AdminPage: React.FC<AdminPageProps> = ({
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
                 <div className="admin-resume-dropzone">
-                  <Upload className="w-8 h-8 text-[#8C959F] mx-auto mb-2" />
-                  <p className="text-xs font-semibold text-[#1B2127]">Upload New Resume PDF</p>
-                  <p className="text-[11px] text-[#57606A] mt-1 mb-4">Accepts valid compiled .pdf files (Max 15MB)</p>
+                  <Upload className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
+                  <p className="text-xs font-semibold text-foreground">Upload New Resume PDF</p>
+                  <p className="text-[11px] text-muted-foreground mt-1 mb-4">Accepts valid compiled .pdf files (Max 15MB)</p>
                   <label className="admin-upload-btn">
                     <span>{uploadingPdf ? 'Uploading to Bucket...' : 'Select .pdf File'}</span>
                     <input
@@ -1518,25 +1510,25 @@ export const AdminPage: React.FC<AdminPageProps> = ({
                 </div>
 
                 <div className="admin-resume-status-card">
-                  <div className="font-bold text-[#1B2127]">Storage Status & Diagnostics:</div>
-                  <div className="text-[#57606A] space-y-1.5 leading-relaxed font-mono text-[11px]">
+                  <div className="font-bold text-foreground">Storage Status & Diagnostics:</div>
+                  <div className="text-muted-foreground space-y-1.5 leading-relaxed font-mono text-[11px]">
                     <div className="flex items-center justify-between">
-                      <span className="text-[#8C959F]">Current Source:</span>
-                      <span className="font-semibold text-[#1B2127]">
+                      <span className="text-muted-foreground">Current Source:</span>
+                      <span className="font-semibold text-foreground">
                         {pdfUploadStatus.status === 'stored' ? 'Supabase Storage' : 'Supabase Storage'}
                       </span>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-[#8C959F]">Target Path:</span>
-                      <span className="text-[#1B2127]">portfolio-assets/resumes/resume.pdf</span>
+                      <span className="text-muted-foreground">Target Path:</span>
+                      <span className="text-foreground">portfolio-assets/resumes/resume.pdf</span>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-[#8C959F]">Last Updated:</span>
-                      <span className="text-[#1B2127]">{pdfUploadStatus.updatedAt || 'N/A'}</span>
+                      <span className="text-muted-foreground">Last Updated:</span>
+                      <span className="text-foreground">{pdfUploadStatus.updatedAt || 'N/A'}</span>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-[#8C959F]">File Size:</span>
-                      <span className="text-[#1B2127]">{pdfUploadStatus.fileSize || 'N/A'}</span>
+                      <span className="text-muted-foreground">File Size:</span>
+                      <span className="text-foreground">{pdfUploadStatus.fileSize || 'N/A'}</span>
                     </div>
                   </div>
                 </div>
@@ -1545,11 +1537,11 @@ export const AdminPage: React.FC<AdminPageProps> = ({
 
             {/* LaTeX Source Code Card */}
             <div className="admin-panel-card">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#E1E6EB]">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-border">
                 <div>
                   <div className="flex items-center gap-2.5 flex-wrap">
-                    <h3 className="text-base font-bold text-[#1B2127] flex items-center gap-2">
-                      <Code2 className="w-5 h-5 text-[#8250DF]" />
+                    <h3 className="text-base font-bold text-foreground flex items-center gap-2">
+                      <Code2 className="w-5 h-5 text-accent" />
                       <span>LaTeX Source Code (.tex)</span>
                     </h3>
                     {/* Live Upload Status Badge */}
@@ -1560,7 +1552,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
                       </span>
                     ) : texUploadStatus.status === 'checking' ? (
                       <span className="admin-badge-checking">
-                        <span className="w-2 h-2 rounded-full bg-gray-400 animate-pulse" />
+                        <span className="w-2 h-2 rounded-full bg-muted-foreground animate-pulse" />
                         <span>Checking status...</span>
                       </span>
                     ) : (
@@ -1571,7 +1563,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
                     )}
                   </div>
                   <p className="admin-section-desc mt-1">
-                    Upload a new <code className="bg-[#F6F8FA] px-1 py-0.5 rounded text-[11px]">.tex</code> file or edit the source directly below.
+                    Upload a new <code className="bg-muted px-1 py-0.5 rounded-sm text-[11px] font-mono">.tex</code> file or edit the source directly below.
                   </p>
                 </div>
 
@@ -1604,12 +1596,12 @@ export const AdminPage: React.FC<AdminPageProps> = ({
                   <label className="admin-field-label">
                     LaTeX Source Editor
                   </label>
-                  <span className="text-[11px] text-[#8C959F] font-mono">
+                  <span className="text-[11px] text-muted-foreground font-mono">
                     {currentTexSource.split('\n').length} lines &bull; {Math.round(currentTexSource.length / 1024 * 10) / 10} KB
                   </span>
                 </div>
                 {isLoadingTex ? (
-                  <div className="p-8 text-center text-[#57606A] text-xs font-mono">Loading LaTeX source...</div>
+                  <div className="p-8 text-center text-muted-foreground text-xs font-mono">Loading LaTeX source...</div>
                 ) : (
                   <textarea
                     rows={18}

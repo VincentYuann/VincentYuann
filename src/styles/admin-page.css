@@ -23,15 +23,15 @@
 }
 
 .admin-gate-card {
-  @apply max-w-md w-full bg-card border border-border rounded-2xl p-8 shadow-sm space-y-6 text-center text-card-foreground;
+  @apply max-w-md w-full bg-card border border-border rounded-md p-8 shadow-xs space-y-6 text-center text-card-foreground;
 }
 
 .admin-gate-icon {
-  @apply w-12 h-12 rounded-2xl bg-primary text-primary-foreground flex items-center justify-center mx-auto;
+  @apply w-12 h-12 rounded-sm bg-primary text-primary-foreground flex items-center justify-center mx-auto;
 }
 
 .admin-gate-icon-warning {
-  @apply w-12 h-12 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-600 dark:text-amber-400 flex items-center justify-center mx-auto;
+  @apply w-12 h-12 rounded-sm bg-amber-500/10 border border-amber-500/30 text-amber-600 dark:text-amber-400 flex items-center justify-center mx-auto;
 }
 
 .admin-gate-title {
@@ -43,7 +43,7 @@
 }
 
 .admin-gate-btn {
-  @apply w-full flex items-center justify-center gap-2.5 py-3 px-4 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl text-xs font-semibold shadow-xs transition-colors cursor-pointer;
+  @apply w-full flex items-center justify-center gap-2.5 py-2.5 px-4 bg-primary hover:bg-primary/90 text-primary-foreground rounded-sm text-xs font-semibold shadow-xs transition-colors cursor-pointer;
 }
 
 .admin-gate-back {
@@ -55,11 +55,11 @@
 }
 
 .admin-unauth-btn-primary {
-  @apply flex-1 py-2.5 px-4 bg-primary text-primary-foreground rounded-xl text-xs font-semibold hover:bg-primary/90 cursor-pointer;
+  @apply flex-1 py-2 px-4 bg-primary text-primary-foreground rounded-sm text-xs font-semibold hover:bg-primary/90 cursor-pointer;
 }
 
 .admin-unauth-btn-secondary {
-  @apply flex-1 py-2.5 px-4 bg-card border border-border text-foreground rounded-xl text-xs font-semibold hover:bg-muted;
+  @apply flex-1 py-2 px-4 bg-card border border-border text-foreground rounded-sm text-xs font-semibold hover:bg-muted;
 }
 
 /* Sticky Admin Header */
@@ -108,11 +108,11 @@
 }
 
 .admin-tab-group {
-  @apply flex items-center bg-muted/60 border border-border p-1 rounded-xl text-xs font-medium shadow-2xs;
+  @apply flex items-center bg-muted/60 border border-border p-1 rounded-sm text-xs font-medium shadow-2xs;
 }
 
 .admin-tab-btn {
-  @apply flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg transition-all cursor-pointer font-medium;
+  @apply flex items-center gap-1.5 px-3 py-1.5 rounded-sm transition-all cursor-pointer font-medium;
 }
 
 .admin-tab-btn-active {
@@ -124,11 +124,11 @@
 }
 
 .admin-live-site-btn {
-  @apply flex items-center gap-1.5 text-xs font-semibold text-muted-foreground hover:text-foreground bg-muted hover:bg-muted/80 border border-border px-3 py-1.5 rounded-xl shadow-2xs transition-colors;
+  @apply flex items-center gap-1.5 text-xs font-semibold text-muted-foreground hover:text-foreground bg-muted hover:bg-muted/80 border border-border px-3 py-1.5 rounded-sm shadow-2xs transition-colors;
 }
 
 .admin-signout-btn {
-  @apply flex items-center gap-1.5 px-3 py-1.5 text-muted-foreground hover:text-destructive hover:bg-destructive/10 border border-transparent hover:border-destructive/20 rounded-xl transition-all cursor-pointer;
+  @apply flex items-center gap-1.5 px-3 py-1.5 text-muted-foreground hover:text-destructive hover:bg-destructive/10 border border-transparent hover:border-destructive/20 rounded-sm transition-all cursor-pointer;
 }
 
 /* Main Layout */
@@ -138,7 +138,7 @@
 
 /* Status Banner */
 .admin-status-banner {
-  @apply p-4 rounded-xl text-xs flex items-center justify-between gap-3;
+  @apply p-4 rounded-sm text-xs flex items-center justify-between gap-3;
   animation: fadeIn 0.25s ease-out forwards;
 }
 
@@ -151,7 +151,7 @@
 }
 
 .admin-status-banner-info {
-  @apply bg-blue-500/10 text-blue-700 dark:text-blue-300 border border-blue-500/20;
+  @apply bg-accent/10 text-accent border border-accent/20;
 }
 
 .admin-status-close-btn {
@@ -160,7 +160,7 @@
 
 /* Common Panel Card */
 .admin-panel-card {
-  @apply bg-card text-card-foreground border border-border rounded-2xl p-6 sm:p-8 shadow-xs space-y-6;
+  @apply bg-card text-card-foreground border border-border rounded-sm p-6 sm:p-8 shadow-xs space-y-6;
 }
 
 .admin-select-row {
@@ -176,35 +176,35 @@
 }
 
 .admin-select {
-  @apply px-3 py-2 text-xs sm:text-sm bg-background border border-border text-foreground rounded-xl font-medium focus:outline-none focus:border-[#3894B3];
+  @apply px-3 py-2 text-xs sm:text-sm bg-background border border-border text-foreground rounded-sm font-medium focus:outline-none focus:border-accent;
 }
 
 .admin-toggle-box {
-  @apply flex items-center justify-between p-4 rounded-xl bg-muted/30 border border-border;
+  @apply flex items-center justify-between p-4 rounded-sm bg-muted/30 border border-border;
 }
 
 .admin-input {
-  @apply w-full px-3 py-2 border border-border rounded-xl bg-background text-foreground text-xs;
+  @apply w-full px-3 py-2 border border-border rounded-sm bg-background text-foreground text-xs focus:outline-none focus:border-accent;
 }
 
 .admin-textarea {
-  @apply w-full px-3 py-2 border border-border rounded-xl bg-background text-foreground text-xs leading-relaxed;
+  @apply w-full px-3 py-2 border border-border rounded-sm bg-background text-foreground text-xs leading-relaxed focus:outline-none focus:border-accent;
 }
 
 .admin-markdown-preview {
-  @apply p-4 bg-muted/30 border border-border rounded-xl text-xs sm:text-sm text-foreground whitespace-pre-line leading-relaxed min-h-[160px];
+  @apply p-4 bg-muted/30 border border-border rounded-sm text-xs sm:text-sm text-foreground whitespace-pre-line leading-relaxed min-h-[160px];
 }
 
 .admin-metrics-box {
-  @apply p-4 bg-muted/20 border border-border rounded-xl space-y-3;
+  @apply p-4 bg-muted/20 border border-border rounded-sm space-y-3;
 }
 
 .admin-image-upload-box {
-  @apply p-4 bg-muted/20 border border-border rounded-xl space-y-3;
+  @apply p-4 bg-muted/20 border border-border rounded-sm space-y-3;
 }
 
 .admin-save-btn {
-  @apply inline-flex items-center gap-2 px-6 py-3 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl text-xs font-bold shadow-sm transition-all cursor-pointer;
+  @apply inline-flex items-center gap-2 px-5 py-2.5 bg-primary hover:bg-primary/90 text-primary-foreground rounded-sm text-xs font-bold shadow-xs transition-all cursor-pointer;
 }
 
 /* Resume Tab Cards & Badges */
@@ -233,26 +233,26 @@
 }
 
 .admin-btn-secondary {
-  @apply inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border bg-card hover:bg-muted text-xs font-medium text-muted-foreground hover:text-foreground transition-colors cursor-pointer;
+  @apply inline-flex items-center gap-1.5 px-3 py-1.5 rounded-sm border border-border bg-card hover:bg-muted text-xs font-medium text-muted-foreground hover:text-foreground transition-colors cursor-pointer;
 }
 
 .admin-btn-primary-sm {
-  @apply inline-flex items-center gap-1.5 px-4 py-1.5 bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg text-xs font-bold shadow-xs transition-all cursor-pointer;
+  @apply inline-flex items-center gap-1.5 px-4 py-1.5 bg-primary hover:bg-primary/90 text-primary-foreground rounded-sm text-xs font-bold shadow-xs transition-all cursor-pointer;
 }
 
 .admin-upload-btn {
-  @apply inline-flex items-center gap-2 px-4 py-2 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl text-xs font-bold shadow-xs cursor-pointer transition-all;
+  @apply inline-flex items-center gap-2 px-4 py-2 bg-primary hover:bg-primary/90 text-primary-foreground rounded-sm text-xs font-bold shadow-xs cursor-pointer transition-all;
 }
 
 .admin-resume-dropzone {
-  @apply border-2 border-dashed border-border rounded-xl p-6 text-center hover:border-[#3894B3] transition-colors bg-muted/20;
+  @apply border-2 border-dashed border-border rounded-sm p-6 text-center hover:border-accent transition-colors bg-muted/20;
 }
 
 .admin-resume-status-card {
-  @apply bg-muted/30 border border-border rounded-xl p-4 text-xs space-y-2.5;
+  @apply bg-muted/30 border border-border rounded-sm p-4 text-xs space-y-2.5;
 }
 
 .admin-latex-editor {
-  @apply w-full p-4 border border-border rounded-xl font-mono text-xs text-foreground bg-background focus:outline-hidden focus:border-[#3894B3] leading-relaxed resize-y;
+  @apply w-full p-4 border border-border rounded-sm font-mono text-xs text-foreground bg-background focus:outline-hidden focus:border-accent leading-relaxed resize-y;
 }
 

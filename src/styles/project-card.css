@@ -2,7 +2,7 @@
 
 /* Project Card: Tactile Showcase on River Stream */
 .project-card {
-  @apply border border-border rounded-lg p-4 sm:p-5 bg-card shadow-none hover:border-[#BDAA89] dark:hover:border-[#565A63] transition-all duration-200 space-y-3.5;
+  @apply border border-border rounded-sm p-4 bg-card shadow-none hover:border-[#BDAA89] dark:hover:border-[#565A63] transition-all duration-200 space-y-3;
 }
 
 .project-card.active {

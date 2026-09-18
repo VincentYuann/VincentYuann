@@ -237,6 +237,47 @@
   .image-faded-contrast {
     filter: contrast(0.92) brightness(0.98) saturate(0.92);
   }
+
+  /* Botanical Ink Art Blending (Soft edge feathering & multiply blend) */
+  .blend-ink-art {
+    mix-blend-mode: multiply;
+    opacity: 0.85;
+    filter: contrast(0.95) brightness(0.98);
+    mask-image: radial-gradient(ellipse at 60% 50%, black 40%, transparent 80%);
+    -webkit-mask-image: radial-gradient(ellipse at 60% 50%, black 40%, transparent 80%);
+  }
+  .dark .blend-ink-art {
+    mix-blend-mode: screen;
+    opacity: 0.45;
+    filter: invert(0.85) hue-rotate(180deg) contrast(0.9);
+  }
+
+  /* Japanese Centered Diamond Rule (from Day theme and components.png) */
+  .divider-diamond {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 2rem 0;
+    width: 100%;
+  }
+  .divider-diamond::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background-color: var(--border);
+  }
+  .divider-diamond::after {
+    content: '◇';
+    position: relative;
+    background-color: var(--background);
+    padding: 0 0.75rem;
+    color: var(--accent);
+    font-size: 11px;
+    line-height: 1;
+  }
 }
 
 /* Custom Editorial Scrollbar */

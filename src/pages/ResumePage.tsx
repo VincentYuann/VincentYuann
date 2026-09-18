@@ -141,7 +141,7 @@ export const ResumePage: React.FC<ResumePageProps> = ({ profile, onOpenCommand, 
               onClick={handleDownloadTex}
               className="resume-secondary-btn"
             >
-              <Download className="w-3.5 h-3.5 text-[#57606A]" />
+              <Download className="w-3.5 h-3.5 text-muted-foreground" />
               <span>Download .tex</span>
             </button>
 
@@ -159,7 +159,7 @@ export const ResumePage: React.FC<ResumePageProps> = ({ profile, onOpenCommand, 
                   </>
                 ) : (
                   <>
-                    <Copy className="w-3.5 h-3.5 text-[#57606A]" />
+                    <Copy className="w-3.5 h-3.5 text-muted-foreground" />
                     <span>Copy LaTeX</span>
                   </>
                 )}
@@ -173,7 +173,7 @@ export const ResumePage: React.FC<ResumePageProps> = ({ profile, onOpenCommand, 
               className="resume-secondary-btn"
               title="Open PDF in new tab"
             >
-              <ExternalLink className="w-3.5 h-3.5 text-[#57606A]" />
+              <ExternalLink className="w-3.5 h-3.5 text-muted-foreground" />
               <span>Open in new tab</span>
             </a>
 
@@ -237,7 +237,7 @@ export const ResumePage: React.FC<ResumePageProps> = ({ profile, onOpenCommand, 
                     </>
                   ) : (
                     <>
-                      <Copy className="w-3.5 h-3.5 text-[#57606A]" />
+                      <Copy className="w-3.5 h-3.5 text-muted-foreground" />
                       <span>Copy LaTeX</span>
                     </>
                   )}
@@ -248,7 +248,7 @@ export const ResumePage: React.FC<ResumePageProps> = ({ profile, onOpenCommand, 
                   className="resume-viewer-action-btn"
                   title="Expand Fullscreen"
                 >
-                  <Maximize2 className="w-3.5 h-3.5 text-[#57606A]" />
+                  <Maximize2 className="w-3.5 h-3.5 text-muted-foreground" />
                   <span>Fullscreen</span>
                 </button>
               )}
@@ -265,7 +265,7 @@ export const ResumePage: React.FC<ResumePageProps> = ({ profile, onOpenCommand, 
                     <div className="resume-skeleton-inner">
                       {/* Name & Subtitle Skeleton */}
                       <div className="resume-skeleton-header">
-                        <div className="h-6 w-52 bg-[#E1E6EB] rounded-md" />
+                        <div className="h-6 w-52 bg-muted rounded-sm" />
                         <div className="h-3 w-64 resume-skeleton-bar" />
                         <div className="h-2.5 w-44 resume-skeleton-bar" />
                       </div>
@@ -307,7 +307,7 @@ export const ResumePage: React.FC<ResumePageProps> = ({ profile, onOpenCommand, 
               /* LaTeX Source Code Display with Capped Responsive Height & Internal Scrolling */
               <div className="resume-latex-container">
                 {isLoadingLatex ? (
-                  <div className="p-12 text-center text-[#57606A]">Loading LaTeX source code...</div>
+                  <div className="p-12 text-center text-muted-foreground">Loading LaTeX source code...</div>
                 ) : (
                   <table className="resume-latex-table">
                     <tbody>
@@ -350,7 +350,7 @@ export const ResumePage: React.FC<ResumePageProps> = ({ profile, onOpenCommand, 
         <div className="resume-fullscreen-modal">
           <div className="resume-fullscreen-header">
             <div className="flex items-center gap-2">
-              <FileText className="w-4 h-4 text-[#3894B3]" />
+              <FileText className="w-4 h-4 text-accent" />
               <span className="text-sm font-semibold">Vincent Yuan — Resume (Fullscreen View)</span>
             </div>
             <div className="flex items-center gap-3">

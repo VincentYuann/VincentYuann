@@ -22,7 +22,7 @@ import {
 } from './ui/command';
 import { useAppDispatch, useAppSelector } from '../store';
 import { toggleTheme } from '../store/slices/themeSlice';
-import { FLAGSHIP_PROJECTS, type FlagshipProject } from '../data/projects';
+import type { FlagshipProject } from '../data/projects';
 
 interface CommandPaletteProps {
   isOpen: boolean;
@@ -33,7 +33,7 @@ interface CommandPaletteProps {
 export const CommandPalette: React.FC<CommandPaletteProps> = ({
   isOpen,
   onClose,
-  flagships = FLAGSHIP_PROJECTS,
+  flagships = [],
 }) => {
   const dispatch = useAppDispatch();
   const currentTheme = useAppSelector((state) => state.theme.mode);
@@ -82,7 +82,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
           </CommandItem>
 
           <CommandItem onSelect={() => handleSelect(() => navigate('/resume'))}>
-            <FileText className="size-4 text-[#8250DF] dark:text-[#A371F7]" />
+            <FileText className="size-4 text-accent" />
             <div className="flex-1 min-w-0">
               <span className="font-semibold">Resume & LaTeX Source</span>
               <span className="text-muted-foreground ml-2 text-[11px]">PDF preview and syntax-highlighted source</span>
@@ -91,7 +91,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
           </CommandItem>
 
           <CommandItem onSelect={() => handleSelect(() => navigate('/contact'))}>
-            <Mail className="size-4 text-[#2E6171] dark:text-[#3894B3]" />
+            <Mail className="size-4 text-accent" />
             <div className="flex-1 min-w-0">
               <span className="font-semibold">Contact & Inquiries</span>
               <span className="text-muted-foreground ml-2 text-[11px]">Send direct message or book discussion</span>
@@ -100,7 +100,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
           </CommandItem>
 
           <CommandItem onSelect={() => handleSelect(() => navigate('/admin'))}>
-            <Lock className="size-4 text-[#9E5A3F]" />
+            <Lock className="size-4 text-accent" />
             <div className="flex-1 min-w-0">
               <span className="font-semibold">Admin CMS & Editor</span>
               <span className="text-muted-foreground ml-2 text-[11px]">Manage projects, uploads, and profile</span>
@@ -109,7 +109,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
           </CommandItem>
 
           <CommandItem onSelect={() => handleSelect(() => navigate('/'))}>
-            <Home className="size-4 text-[#526D57]" />
+            <Home className="size-4 text-accent" />
             <div className="flex-1 min-w-0">
               <span className="font-semibold">Home Landing</span>
               <span className="text-muted-foreground ml-2 text-[11px]">Architectural showcase</span>
@@ -136,29 +136,32 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
           </CommandItem>
         </CommandGroup>
 
-        <CommandSeparator />
-
         {/* Technical Systems */}
-        <CommandGroup heading="Architectural Systems">
-          {flagships.map((project) => (
-            <CommandItem
-              key={project.id}
-              value={`${project.title} ${project.category} ${project.tags.map((t) => t.name).join(' ')}`}
-              onSelect={() => handleSelect(() => navigate(`/projects/${project.id}`))}
-            >
-              <Layers className="size-4 text-accent" />
-              <div className="flex-1 min-w-0">
-                <span className="font-semibold">{project.title}</span>
-                <span className="text-muted-foreground ml-2 text-[11px] truncate">
-                  {project.subtitle || project.category}
-                </span>
-              </div>
-              <span className="text-[10px] font-mono uppercase px-1.5 py-0.5 rounded-sm bg-muted text-muted-foreground border border-border">
-                {project.category}
-              </span>
-            </CommandItem>
-          ))}
-        </CommandGroup>
+        {flagships.length > 0 && (
+          <>
+            <CommandSeparator />
+            <CommandGroup heading="Architectural Systems">
+              {flagships.map((project) => (
+                <CommandItem
+                  key={project.id}
+                  value={`${project.title} ${project.category} ${project.tags.map((t) => t.name).join(' ')}`}
+                  onSelect={() => handleSelect(() => navigate(`/projects/${project.id}`))}
+                >
+                  <Layers className="size-4 text-accent" />
+                  <div className="flex-1 min-w-0">
+                    <span className="font-semibold">{project.title}</span>
+                    <span className="text-muted-foreground ml-2 text-[11px] truncate">
+                      {project.subtitle || project.category}
+                    </span>
+                  </div>
+                  <span className="text-[10px] font-mono uppercase px-1.5 py-0.5 rounded-sm bg-muted text-muted-foreground border border-border">
+                    {project.category}
+                  </span>
+                </CommandItem>
+              ))}
+            </CommandGroup>
+          </>
+        )}
       </CommandList>
     </CommandDialog>
   );

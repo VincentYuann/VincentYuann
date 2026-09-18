@@ -144,7 +144,7 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({
                   : 'projects-filter-pill-inactive'
               }`}
             >
-              River Pebbles ({projects.filter((p) => !p.isFlagship).length})
+              Sandboxes & Labs ({projects.filter((p) => !p.isFlagship).length})
             </button>
             {categories
               .filter((c) => c !== 'all')
@@ -164,23 +164,36 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({
           </div>
         </div>
 
-        {/* Card Grid */}
+        {/* Card Grid or Empty State */}
         {filteredProjects.length === 0 ? (
           <div className="projects-empty-card">
             <Filter className="projects-empty-icon" />
-            <div className="projects-empty-title">No matching systems found</div>
+            <div className="projects-empty-title">
+              {projects.length === 0 ? 'Studio Archive in Preparation' : 'No matching systems found'}
+            </div>
             <p className="projects-empty-text">
-              No projects matched &ldquo;{searchQuery}&rdquo;. Try adjusting your keywords or clearing the category filter.
+              {projects.length === 0
+                ? 'No published projects are currently loaded from Supabase PostgreSQL. Configure or seed records in the Admin Console.'
+                : `No systems matched "${searchQuery}". Try adjusting your keywords or clearing the category filter.`}
             </p>
-            <button
-              onClick={() => {
-                setSearchQuery('');
-                setSelectedCategory('all');
-              }}
-              className="projects-empty-reset-btn"
-            >
-              Reset filters
-            </button>
+            {projects.length === 0 ? (
+              <Link
+                to="/admin"
+                className="projects-empty-reset-btn inline-block"
+              >
+                Go to Admin Console →
+              </Link>
+            ) : (
+              <button
+                onClick={() => {
+                  setSearchQuery('');
+                  setSelectedCategory('all');
+                }}
+                className="projects-empty-reset-btn"
+              >
+                Reset filters
+              </button>
+            )}
           </div>
         ) : (
           <div className="projects-grid">

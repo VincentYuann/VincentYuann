@@ -61,7 +61,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({
         <div className="contact-value-grid">
           <div className="contact-value-card">
             <div className="contact-value-card-title">
-              <Clock className="w-4 h-4 text-[#3894B3]" />
+              <Clock className="w-4 h-4 text-accent" />
               <span>Fast Response</span>
             </div>
             <p className="contact-value-card-text">
@@ -71,7 +71,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({
 
           <div className="contact-value-card">
             <div className="contact-value-card-title">
-              <MailCheck className="w-4 h-4 text-[#588A75]" />
+              <MailCheck className="w-4 h-4 text-accent" />
               <span>Spec & File Attachments</span>
             </div>
             <p className="contact-value-card-text">
@@ -81,7 +81,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({
 
           <div className="contact-value-card">
             <div className="contact-value-card-title">
-              <Shield className="w-4 h-4 text-[#A35D43]" />
+              <Shield className="w-4 h-4 text-accent" />
               <span>Rate-Limited & Secure</span>
             </div>
             <p className="contact-value-card-text">
