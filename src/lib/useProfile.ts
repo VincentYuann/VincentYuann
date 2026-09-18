@@ -48,8 +48,9 @@ export function useProfile() {
 
       if (data) {
         const prof = data as DbProfile;
+        const normalizedName = prof.name === 'Vincent Yuann' ? 'Vincent Yuan' : (prof.name || DEFAULT_PROFILE.name);
         setProfile({
-          name: prof.name || DEFAULT_PROFILE.name,
+          name: normalizedName,
           role: prof.role || DEFAULT_PROFILE.role,
           status: prof.status || DEFAULT_PROFILE.status,
           email: prof.email || DEFAULT_PROFILE.email,

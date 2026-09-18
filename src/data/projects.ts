@@ -141,7 +141,7 @@ export const DEFAULT_CURATED_PROJECTS: FlagshipProject[] = [
 ];
 
 export const PROFILE_INFO = {
-  name: "Vincent Yuann",
+  name: "Vincent Yuan",
   title: "Full-Stack & Applied AI Engineer",
   tagline: "Carving thoughtful software paths from raw ideas into production systems.",
   about:

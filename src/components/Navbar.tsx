@@ -1,6 +1,16 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Command, User, Menu, Home, FolderGit2, FileText, Mail, ShieldCheck } from 'lucide-react';
+import {
+  Command,
+  User,
+  Menu,
+  Home,
+  FolderGit2,
+  FileText,
+  Mail,
+  ShieldCheck,
+  ExternalLink,
+} from 'lucide-react';
 import { GithubIcon } from './Icons';
 import { HankoStamp, EnsoCircle } from './JapaneseMotifs';
 import { ThemeToggle } from './ThemeToggle';
@@ -13,12 +23,6 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
 import '../styles/navbar.css';
 
 interface NavbarProps {
@@ -39,207 +43,209 @@ export const Navbar: React.FC<NavbarProps> = ({
   const isAdmin = propIsAdmin ?? authIsAdmin;
   const [isMobileOpen, setIsMobileOpen] = useState(false);
 
+  // Strictly enforce single 'n' for Vincent's display name logo
+  const displayName = profile.name === 'Vincent Yuann' ? 'Vincent Yuan' : (profile.name || 'Vincent Yuan');
+
+  const navLinks = [
+    { label: 'HOME', path: '/', icon: Home },
+    { label: 'PROJECTS', path: '/projects', icon: FolderGit2 },
+    { label: 'RESUME', path: '/resume', icon: FileText },
+    { label: 'CONTACT', path: '/contact', icon: Mail },
+  ];
+
   return (
     <nav className="navbar-wrapper" aria-label="Mobile and Tablet Navigation">
-      {/* Brand Identity with Hanko Mark */}
+      {/* Brand Identity: Just Hanko Mark and Vincent Yuan (single 'n') */}
       <div className="navbar-brand-group">
         <Link to="/" className="navbar-brand-link group">
-          <HankoStamp size={28} className="group-hover:scale-105 transition-transform" />
-          <div>
-            <span className="navbar-brand-name">
-              {profile.name}
-            </span>
-            <span className="navbar-brand-role">
-              {profile.role}
-            </span>
-          </div>
+          <HankoStamp size={26} className="group-hover:scale-105 transition-transform shrink-0" />
+          <span className="navbar-brand-name">
+            {displayName}
+          </span>
         </Link>
       </div>
 
-      {/* Nav Actions */}
+      {/* Sidebar Toggle on the Side for Other Access */}
       <div className="navbar-actions">
-        {/* Spotlight Command Search Trigger */}
-        <button
-          onClick={onOpenCommand}
-          className="navbar-search-btn"
-          title="Open Spotlight Search (Ctrl + K / Cmd + K)"
-        >
-          <Command className="navbar-search-icon" />
-          <span className="navbar-search-label">Search</span>
-          <kbd className="navbar-search-kbd">⌘K</kbd>
-        </button>
+        <Sheet open={isMobileOpen} onOpenChange={setIsMobileOpen}>
+          <SheetTrigger asChild>
+            <button
+              type="button"
+              className="navbar-toggle-btn group"
+              aria-label="Open navigation sidebar"
+            >
+              <Menu className="size-4 text-accent group-hover:scale-110 transition-transform" strokeWidth={1.75} />
+              <span className="text-[11px] font-sans font-semibold uppercase tracking-wider text-foreground">
+                Menu
+              </span>
+            </button>
+          </SheetTrigger>
 
-        {/* Day / Night Theme Toggle */}
-        <ThemeToggle showLabels={false} className="hidden sm:inline-flex" />
+          <SheetContent
+            side="right"
+            className="w-[290px] sm:w-[330px] p-6 flex flex-col justify-between bg-sidebar border-l border-border"
+          >
+            <div className="space-y-6">
+              {/* Drawer Header */}
+              <SheetHeader className="p-0 text-left">
+                <div className="flex items-start gap-3">
+                  <HankoStamp size={32} />
+                  <div>
+                    <SheetTitle className="text-lg font-serif font-normal text-foreground leading-tight">
+                      {displayName}
+                    </SheetTitle>
+                    <p className="text-[10px] font-sans font-semibold uppercase tracking-wider text-muted-foreground mt-0.5">
+                      {profile.role || 'Software & AI Engineer'}
+                    </p>
+                  </div>
+                </div>
+              </SheetHeader>
 
-        <TooltipProvider delayDuration={200}>
-          <div className="navbar-cluster-divider">
-            {/* GitHub Link */}
-            {profile.github && (
-              <Tooltip>
-                <TooltipTrigger asChild>
+              {/* Quick Search */}
+              <div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsMobileOpen(false);
+                    onOpenCommand();
+                  }}
+                  className="w-full flex items-center justify-between px-3 py-2 rounded-sm bg-card hover:bg-muted border border-border text-xs text-muted-foreground hover:text-foreground transition-all cursor-pointer shadow-2xs"
+                >
+                  <span className="flex items-center gap-2">
+                    <Command className="size-3.5 text-accent" />
+                    <span className="font-sans">Spotlight Search...</span>
+                  </span>
+                  <kbd className="text-[10px] font-mono px-1.5 py-0.5 rounded-xs bg-muted border border-border">
+                    ⌘K
+                  </kbd>
+                </button>
+              </div>
+
+              {/* Navigation Links */}
+              <nav className="space-y-1" aria-label="Mobile Navigation Links">
+                <span className="text-[10px] font-sans font-bold uppercase tracking-widest text-muted-foreground block mb-2 px-1">
+                  NAVIGATION
+                </span>
+                {navLinks.map((item) => {
+                  const isActive =
+                    item.path === '/'
+                      ? location.pathname === '/'
+                      : location.pathname.startsWith(item.path);
+                  const Icon = item.icon;
+
+                  return (
+                    <Link
+                      key={item.path}
+                      to={item.path}
+                      onClick={() => setIsMobileOpen(false)}
+                      className={`flex items-center gap-3 px-3 py-2.5 rounded-sm text-xs font-sans font-semibold tracking-wider transition-all min-h-[44px] ${
+                        isActive
+                          ? 'text-accent bg-accent/10 font-bold'
+                          : 'text-foreground/80 hover:text-foreground hover:bg-card'
+                      }`}
+                    >
+                      <Icon className="size-4 text-accent" strokeWidth={1.5} />
+                      <span>{item.label}</span>
+                    </Link>
+                  );
+                })}
+              </nav>
+
+              {/* Quick Actions: Profile & Admin */}
+              <div className="space-y-1.5 pt-3 border-t border-border">
+                <span className="text-[10px] font-sans font-bold uppercase tracking-widest text-muted-foreground block mb-1 px-1">
+                  PROFILE & CONTROLS
+                </span>
+
+                {onOpenProfile && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsMobileOpen(false);
+                      onOpenProfile();
+                    }}
+                    className="w-full flex items-center justify-between px-3 py-2 rounded-sm text-xs font-sans font-semibold text-foreground/80 hover:text-foreground hover:bg-card transition-all cursor-pointer text-left"
+                  >
+                    <span className="flex items-center gap-3">
+                      <User className="size-4 text-accent" strokeWidth={1.5} />
+                      <span>View Bio & Overview</span>
+                    </span>
+                    <ExternalLink className="size-3 text-muted-foreground" />
+                  </button>
+                )}
+
+                {isAdmin && (
+                  <Link
+                    to="/admin"
+                    onClick={() => setIsMobileOpen(false)}
+                    className="flex items-center justify-between px-3 py-2 rounded-sm text-xs font-sans font-semibold text-foreground/80 hover:text-foreground hover:bg-card transition-all"
+                  >
+                    <span className="flex items-center gap-3">
+                      <ShieldCheck className="size-4 text-accent" strokeWidth={1.5} />
+                      <span>Admin CMS Studio</span>
+                    </span>
+                    <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded-full bg-accent/10 text-accent">
+                      Active
+                    </span>
+                  </Link>
+                )}
+              </div>
+
+              {/* Appearance / Theme Switcher */}
+              <div className="pt-3 border-t border-border">
+                <span className="text-[10px] font-sans font-bold uppercase tracking-widest text-muted-foreground block mb-2 px-1">
+                  APPEARANCE
+                </span>
+                <ThemeToggle showLabels={true} className="w-full justify-center" />
+              </div>
+            </div>
+
+            {/* Drawer Footer: Socials & Studio Status */}
+            <div className="space-y-3 pt-4 border-t border-border">
+              <div className="flex items-center gap-2 px-1">
+                {profile.github && (
                   <a
                     href={profile.github}
                     target="_blank"
                     rel="noreferrer"
-                    className="navbar-icon-btn"
-                    aria-label="GitHub Profile"
+                    className="p-2 rounded-sm border border-border bg-card/60 hover:bg-card text-muted-foreground hover:text-foreground transition-colors"
+                    title="GitHub Profile"
                   >
                     <GithubIcon className="size-4" />
                   </a>
-                </TooltipTrigger>
-                <TooltipContent>GitHub Profile</TooltipContent>
-              </Tooltip>
-            )}
-
-            {/* Profile Overview & Quick Actions */}
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button
-                  type="button"
-                  onClick={onOpenProfile}
-                  className="navbar-icon-btn relative cursor-pointer"
-                  aria-label="Profile Overview"
-                >
-                  <User className="size-4" />
-                  {isAdmin && (
-                    <span 
-                      className="absolute top-1 right-1 size-2 rounded-full bg-accent ring-2 ring-card" 
-                      title="Admin Active"
-                    />
-                  )}
-                </button>
-              </TooltipTrigger>
-              <TooltipContent>{isAdmin ? "Profile & Admin Controls" : "View Profile"}</TooltipContent>
-            </Tooltip>
-
-            {/* Admin CMS */}
-            {isAdmin && (
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Link
-                    to="/admin"
-                    className={
-                      location.pathname.startsWith('/admin')
-                        ? 'navbar-icon-btn-admin-active'
-                        : 'navbar-icon-btn-admin-inactive'
-                    }
-                    aria-label="Admin CMS Dashboard"
+                )}
+                {profile.linkedin && (
+                  <a
+                    href={profile.linkedin}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="p-2 rounded-sm border border-border bg-card/60 hover:bg-card text-muted-foreground hover:text-foreground transition-colors text-xs font-sans font-bold"
+                    title="LinkedIn Profile"
                   >
-                    <ShieldCheck className="size-4 text-accent" />
-                  </Link>
-                </TooltipTrigger>
-                <TooltipContent>Admin CMS Studio (Active)</TooltipContent>
-              </Tooltip>
-            )}
-
-            {/* Mobile Navigation Sheet Trigger */}
-            <Sheet open={isMobileOpen} onOpenChange={setIsMobileOpen}>
-              <SheetTrigger asChild>
-                <button
-                  type="button"
-                  className="p-2 rounded-sm text-muted-foreground hover:text-foreground hover:bg-card border border-border transition-colors cursor-pointer min-h-[44px] min-w-[44px] flex items-center justify-center"
-                  aria-label="Open mobile navigation menu"
-                >
-                  <Menu className="size-4" />
-                </button>
-              </SheetTrigger>
-              <SheetContent side="right" className="w-[280px] sm:w-[320px] p-6 flex flex-col justify-between bg-sidebar border-l border-border">
-                <div className="space-y-6">
-                  <SheetHeader className="p-0 text-left">
-                    <div className="flex items-center gap-3">
-                      <HankoStamp size={32} />
-                      <div>
-                        <SheetTitle className="text-base font-serif font-normal text-foreground">
-                          {profile.name}
-                        </SheetTitle>
-                        <p className="text-[10px] font-sans font-semibold uppercase tracking-wider text-muted-foreground">
-                          {profile.role}
-                        </p>
-                      </div>
-                    </div>
-                  </SheetHeader>
-
-                  {/* Navigation Links */}
-                  <div className="space-y-1 pt-2">
-                    <Link
-                      to="/"
-                      onClick={() => setIsMobileOpen(false)}
-                      className={`flex items-center gap-3 px-3 py-2.5 rounded-sm text-xs font-sans font-semibold tracking-wider transition-all min-h-[44px] ${
-                        location.pathname === '/'
-                          ? 'text-accent bg-accent/10 font-bold'
-                          : 'text-foreground/80 hover:text-foreground hover:bg-card'
-                      }`}
-                    >
-                      <Home className="size-4 text-accent" strokeWidth={1.5} />
-                      <span>HOME</span>
-                    </Link>
-
-                    <Link
-                      to="/projects"
-                      onClick={() => setIsMobileOpen(false)}
-                      className={`flex items-center gap-3 px-3 py-2.5 rounded-sm text-xs font-sans font-semibold tracking-wider transition-all min-h-[44px] ${
-                        location.pathname.startsWith('/projects')
-                          ? 'text-accent bg-accent/10 font-bold'
-                          : 'text-foreground/80 hover:text-foreground hover:bg-card'
-                      }`}
-                    >
-                      <FolderGit2 className="size-4 text-accent" strokeWidth={1.5} />
-                      <span>PROJECTS</span>
-                    </Link>
-
-                    <Link
-                      to="/resume"
-                      onClick={() => setIsMobileOpen(false)}
-                      className={`flex items-center gap-3 px-3 py-2.5 rounded-sm text-xs font-sans font-semibold tracking-wider transition-all min-h-[44px] ${
-                        location.pathname.startsWith('/resume')
-                          ? 'text-accent bg-accent/10 font-bold'
-                          : 'text-foreground/80 hover:text-foreground hover:bg-card'
-                      }`}
-                    >
-                      <FileText className="size-4 text-accent" strokeWidth={1.5} />
-                      <span>RESUME</span>
-                    </Link>
-
-                    <Link
-                      to="/contact"
-                      onClick={() => setIsMobileOpen(false)}
-                      className={`flex items-center gap-3 px-3 py-2.5 rounded-sm text-xs font-sans font-semibold tracking-wider transition-all min-h-[44px] ${
-                        location.pathname.startsWith('/contact')
-                          ? 'text-accent bg-accent/10 font-bold'
-                          : 'text-foreground/80 hover:text-foreground hover:bg-card'
-                      }`}
-                    >
-                      <Mail className="size-4 text-accent" strokeWidth={1.5} />
-                      <span>CONTACT</span>
-                    </Link>
-                  </div>
-
-                  {/* Theme Switcher in Mobile Drawer */}
-                  <div className="pt-4 border-t border-border">
-                    <span className="text-[10px] font-sans font-bold uppercase tracking-widest text-muted-foreground block mb-2">
-                      APPEARANCE
-                    </span>
-                    <ThemeToggle showLabels={true} className="w-full justify-center" />
-                  </div>
+                    in
+                  </a>
+                )}
+                <div className="flex-1 text-right">
+                  <span className="text-[10px] font-sans font-semibold tracking-wider text-muted-foreground uppercase">
+                    New York, USA
+                  </span>
                 </div>
+              </div>
 
-                {/* Bottom Studio Motif */}
-                <div className="p-3 rounded-sm border border-border bg-card/40 space-y-2">
-                  <div className="flex items-center justify-between">
-                    <EnsoCircle size={24} className="text-foreground/40" />
-                    <span className="text-[10px] font-sans font-bold tracking-widest text-muted-foreground uppercase">
-                      STUDIO
-                    </span>
-                  </div>
-                  <p className="text-[11px] font-sans text-muted-foreground leading-snug">
-                    Akari Day & Night architectural portfolio.
-                  </p>
+              <div className="p-3 rounded-sm border border-border bg-card/40 space-y-1">
+                <div className="flex items-center justify-between">
+                  <EnsoCircle size={18} className="text-foreground/40" />
+                  <span className="text-[10px] font-sans font-bold tracking-widest text-muted-foreground uppercase">
+                    AKARI STUDIO
+                  </span>
                 </div>
-              </SheetContent>
-            </Sheet>
-          </div>
-        </TooltipProvider>
+                <p className="text-[11px] font-sans text-muted-foreground leading-snug">
+                  {profile.status || 'Open to Full-Stack & AI Roles'}
+                </p>
+              </div>
+            </div>
+          </SheetContent>
+        </Sheet>
       </div>
     </nav>
   );

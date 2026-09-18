@@ -131,26 +131,16 @@ export const Hero: React.FC<HeroProps> = ({ profile, isAdmin = false }) => {
           </div>
         </div>
 
-        {/* Right Column: Natural Blended Botanical Ink Art (Dissolves into Washi Canvas) */}
-        <div className="lg:col-span-5 relative flex items-center justify-center py-4 lg:py-0">
-          <div className="relative w-full max-w-md lg:max-w-none flex items-center justify-center group">
-            {/* Soft Warm Ambient Radial Glow */}
-            <div className="absolute inset-0 bg-radial from-amber-500/10 via-transparent to-transparent blur-2xl pointer-events-none" />
-
+        {/* Right Column: Natural Blended Botanical Ink Art (Desktop Only, Seamless Washi Canvas Dissolve) */}
+        <div className="hidden lg:flex lg:col-span-5 relative items-center justify-center py-4 select-none pointer-events-none">
+          <div className="relative w-full max-w-md flex items-center justify-center">
             {/* Natural Blended Botanical Ink Illustration */}
             <img
               src="/images/botanical-ink-accent.jpg"
-              alt="Japanese Botanical Ink Painting"
-              className="w-full max-h-[340px] sm:max-h-[400px] object-contain object-center blend-ink-art select-none pointer-events-none transition-all duration-700 group-hover:scale-102"
+              alt="Japanese Botanical Sumi-e Ink Art"
+              className="w-full max-h-[380px] object-contain object-center blend-ink-art select-none pointer-events-none transition-transform duration-700 hover:scale-102"
               loading="eager"
             />
-
-            {/* Subtle Editorial Studio Seal & Coordinate Pill */}
-            <div className="absolute bottom-2 right-2 sm:bottom-4 sm:right-4 flex items-center gap-2 px-3 py-1.5 rounded-sm bg-card/75 backdrop-blur-xs border border-border/80 text-[10px] font-sans tracking-widest text-muted-foreground uppercase shadow-2xs">
-              <span className="text-accent font-semibold">自然の美</span>
-              <span className="text-border">/</span>
-              <span>BOTANICAL INK · WASHI</span>
-            </div>
           </div>
         </div>
       </div>

@@ -92,7 +92,9 @@ export const AdminPage: React.FC<AdminPageProps> = ({
   const [isSeeding, setIsSeeding] = useState(false);
 
   // Profile Form State
-  const [profName, setProfName] = useState(profile?.name || 'Vincent Yuann');
+  const [profName, setProfName] = useState(
+    profile?.name && profile.name !== 'Vincent Yuann' ? profile.name : 'Vincent Yuan'
+  );
   const [profRole, setProfRole] = useState(profile?.role || 'Software & AI Engineer');
   const [profStatus, setProfStatus] = useState(profile?.status || 'Open to Full-Stack & AI Roles');
   const [profTagline, setProfTagline] = useState(profile?.tagline || '');
@@ -685,7 +687,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
             </div>
             <div>
               <div className="admin-header-title-row">
-                <span className="admin-header-title">Vincent Yuann CMS</span>
+                <span className="admin-header-title">Vincent Yuan CMS</span>
                 <span className="admin-header-badge hidden sm:inline-flex">
                   <span className="admin-header-badge-dot" />
                   Verified

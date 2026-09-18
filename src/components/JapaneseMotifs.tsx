@@ -13,7 +13,7 @@ export const HankoStamp: React.FC<{
     <div
       style={{ width: size, height: size }}
       className={`relative inline-flex items-center justify-center rounded-[4px] border border-[#9E3D27] bg-[#B5482E] text-[#FAF6F0] font-serif shadow-2xs select-none shrink-0 ${className}`}
-      title="Vincent Yuann Hanko Seal"
+      title="Vincent Yuan Hanko Seal"
     >
       <span className="text-[13px] font-bold leading-none scale-90">
         {character}

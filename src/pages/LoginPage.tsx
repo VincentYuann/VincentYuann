@@ -44,7 +44,7 @@ export const LoginPage: React.FC = () => {
             Portfolio Admin Login
           </h1>
           <p className="login-subtitle">
-            Administrative console access for Vincent Yuann. Authenticated via GitHub OAuth with PostgreSQL Row-Level Security.
+            Administrative console access for Vincent Yuan. Authenticated via GitHub OAuth with PostgreSQL Row-Level Security.
           </p>
         </div>
 

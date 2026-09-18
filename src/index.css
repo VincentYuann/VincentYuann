@@ -238,18 +238,20 @@
     filter: contrast(0.92) brightness(0.98) saturate(0.92);
   }
 
-  /* Botanical Ink Art Blending (Soft edge feathering & multiply blend) */
+  /* Botanical Ink Art Blending (Seamless washi paper dissolution) */
   .blend-ink-art {
     mix-blend-mode: multiply;
-    opacity: 0.85;
-    filter: contrast(0.95) brightness(0.98);
-    mask-image: radial-gradient(ellipse at 60% 50%, black 40%, transparent 80%);
-    -webkit-mask-image: radial-gradient(ellipse at 60% 50%, black 40%, transparent 80%);
+    opacity: 0.9;
+    filter: contrast(1.05) brightness(0.98);
+    mask-image: radial-gradient(ellipse at 50% 50%, black 35%, rgba(0, 0, 0, 0.75) 55%, transparent 75%);
+    -webkit-mask-image: radial-gradient(ellipse at 50% 50%, black 35%, rgba(0, 0, 0, 0.75) 55%, transparent 75%);
   }
   .dark .blend-ink-art {
     mix-blend-mode: screen;
-    opacity: 0.45;
-    filter: invert(0.85) hue-rotate(180deg) contrast(0.9);
+    opacity: 0.6;
+    filter: invert(1) brightness(1.2) contrast(1.15) grayscale(1);
+    mask-image: radial-gradient(ellipse at 50% 50%, black 35%, rgba(0, 0, 0, 0.75) 55%, transparent 75%);
+    -webkit-mask-image: radial-gradient(ellipse at 50% 50%, black 35%, rgba(0, 0, 0, 0.75) 55%, transparent 75%);
   }
 
   /* Japanese Centered Diamond Rule (from Day theme and components.png) */
