@@ -508,14 +508,24 @@ The shape language is mostly rectangular, quiet, and gently softened. It should 
 
 ### Decorative language
 
-Decorative elements are reference points, not product UI controls. Use them sparingly:
+Decorative elements in the Akari Wabi-Sabi system are living architectural accents, not superficial stickers or screen-blocking filler cards:
 
-- Black brush ensō circle.
-- Terracotta hanko-style identity stamp.
-- Thin botanical branches, bamboo drawing, seigaiha wave geometry, sunburst, or minimal geometric ornaments.
-- One small diamond centered on a divider can mark a special transition.
-
-Do not mix multiple decorative motifs into every card. A maximum of one motif per major region is a useful default.
+- **Ensō Orbital Circle (`EnsoOrbital.tsx`)**:
+  - **Visual Anatomy**: Calligraphic sumi-e ink wash ensō ring, a continuously rotating golden celestial orbit arc (`animate-orbital-spin` 22s), an incandescent pulsing vermilion apex ruby (`animate-ruby-pulse` 2.6s), a concentric dashed red orbit trail (`animate-dash-flow`), and floating celestial dust motes.
+  - **Top-Left Placement**: Positioned covering the top-left corner of cards (`-top-7 -left-7` / `-top-8 -left-8`).
+  - **Hover-Exclusive Reveal (`hoverOnly={true}`)**: To honor the core principle of *Ma* (intentional negative space), cards remain serenely clean by default (`opacity-0 scale-90 pointer-events-none`). When the user hovers over a card, the Ensō circle blooms smoothly on that specific card (`group-hover:opacity-100 group-hover:scale-100 transition-all duration-500 ease-out`).
+- **Hanko Seal Stamp (`HankoStamp.tsx`)**:
+  - Vectorized cinnabar vermilion seal script stamp (`原` - Haru/Origin) with authentic square double hairline border, completely transparent in both Day and Night modes, animated with a gentle breathing pulse (`animate-seal-breathe` 6s).
+- **Seigaiha Wave & Hairline Rules (`SectionDivider.tsx`)**:
+  - Concentric geometric wave arches symbolizing boundless tranquility and resilience, framed by double hairline rules, centered diamond/kanji, and Romanized section descriptors (`MA · WABI-SABI · CRAFT`, `PHILOSOPHY · SHOKUNIN · MA`, `INITIATE A DIALOGUE · 対話`).
+- **Full-Bleed Panoramic Landscape & Left Pine Tree (Matsu 松)**:
+  - Stretched full-bleed panoramic Sumi-e landscape banner spanning the hero header, blended into washi and obsidian canvas colors with radial edge masks (`maskImage: radial-gradient(...)`).
+  - Anchored on the left flank by a crisp, high-visibility Japanese Pine Tree (*Matsu* 松) with inverted dark-mode filters and softened vignettes so needle clusters and twisted branches remain vivid.
+- **Flanking Bamboo Margins & Tategaki Marginalia**:
+  - Wide-screen outer viewport margins are balanced by tall vertical Sumi-e bamboo stalks (`sumie-tall-vertical-bamboo.jpg`) with subtle natural sway (`animate-bamboo-sway` 7s).
+  - Paired with architectural Japanese *tategaki* (vertical writing) marginalia widgets: Kyoto coordinates (`空間の美学 // MA & WABI`, `35°41'N · 139°46'E`) and craft provenance specifications with pulsing jewels.
+- **Deleted Redundant Clutter**:
+  - The standalone "Motifs Pack" display and "Algorithmic Integrity" cards from early prototypes were removed from the layout. Motifs must never compete with real project and engineering content for screen space.
 
 ## Components
 
@@ -553,14 +563,21 @@ Button requirements:
 
 ### Cards and project cards
 
-Cards provide containment, not decoration.
+Cards provide containment, quiet architectural framing, and serene focus:
 
-- Use `card-light` / `card-dark` tokens.
-- Default radius: 8px for cards containing an image; 4px for compact information cards.
-- Use 24px padding on standard desktop cards; reduce to 16px when space is constrained.
-- Project cards include: image, project title, 1–2 sentence outcome-oriented summary, 2–4 neutral technology tags, and a text link with arrow.
-- Keep project summaries concrete: problem, action, or impact. Avoid generic filler such as “a modern solution.”
-- On hover, make the image slightly more prominent and strengthen the border; do not create large scaling or colored overlays.
+- Use `card-light` / `card-dark` tokens (`#F7F0E3` in Day / `#181920` or `#1B1C22` in Night).
+- **Classical Card Frame (`.classical-card-frame`)**:
+  - Inset hairline border (`inset: 6px`, `rgba(212, 155, 106, 0.12)`) creating an authentic artisan joinery feel.
+  - Border transitions gently to warm terracotta on hover (`rgba(200, 60, 35, 0.28)`).
+- **Corner Hairline Brackets (`.corner-bracket`)**:
+  - Four delicate 12px–14px hairline L-brackets in the card corners (`top-2.5 left-2.5`, etc.).
+  - On hover, brackets shift outward by 2px (`transform: translate(±2px, ±2px)`) and illuminate with `#C83C23` cinnabar.
+- **Strict No-Gradient Rule**:
+  - Absolutely NO mouse-following radial gradient overlays (`target.style.backgroundImage = radial-gradient(...)`). No darkening under cursor in Day mode, and no whitish glow under cursor in Night mode. The card surface remains pure, crisp, and undisturbed.
+- **Hover-Exclusive Ensō Orbital**:
+  - The Ensō Orbital circle sits at the top-left corner of cards, hidden by default (`opacity-0 scale-90`) to protect *Ma*, blooming smoothly into full luminance and scale only when the parent card is hovered.
+- Default radius: 12px–16px (`rounded-xl` / `rounded-2xl`) with `overflow-visible` to allow corner Ensō motifs to bleed gracefully without edge clipping.
+- Project cards include: image column, project title with kanji watermark (`墨`, `木漏れ日`, `明かり`, `盆栽`), outcome-oriented summary, neutral uppercase technology tags, live metric chips, and CTA text link with arrow.
 
 ### Tags and filters
 
@@ -615,25 +632,23 @@ Technology tags should be informative but visually quiet.
 
 ### Do
 
-- Do preserve the exact canonical light palette: `#F2E9DA`, `#F7F0E3`, `#2B2E3A`, `#6B6559`, `#D9C9AE`, `#26262E`, and `#B5482E`.
-- Do use terracotta as a single, intentional highlight rather than a default UI color.
-- Do use the difference between canvas and panel surfaces subtly and consistently.
-- Do make technical work feel credible through concise project descriptions, neutral technology tags, code snippets, and precise hierarchy.
-- Do use warm, tactile imagery with paper, bamboo, wood, soft daylight, and restrained landscape references.
-- Do use low-contrast borders and generous whitespace to create calm.
-- Do support light and dark themes equally; layout and hierarchy should remain consistent across both.
-- Do meet WCAG AA contrast requirements: at least 4.5:1 for normal text and 3:1 for large text and essential UI boundaries.
-- Do test focus, hover, pressed, disabled, and keyboard states for all interactive elements.
+- Do preserve the exact canonical palettes: Warm Akari Washi (`#FCF9F8` / `#F7F0E3`) in Day mode; Obsidian & Charcoal (`#121317` / `#181920`) in Night mode.
+- Do use terracotta / cinnabar (`#C83C23` / `#B5482E`) as a single, intentional highlight rather than a default UI color.
+- Do keep resting cards clean and serene; reveal corner Ensō orbital animations exclusively on active card hover (`hoverOnly={true}`).
+- Do stretch hero landscapes edge-to-edge with radial mask gradients (`radial-gradient(...)`) so art blends seamlessly into canvas colors.
+- Do preserve high visibility on the left Japanese Pine Tree (*Matsu* 松) using inverted blend filters and gentle vignettes.
+- Do balance wide desktop viewports with vertical sumi-e bamboo margins and architectural *tategaki* coordinates rather than leaving vast empty voids.
+- Do use double hairline borders and shifting corner brackets (`.corner-bracket`) for tactile, craft-inspired card interactions.
+- Do make technical work feel credible through concise project descriptions, neutral technology tags, architecture blueprints, and precise hierarchy.
+- Do meet WCAG AA contrast requirements across both Day and Night viewports.
 
 ### Don't
 
+- Don’t add mouse-following radial gradient overlays (no darkening circles in Day mode, no white glow circles in Night mode) that disfigure card surfaces.
+- Don’t display Japanese motifs as giant standalone feature cards (such as the deleted "Motifs Pack" or "Algorithmic Integrity" cards) that block real portfolio content.
+- Don’t render Ensō circles statically across every card simultaneously; this creates visual clutter and violates *Ma*.
 - Don’t introduce teal, cyan, bright blue, purple, neon green, or a second competing accent color.
-- Don’t replace the Akari light tokens with lighter approximate creams or near-black text values.
-- Don’t use `#211F26` as a substitute for `#2B2E3A` body ink, and don’t use one dark color for both text and CTA fill when the distinct tokens are available.
-- Don’t use terracotta for every badge, icon, border, heading, and button.
 - Don’t use glossy gradients, glassmorphism, heavy blur, large drop shadows, or high-saturation visual effects.
-- Don’t over-round cards, inputs, and buttons. This system is lightly softened, not bubbly.
-- Don’t use generic dashboard widgets, dense metric grids, or loud developer-terminal aesthetics unless the content explicitly calls for them.
+- Don’t over-round cards, inputs, and buttons. This system is lightly softened (`rounded-xl`), not bubbly.
 - Don’t let decorative Japanese-inspired motifs become cultural wallpaper; use them as quiet structural accents and keep the product content primary.
-- Don’t use long paragraphs in cards, excessive tag counts, or cramped navigation.
-- Don’t use different icon stroke styles, arbitrary spacing values, or unapproved colors to solve local layout problems.
+- Don’t use broken external image links for structural dividers; always use vector SVGs (like inline Seigaiha wave arches).
