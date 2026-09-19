@@ -13,7 +13,7 @@ import { ResumePage } from './components/ResumePage';
 import { LoginPage } from './components/LoginPage';
 import { EditPage } from './components/EditPage';
 import { supabase } from './lib/supabase';
-import { Toaster } from 'sonner';
+import { Toaster, toast } from 'sonner';
 
 export type ViewMode = 'home' | 'projects' | 'resume' | 'login' | 'edit';
 
@@ -76,6 +76,7 @@ export const App: React.FC = () => {
         }
       } else if (event === 'SIGNED_IN') {
         if (isOwner) {
+          toast.success('Welcome back, Vincent! Admin mode unlocked.');
           // If the user signed in directly from the login page, take them to home
           if (window.location.hash.toLowerCase() === '#login') {
             setViewRef.current('home');
@@ -89,7 +90,7 @@ export const App: React.FC = () => {
             setViewRef.current('home');
             window.history.replaceState(null, '', '#home');
           }
-          alert('Access Denied: Only the portfolio owner is authorized to access the edit dashboard.');
+          toast.error('Access Denied: Only the portfolio owner is authorized to access the edit dashboard.');
         }
       } else if (event === 'TOKEN_REFRESHED') {
         // Token refreshed in background: update admin flags without interfering with active view
@@ -190,7 +191,12 @@ export const App: React.FC = () => {
 
   const handleLogout = async () => {
     if (!supabase) return;
-    await supabase.auth.signOut();
+    try {
+      await supabase.auth.signOut();
+      toast.info('Signed out successfully.');
+    } catch {
+      toast.error('Failed to sign out.');
+    }
   };
 
   return (

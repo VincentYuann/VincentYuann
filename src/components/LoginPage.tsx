@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { supabase } from '../lib/supabase';
+import { supabase, formatErrorMessage } from '../lib/supabase';
+import { toast } from 'sonner';
 
 interface LoginPageProps {
   onNavigate: (view: 'home' | 'projects' | 'resume' | 'login' | 'edit') => void;
@@ -11,7 +12,9 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate }) => {
 
   const handleGithubLogin = async () => {
     if (!supabase) {
-      setError('Supabase is not configured.');
+      const msg = 'Supabase is not configured.';
+      setError(msg);
+      toast.error(msg);
       return;
     }
     setLoading(true);
@@ -23,7 +26,9 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate }) => {
       },
     });
     if (authError) {
-      setError(authError.message);
+      const msg = formatErrorMessage(authError);
+      setError(msg);
+      toast.error(msg);
       setLoading(false);
     }
     // On success Supabase redirects the page; the auth listener in App.tsx handles navigation.
