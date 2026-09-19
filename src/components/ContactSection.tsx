@@ -139,7 +139,7 @@ export const ContactSection: React.FC = () => {
             <div className="lg:col-span-6 flex flex-col space-y-6">
               <div className="flex items-center gap-2.5">
                 <HankoStamp className="h-6 w-6 animate-seal-breathe" />
-                <span className="font-serif text-terracotta text-sm">05 // 原</span>
+                <span className="font-serif text-terracotta text-sm">04 // 原</span>
                 <span className="font-sans text-[11px] font-semibold text-light-ink-subtle dark:text-dark-ink-subtle uppercase tracking-widest">
                   INITIATE A DIALOGUE
                 </span>
@@ -187,12 +187,9 @@ export const ContactSection: React.FC = () => {
 
             {/* Right Column: Inquiries Form */}
             <div className="lg:col-span-6 w-full bg-light-surface-raised dark:bg-dark-surface-muted/90 p-6 sm:p-8 rounded-lg border border-light-border/70 dark:border-dark-border/70 shadow-sm">
-              <h3 className="font-serif text-lg text-light-ink dark:text-dark-ink mb-1">
+              <h3 className="font-serif text-lg text-light-ink dark:text-dark-ink mb-6">
                 Send a Message
               </h3>
-              <p className="font-sans text-xs text-light-ink-muted dark:text-dark-ink-muted mb-5">
-                Inquiries are dispatched directly to Vincent Yuan (<span className="text-terracotta">vincentyuan1020@gmail.com</span>).
-              </p>
 
               {status === 'success' ? (
                 <div className="p-5 rounded bg-bamboo/10 border border-bamboo/30 text-center space-y-2">

@@ -18,7 +18,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8 pb-10 border-b border-light-border/70 dark:border-dark-border/70">
           {/* Brand & Identity */}
           <div className="md:col-span-5 flex flex-col items-start text-left">
-            <div className="flex items-center gap-3 mb-3">
+            <div className="flex items-center gap-3">
               <HankoStamp className="h-7 w-7" />
               <div>
                 <span className="font-serif text-lg font-medium text-light-ink dark:text-dark-ink block leading-none">
@@ -29,9 +29,6 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                 </span>
               </div>
             </div>
-            <p className="font-sans text-xs text-light-ink-muted dark:text-dark-ink-muted max-w-sm leading-relaxed font-light">
-              Synthesizing Japanese aesthetic restraint with high-scale distributed systems, local intelligence runtimes, and responsive ambient UI.
-            </p>
           </div>
 
           {/* WABI-SABI CRAFT & INSPIRATION PHILOSOPHY */}
@@ -63,31 +60,31 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                 }}
                 className="hover:text-terracotta transition-colors"
               >
-                01 // Selected Overview
+                01 // Home Overview
               </a>
               <a
                 href="#featured-works"
                 onClick={(e) => {
                   if (onNavigate) {
                     e.preventDefault();
-                    onNavigate('projects');
+                    onNavigate('home', 'featured-works');
                   }
                 }}
                 className="hover:text-terracotta transition-colors"
               >
-                02 // All Projects Archive
+                02 // Selected Projects
               </a>
               <a
-                href="#resume"
+                href="#philosophy"
                 onClick={(e) => {
                   if (onNavigate) {
                     e.preventDefault();
-                    onNavigate('resume');
+                    onNavigate('home', 'philosophy');
                   }
                 }}
                 className="hover:text-terracotta transition-colors"
               >
-                03 // Curriculum Vitae (PDF/TeX)
+                03 // Philosophy & Craft
               </a>
               <a
                 href="#contact"
@@ -100,6 +97,18 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                 className="hover:text-terracotta transition-colors"
               >
                 04 // Initiate Dialogue
+              </a>
+              <a
+                href="#resume"
+                onClick={(e) => {
+                  if (onNavigate) {
+                    e.preventDefault();
+                    onNavigate('resume');
+                  }
+                }}
+                className="hover:text-terracotta transition-colors"
+              >
+                05 // Curriculum Vitae (PDF/TeX)
               </a>
             </div>
           </div>

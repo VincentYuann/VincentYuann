@@ -41,9 +41,9 @@ export const Header: React.FC<HeaderProps> = ({ onOpenContact, currentView = 'ho
   const navItems = [
     { id: 'home', num: '01', label: 'Home', href: '#home', view: 'home' as const },
     { id: 'featured-works', num: '02', label: 'Projects', href: '#featured-works', view: 'home' as const },
-    { id: 'resume', num: '03', label: 'Resume', href: '#resume', view: 'resume' as const },
-    { id: 'philosophy', num: '04', label: 'Philosophy', href: '#philosophy', view: 'home' as const },
-    { id: 'contact', num: '05', label: 'Contact', href: '#contact', view: 'home' as const },
+    { id: 'philosophy', num: '03', label: 'Philosophy', href: '#philosophy', view: 'home' as const },
+    { id: 'contact', num: '04', label: 'Contact', href: '#contact', view: 'home' as const },
+    { id: 'resume', num: '05', label: 'Resume', href: '#resume', view: 'resume' as const },
   ];
 
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, item: typeof navItems[0]) => {

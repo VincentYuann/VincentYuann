@@ -140,7 +140,7 @@ export const PhilosophyBento: React.FC = () => {
         {/* Section Header */}
         <div className="max-w-2xl mb-10 border-b border-light-border/60 dark:border-[#2D3039]/60 pb-6">
           <div className="flex items-center gap-2 mb-1.5">
-            <span className="text-terracotta font-serif text-sm">02 //</span>
+            <span className="text-terracotta font-serif text-sm">03 //</span>
             <span className="font-sans text-[11px] font-semibold text-light-ink-subtle dark:text-dark-ink-subtle uppercase tracking-widest">
               GUIDING PRINCIPLES
             </span>
