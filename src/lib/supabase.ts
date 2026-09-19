@@ -139,6 +139,54 @@ export async function uploadResumePdf(file: File) {
 }
 
 /**
+ * Uploads a project thumbnail or screenshot directly into 'portfolio-assets/projects/'
+ * and returns the public URL.
+ */
+export async function uploadProjectImage(file: File): Promise<string> {
+  if (!supabase) {
+    // Fallback to data URL if Supabase client is missing
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+
+  const cleanName = file.name.toLowerCase().replace(/[^a-z0-9.-]/g, '_');
+  const path = `projects/${Date.now()}-${cleanName}`;
+
+  const { error } = await supabase.storage
+    .from(RESUME_BUCKET)
+    .upload(path, file, {
+      upsert: true,
+      contentType: file.type || 'image/jpeg',
+      cacheControl: '3600',
+    });
+
+  if (error) {
+    console.warn('Storage upload warning, attempting fallback or data URL:', error);
+    // If bucket permission issue or missing bucket, create a base64 Data URL so user can still see and use image
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = () => resolve('./images/sumi-os-workspace.jpg');
+      reader.readAsDataURL(file);
+    });
+  }
+
+  const { data } = supabase.storage
+    .from(RESUME_BUCKET)
+    .getPublicUrl(path);
+
+  if (data?.publicUrl) {
+    return data.publicUrl;
+  }
+
+  return `https://${supabaseUrl.replace('https://', '').split('.')[0]}.supabase.co/storage/v1/object/public/${RESUME_BUCKET}/${path}`;
+}
+
+/**
  * Loads the LaTeX source content from the Supabase resume_latex table.
  */
 export async function fetchResumeLatex(): Promise<string | null> {

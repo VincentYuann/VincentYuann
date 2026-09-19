@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { Project } from '../data/projects';
 import { X, ExternalLink, Github, CheckCircle2, Layers } from 'lucide-react';
 import { TechTag } from './TechTag';
+import { CornerBrackets } from './CornerBrackets';
 
 interface ProjectDetailModalProps {
   project: Project | null;
@@ -40,10 +41,11 @@ export const ProjectDetailModal: React.FC<ProjectDetailModalProps> = ({ project,
         {/* Modal Container */}
         <div
           onClick={(e) => e.stopPropagation()}
-          className="relative w-full max-w-3xl bg-light-surface-card dark:bg-[#181920] border border-light-border dark:border-[#2D3039] rounded-2xl shadow-2xl z-10 overflow-hidden flex flex-col max-h-[calc(100dvh-5.5rem)] sm:max-h-[calc(100dvh-6.5rem)] my-auto"
+          className="interactive-card relative w-full max-w-3xl bg-light-surface-card dark:bg-dark-surface border border-light-border dark:border-dark-border rounded-2xl shadow-2xl z-10 overflow-hidden flex flex-col max-h-[calc(100dvh-5.5rem)] sm:max-h-[calc(100dvh-6.5rem)] my-auto classical-card-frame"
         >
+          <CornerBrackets size="lg" />
           {/* Modal Header */}
-          <div className="flex items-center justify-between px-5 sm:px-6 py-4 border-b border-light-border dark:border-[#2D3039] bg-light-surface-raised dark:bg-[#131418] shrink-0">
+          <div className="flex items-center justify-between px-5 sm:px-6 py-4 border-b border-light-border dark:border-dark-border bg-light-surface-raised dark:bg-dark-surface-muted shrink-0">
             <div className="flex items-center gap-2.5">
               <span className="font-serif text-terracotta text-lg sm:text-xl">{project.kanji}</span>
               <span className="font-mono text-[11px] sm:text-xs uppercase font-semibold text-light-ink-muted dark:text-dark-ink-muted tracking-wider">
@@ -100,7 +102,7 @@ export const ProjectDetailModal: React.FC<ProjectDetailModalProps> = ({ project,
                 {project.architectureDetails.map((section, idx) => (
                   <div
                     key={idx}
-                    className="bg-light-surface-raised dark:bg-[#1B1C22] p-4 sm:p-5 rounded-xl border border-light-border/60 dark:border-[#2D3039]/60"
+                    className="bg-light-surface-raised dark:bg-dark-surface-card p-4 sm:p-5 rounded-xl border border-light-border/60 dark:border-dark-border/60"
                   >
                     <h4 className="font-sans text-sm font-semibold text-light-ink dark:text-dark-ink mb-2">
                       {section.title}
@@ -135,14 +137,14 @@ export const ProjectDetailModal: React.FC<ProjectDetailModalProps> = ({ project,
           </div>
 
           {/* Modal Footer Actions */}
-          <div className="px-5 sm:px-6 py-3.5 sm:py-4 border-t border-light-border dark:border-[#2D3039] bg-light-surface-raised dark:bg-[#131418] flex items-center justify-between gap-4 shrink-0">
+          <div className="px-5 sm:px-6 py-3.5 sm:py-4 border-t border-light-border dark:border-dark-border bg-light-surface-raised dark:bg-dark-surface-muted flex items-center justify-between gap-4 shrink-0">
             <div className="flex items-center gap-2 sm:gap-3">
               {project.links.github && (
                 <a
                   href={project.links.github}
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-sans font-medium rounded-lg border border-light-border dark:border-[#2D3039] hover:bg-light-surface dark:hover:bg-[#202229] text-light-ink dark:text-dark-ink transition-colors focus-visible:ring-2 focus-visible:ring-terracotta focus-visible:outline-none"
+                  className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-sans font-medium rounded-lg border border-light-border dark:border-dark-border hover:bg-light-surface dark:hover:bg-dark-surface text-light-ink dark:text-dark-ink transition-colors focus-visible:ring-2 focus-visible:ring-terracotta focus-visible:outline-none"
                 >
                   <Github className="w-3.5 h-3.5" />
                   <span>Repository</span>

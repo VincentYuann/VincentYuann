@@ -19,6 +19,8 @@ export interface Project {
     live?: string;
     caseStudyText?: string;
   };
+  isFeatured?: boolean;
+  displayOrder?: number;
 }
 
 export const PROJECTS: Project[] = [

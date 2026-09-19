@@ -74,10 +74,10 @@ const SiteDataContext = createContext<SiteData>({
 export const useSiteData = () => useContext(SiteDataContext);
 
 /* ─── Helper to normalize project row from Supabase ─────────────── */
-function mapRowToProject(row: any, fallback?: Project): Project {
+function mapRowToProject(row: any, fallback?: Project, index?: number): Project {
   const title = row.title || fallback?.title || 'Project';
   const id = row.id || fallback?.id || title.toLowerCase().replace(/[^a-z0-9]+/g, '-');
-  const summary = row.summary || fallback?.description || '';
+  const summary = row.summary || row.description || fallback?.description || '';
   
   // Format architectureDetails from sections
   let architectureDetails = fallback?.architectureDetails || [];
@@ -87,6 +87,18 @@ function mapRowToProject(row: any, fallback?: Project): Project {
       points: Array.isArray(s.bullets) ? s.bullets : Array.isArray(s.points) ? s.points : [],
     }));
   }
+
+  const isFeatured = typeof row.is_featured === 'boolean' 
+    ? row.is_featured 
+    : typeof fallback?.isFeatured === 'boolean'
+    ? fallback.isFeatured
+    : (index !== undefined ? index < 3 : true);
+
+  const displayOrder = typeof row.display_order === 'number'
+    ? row.display_order
+    : typeof fallback?.displayOrder === 'number'
+    ? fallback.displayOrder
+    : (index ?? 0);
 
   return {
     id,
@@ -109,15 +121,50 @@ function mapRowToProject(row: any, fallback?: Project): Project {
       live: row.live_link || row.links?.live || fallback?.links?.live,
       caseStudyText: row.case_study_text || fallback?.links?.caseStudyText,
     },
+    isFeatured,
+    displayOrder,
   };
 }
 
 /* ─── Provider ────────────────────────────────────────────────────── */
 
 export const SiteDataProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [profile, setProfile] = useState<SiteProfile>(DEFAULT_PROFILE);
-  const [pillars, setPillars] = useState<PhilosophyPillar[]>(DEFAULT_PILLARS);
-  const [projects, setProjects] = useState<Project[]>(PROJECTS);
+  const [profile, setProfile] = useState<SiteProfile>(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const cached = localStorage.getItem('portfolio_profile_cache');
+        if (cached) return JSON.parse(cached);
+      } catch (e) {
+        console.warn('Profile cache parse error', e);
+      }
+    }
+    return DEFAULT_PROFILE;
+  });
+
+  const [pillars, setPillars] = useState<PhilosophyPillar[]>(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const cached = localStorage.getItem('portfolio_pillars_cache');
+        if (cached) return JSON.parse(cached);
+      } catch (e) {
+        console.warn('Pillars cache parse error', e);
+      }
+    }
+    return DEFAULT_PILLARS;
+  });
+
+  const [projects, setProjects] = useState<Project[]>(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const cached = localStorage.getItem('portfolio_projects_cache');
+        if (cached) return JSON.parse(cached);
+      } catch (e) {
+        console.warn('Projects cache parse error', e);
+      }
+    }
+    return PROJECTS;
+  });
+
   const [loading, setLoading] = useState(true);
 
   const fetchAll = useCallback(async () => {
@@ -132,7 +179,7 @@ export const SiteDataProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
       if (profileRes.data) {
         const row = profileRes.data;
-        setProfile({
+        const mappedProfile: SiteProfile = {
           name:     row.name     || DEFAULT_PROFILE.name,
           headline: row.headline || DEFAULT_PROFILE.headline,
           tagline:  row.tagline  || DEFAULT_PROFILE.tagline,
@@ -143,28 +190,40 @@ export const SiteDataProvider: React.FC<{ children: React.ReactNode }> = ({ chil
           capability_pillars: Array.isArray(row.capability_pillars) && row.capability_pillars.length > 0
             ? row.capability_pillars
             : DEFAULT_PROFILE.capability_pillars,
-        });
+        };
+        setProfile(mappedProfile);
+        try {
+          localStorage.setItem('portfolio_profile_cache', JSON.stringify(mappedProfile));
+        } catch {}
       }
 
       if (pillarsRes.data && pillarsRes.data.length > 0) {
-        setPillars(
-          pillarsRes.data.map((row: any) => ({
-            position:    row.position,
-            kanji:       row.kanji       || '',
-            romaji:      row.romaji      || '',
-            title:       row.title       || '',
-            tag:         row.tag         || '',
-            description: row.description || '',
-          })),
-        );
+        const mappedPillars: PhilosophyPillar[] = pillarsRes.data.map((row: any) => ({
+          position:    row.position,
+          kanji:       row.kanji       || '',
+          romaji:      row.romaji      || '',
+          title:       row.title       || '',
+          tag:         row.tag         || '',
+          description: row.description || '',
+        }));
+        setPillars(mappedPillars);
+        try {
+          localStorage.setItem('portfolio_pillars_cache', JSON.stringify(mappedPillars));
+        } catch {}
       }
 
       if (projectsRes.data && projectsRes.data.length > 0) {
         const mapped = projectsRes.data.map((row: any, idx: number) => {
-          const fallback = PROJECTS[idx];
-          return mapRowToProject(row, fallback);
+          const fallback = PROJECTS.find(p => p.title.toLowerCase() === (row.title || '').toLowerCase()) || PROJECTS[idx];
+          return mapRowToProject(row, fallback, idx);
         });
+
+        // Sort mapped projects by displayOrder if present
+        mapped.sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0));
         setProjects(mapped);
+        try {
+          localStorage.setItem('portfolio_projects_cache', JSON.stringify(mapped));
+        } catch {}
       }
     } catch (err) {
       console.warn('Error loading site data from Supabase:', err);
@@ -173,7 +232,23 @@ export const SiteDataProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     }
   }, []);
 
-  useEffect(() => { fetchAll(); }, [fetchAll]);
+  useEffect(() => { 
+    fetchAll(); 
+
+    // Subscribe to real-time database changes across public tables
+    if (!supabase) return;
+
+    const channel = supabase
+      .channel('schema-realtime-sync')
+      .on('postgres_changes', { event: '*', schema: 'public' }, () => {
+        fetchAll();
+      })
+      .subscribe();
+
+    return () => {
+      supabase?.removeChannel(channel);
+    };
+  }, [fetchAll]);
 
   return (
     <SiteDataContext.Provider value={{ profile, pillars, projects, loading, refresh: fetchAll }}>

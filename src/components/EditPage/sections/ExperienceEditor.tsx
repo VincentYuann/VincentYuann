@@ -2,6 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { Plus, Trash2, Save, CheckCircle2, AlertCircle, GripVertical, Loader2 } from 'lucide-react';
 import { supabase, formatErrorMessage } from '../../../lib/supabase';
 import { toast } from 'sonner';
+import { CornerBrackets } from '../../CornerBrackets';
+import { Button } from '../../ui/button';
+import { Input } from '../../ui/input';
+import { Textarea } from '../../ui/textarea';
+import { Label } from '../../ui/label';
+import { Badge } from '../../ui/badge';
 
 interface ExperienceEntry {
   id: string;
@@ -25,28 +31,29 @@ const newEntry = (): ExperienceEntry => ({
 
 type SaveState = 'idle' | 'saving' | 'success' | 'error';
 
-const inputCls =
-  'w-full px-3 py-2 rounded-lg text-sm bg-light-surface dark:bg-dark-surface border border-light-border dark:border-dark-border text-light-ink dark:text-dark-ink placeholder:text-light-ink-subtle dark:placeholder:text-dark-ink-subtle focus:outline-none focus:border-terracotta transition-colors';
-const labelCls =
-  'block font-sans text-[10px] font-semibold text-light-ink-muted dark:text-dark-ink-muted uppercase tracking-widest mb-1';
-
 export const ExperienceEditor: React.FC = () => {
   const [entries, setEntries] = useState<ExperienceEntry[]>([newEntry()]);
   const [saveState, setSaveState] = useState<SaveState>('idle');
   const [errorMsg, setErrorMsg] = useState('');
+  const [loading, setLoading] = useState(true);
 
   // Load existing experience from Supabase on mount
   useEffect(() => {
-    if (!supabase) return;
+    if (!supabase) {
+      setLoading(false);
+      return;
+    }
     supabase
       .from('experience')
       .select('*')
       .order('created_at')
-      .then(({ data }) => {
-        if (data && data.length > 0) {
+      .then(({ data, error }) => {
+        if (error) {
+          console.error('Failed to load experience:', error);
+        } else if (data && data.length > 0) {
           setEntries(
             data.map((row: any) => ({
-              id: crypto.randomUUID(),
+              id: row.id || crypto.randomUUID(),
               title: row.title || '',
               company: row.company || '',
               location: row.location || '',
@@ -56,11 +63,31 @@ export const ExperienceEditor: React.FC = () => {
             })),
           );
         }
+        setLoading(false);
       });
   }, []);
 
   const updateEntry = (id: string, patch: Partial<ExperienceEntry>) =>
     setEntries((prev) => prev.map((e) => (e.id === id ? { ...e, ...patch } : e)));
+
+  const removeEntry = async (entry: ExperienceEntry) => {
+    setEntries((prev) => prev.filter((e) => e.id !== entry.id));
+
+    if (supabase && entry.title && entry.company) {
+      try {
+        const { error } = await supabase
+          .from('experience')
+          .delete()
+          .eq('title', entry.title)
+          .eq('company', entry.company);
+
+        if (error) throw error;
+        toast.info(`Removed "${entry.title}" at "${entry.company}" from database.`);
+      } catch (err) {
+        console.warn('Delete warning:', err);
+      }
+    }
+  };
 
   const handleSave = async () => {
     if (saveState === 'saving') return;
@@ -69,20 +96,26 @@ export const ExperienceEditor: React.FC = () => {
 
     try {
       if (!supabase) throw new Error('Supabase client is not configured.');
-      const rows = entries.map(({ id: _localId, startDate, endDate, ...rest }) => ({
-        ...rest,
-        start_date: startDate,
-        end_date: endDate,
-        updated_at: new Date().toISOString(),
-      }));
+      
+      const rows = entries
+        .filter((e) => e.title.trim() && e.company.trim())
+        .map(({ id: _localId, startDate, endDate, ...rest }) => ({
+          ...rest,
+          start_date: startDate,
+          end_date: endDate,
+          updated_at: new Date().toISOString(),
+        }));
 
-      const { error } = await supabase
-        .from('experience')
-        .upsert(rows, { onConflict: 'title,company' });
+      if (rows.length > 0) {
+        const { error } = await supabase
+          .from('experience')
+          .upsert(rows, { onConflict: 'title,company' });
 
-      if (error) throw error;
+        if (error) throw error;
+      }
+
       setSaveState('success');
-      toast.success('Experience entries saved to Supabase!');
+      toast.success('Experience entries saved and synchronized with database!');
       setTimeout(() => setSaveState('idle'), 4000);
     } catch (err: unknown) {
       const msg = formatErrorMessage(err);
@@ -93,50 +126,70 @@ export const ExperienceEditor: React.FC = () => {
     }
   };
 
+  if (loading) {
+    return (
+      <div className="py-20 text-center font-sans text-sm text-light-ink-muted dark:text-dark-ink-muted">
+        Loading experience entries from database…
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-8">
       {/* Header */}
-      <div className="flex items-start justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
         <div>
-          <h2 className="font-serif text-2xl text-light-ink dark:text-dark-ink font-normal">Experience</h2>
+          <h2 className="font-serif text-2xl text-light-ink dark:text-dark-ink font-normal">
+            Work Experience
+          </h2>
           <p className="font-sans text-xs text-light-ink-muted dark:text-dark-ink-muted mt-1">
-            Add or remove work experience entries.
+            Manage your professional engineering roles and milestones. Changes sync to Supabase.
           </p>
         </div>
-        <div className="flex items-center gap-3">
-          <button
+        <div className="flex items-center gap-3 shrink-0">
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
             onClick={() => setEntries((prev) => [...prev, newEntry()])}
-            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg border border-light-border dark:border-dark-border text-light-ink dark:text-dark-ink hover:border-terracotta hover:text-terracotta font-sans text-xs transition-colors"
+            className="gap-1.5"
           >
             <Plus className="w-3.5 h-3.5" />
             Add Entry
-          </button>
+          </Button>
 
           {/* Save button */}
-          <div className="flex flex-col items-end gap-1.5">
-            <button
-              onClick={handleSave}
-              disabled={saveState === 'saving' || saveState === 'success'}
-              className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg font-sans text-xs font-semibold uppercase tracking-widest transition-all ${
-                saveState === 'success'
-                  ? 'bg-bamboo/80 text-white cursor-default'
-                  : saveState === 'error'
-                  ? 'bg-red-500 text-white hover:bg-red-600'
-                  : saveState === 'saving'
-                  ? 'bg-terracotta/60 text-white cursor-wait'
-                  : 'bg-terracotta hover:bg-terracotta-hover text-white'
-              }`}
-            >
-              {saveState === 'saving' && <Loader2 className="w-4 h-4 animate-spin" />}
-              {saveState === 'success' && <CheckCircle2 className="w-4 h-4" />}
-              {saveState === 'error' && <AlertCircle className="w-4 h-4" />}
-              {saveState === 'idle' && <Save className="w-4 h-4" />}
-              {saveState === 'saving' ? 'Saving…' : saveState === 'success' ? 'Saved!' : saveState === 'error' ? 'Retry' : 'Save'}
-            </button>
-            {saveState === 'error' && (
-              <p className="font-sans text-[11px] text-red-400 text-right max-w-xs">{errorMsg || 'Save failed.'}</p>
-            )}
-          </div>
+          <Button
+            type="button"
+            variant={
+              saveState === 'success'
+                ? 'secondary'
+                : saveState === 'error'
+                ? 'destructive'
+                : 'default'
+            }
+            size="sm"
+            disabled={saveState === 'saving'}
+            onClick={handleSave}
+            className="gap-2"
+          >
+            {saveState === 'saving' && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
+            {saveState === 'success' && <CheckCircle2 className="w-3.5 h-3.5 text-bamboo" />}
+            {saveState === 'error' && <AlertCircle className="w-3.5 h-3.5" />}
+            {saveState === 'idle' && <Save className="w-3.5 h-3.5" />}
+            <span>
+              {saveState === 'saving'
+                ? 'Saving…'
+                : saveState === 'success'
+                ? 'Saved to DB'
+                : saveState === 'error'
+                ? 'Retry'
+                : 'Save All'}
+            </span>
+          </Button>
+          {saveState === 'error' && errorMsg && (
+            <p className="font-sans text-[11px] text-red-400 text-right max-w-xs">{errorMsg}</p>
+          )}
         </div>
       </div>
 
@@ -145,58 +198,109 @@ export const ExperienceEditor: React.FC = () => {
         {entries.map((entry, idx) => (
           <div
             key={entry.id}
-            className="bg-light-surface-card dark:bg-[#181920] border border-light-border dark:border-[#2D3039] rounded-2xl p-6 shadow-sm"
+            className="relative bg-light-surface-card dark:bg-dark-surface border border-light-border dark:border-dark-border rounded-2xl p-5 sm:p-6 shadow-xs classical-card-frame space-y-4"
           >
-            <div className="flex items-center gap-3 mb-5">
-              <GripVertical className="w-4 h-4 text-light-ink-subtle cursor-grab shrink-0" />
-              <span className="font-mono text-xs text-terracotta border border-terracotta/30 rounded px-1.5 py-0.5">
-                {String(idx + 1).padStart(2, '0')}
-              </span>
-              <button
-                onClick={() => setEntries((prev) => prev.filter((e) => e.id !== entry.id))}
-                className="ml-auto p-1.5 rounded text-light-ink-muted hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+            <CornerBrackets size="sm" />
+            <div className="flex items-center justify-between gap-3 pb-2 border-b border-light-border/60 dark:border-dark-border/60">
+              <div className="flex items-center gap-2.5">
+                <GripVertical className="w-4 h-4 text-light-ink-subtle cursor-grab shrink-0" />
+                <Badge variant="terracotta" className="font-mono text-xs px-2 py-0.5">
+                  {String(idx + 1).padStart(2, '0')}
+                </Badge>
+                <span className="font-serif text-sm sm:text-base font-medium text-light-ink dark:text-dark-ink truncate">
+                  {entry.title || entry.company ? `${entry.title || 'Untitled Role'} — ${entry.company || 'Company'}` : 'New Experience Position'}
+                </span>
+              </div>
+
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                onClick={() => removeEntry(entry)}
+                className="h-8 w-8 p-0 text-light-ink-muted hover:text-red-500 hover:bg-red-500/10"
+                title="Delete entry"
               >
                 <Trash2 className="w-4 h-4" />
-              </button>
+              </Button>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className={labelCls}>Job Title</label>
-                <input type="text" className={inputCls} value={entry.title} onChange={(e) => updateEntry(entry.id, { title: e.target.value })} placeholder="e.g. Software Engineer" />
+                <Label className="mb-1.5">Job Title</Label>
+                <Input
+                  type="text"
+                  value={entry.title}
+                  onChange={(e) => updateEntry(entry.id, { title: e.target.value })}
+                  placeholder="e.g. Software Engineer"
+                  className="font-medium"
+                />
               </div>
               <div>
-                <label className={labelCls}>Company</label>
-                <input type="text" className={inputCls} value={entry.company} onChange={(e) => updateEntry(entry.id, { company: e.target.value })} placeholder="e.g. Acme Corp" />
+                <Label className="mb-1.5">Company</Label>
+                <Input
+                  type="text"
+                  value={entry.company}
+                  onChange={(e) => updateEntry(entry.id, { company: e.target.value })}
+                  placeholder="e.g. Acme Corp"
+                  className="font-medium"
+                />
               </div>
               <div>
-                <label className={labelCls}>Location</label>
-                <input type="text" className={inputCls} value={entry.location} onChange={(e) => updateEntry(entry.id, { location: e.target.value })} placeholder="e.g. San Francisco, CA" />
+                <Label className="mb-1.5">Location</Label>
+                <Input
+                  type="text"
+                  value={entry.location}
+                  onChange={(e) => updateEntry(entry.id, { location: e.target.value })}
+                  placeholder="e.g. San Francisco, CA / Remote"
+                />
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className={labelCls}>Start</label>
-                  <input type="text" className={inputCls} value={entry.startDate} onChange={(e) => updateEntry(entry.id, { startDate: e.target.value })} placeholder="Jan 2022" />
+                  <Label className="mb-1.5">Start Date</Label>
+                  <Input
+                    type="text"
+                    value={entry.startDate}
+                    onChange={(e) => updateEntry(entry.id, { startDate: e.target.value })}
+                    placeholder="e.g. May 2024"
+                  />
                 </div>
                 <div>
-                  <label className={labelCls}>End</label>
-                  <input type="text" className={inputCls} value={entry.endDate} onChange={(e) => updateEntry(entry.id, { endDate: e.target.value })} placeholder="Present" />
+                  <Label className="mb-1.5">End Date</Label>
+                  <Input
+                    type="text"
+                    value={entry.endDate}
+                    onChange={(e) => updateEntry(entry.id, { endDate: e.target.value })}
+                    placeholder="e.g. Present"
+                  />
                 </div>
               </div>
             </div>
 
-            <div className="mt-4">
-              <label className={labelCls}>Description</label>
-              <textarea rows={3} className={`${inputCls} resize-none`} value={entry.description} onChange={(e) => updateEntry(entry.id, { description: e.target.value })} placeholder="Role and impact…" />
+            <div>
+              <Label className="mb-1.5">Description &amp; Key Impact (Resizable)</Label>
+              <Textarea
+                rows={3}
+                className="min-h-[85px] leading-relaxed"
+                value={entry.description}
+                onChange={(e) => updateEntry(entry.id, { description: e.target.value })}
+                placeholder="Architectural contributions, systems engineered, and quantifiable impact…"
+              />
             </div>
           </div>
         ))}
       </div>
 
       {entries.length === 0 && (
-        <div className="text-center py-16 text-light-ink-muted font-sans text-sm">
-          No entries.{' '}
-          <button className="text-terracotta hover:underline" onClick={() => setEntries([newEntry()])}>Add one</button>
+        <div className="text-center py-16 text-light-ink-muted dark:text-dark-ink-muted font-sans text-sm rounded-xl border border-light-border dark:border-dark-border bg-light-surface-card dark:bg-dark-surface p-8">
+          <p className="mb-3">No work experience entries found.</p>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => setEntries([newEntry()])}
+          >
+            Add your first experience entry
+          </Button>
         </div>
       )}
     </div>

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { CODE_SNIPPETS } from '../data/codeSnippets';
 import { Copy, Check, Terminal, Play, Code2 } from 'lucide-react';
 import { BambooArt } from './BambooArt';
+import { CornerBrackets } from './CornerBrackets';
 
 export const SystemCraft: React.FC = () => {
   const [selectedSnippetId, setSelectedSnippetId] = useState(CODE_SNIPPETS[0].id);
@@ -80,7 +81,8 @@ export const SystemCraft: React.FC = () => {
       </div>
 
       {/* Code Window Container */}
-      <div className="w-full bg-light-surface-card dark:bg-dark-surface border border-light-border dark:border-dark-border rounded-lg shadow-akari dark:shadow-night-glow overflow-hidden">
+      <div className="interactive-card relative w-full bg-light-surface-card dark:bg-dark-surface border border-light-border dark:border-dark-border rounded-lg shadow-akari dark:shadow-night-glow overflow-hidden classical-card-frame">
+        <CornerBrackets size="md" />
         {/* Window Bar / Tab Navigation */}
         <div className="flex flex-wrap items-center justify-between border-b border-light-border dark:border-dark-border bg-light-surface-raised dark:bg-dark-surface-muted px-4 py-2 gap-2">
           {/* File Tabs */}

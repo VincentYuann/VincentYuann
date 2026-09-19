@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { FileText, Code2, Download, Copy, Check, ExternalLink, Maximize2, Minimize2, ArrowLeft } from 'lucide-react';
 import { tokenizeLatexLine, getTokenClassName } from '../lib/latexHighlight';
 import { HankoStamp } from './HankoStamp';
+import { CornerBrackets } from './CornerBrackets';
 import { getResumePdfUrl, fetchResumeLatex } from '../lib/supabase';
 
 interface ResumePageProps {
@@ -276,9 +277,10 @@ export const ResumePage: React.FC<ResumePageProps> = ({ onNavigate }) => {
 
         {activeTab === 'pdf' ? (
           /* PDF Viewer Tab */
-          <div className="interactive-card group relative bg-light-surface-card dark:bg-[#181920] border border-light-border dark:border-[#2D3039] rounded-xl overflow-hidden shadow-akari dark:shadow-night-glow">
+          <div className="interactive-card group relative bg-light-surface-card dark:bg-dark-surface border border-light-border dark:border-dark-border rounded-xl overflow-hidden shadow-akari dark:shadow-night-glow classical-card-frame">
+            <CornerBrackets size="lg" />
             {/* Top Bar for PDF Viewer */}
-            <div className="px-4 py-2.5 bg-light-surface-muted/90 dark:bg-[#131418] border-b border-light-border dark:border-[#2D3039] flex items-center justify-between text-xs text-light-ink-muted dark:text-dark-ink-muted">
+            <div className="px-4 py-2.5 bg-light-surface-muted/90 dark:bg-dark-surface-muted border-b border-light-border dark:border-dark-border flex items-center justify-between text-xs text-light-ink-muted dark:text-dark-ink-muted">
               <div className="flex items-center gap-2">
                 <span className="w-2.5 h-2.5 rounded-full bg-terracotta/70 inline-block" />
                 <span className="font-mono">Vincent_Yuan_Resume.pdf</span>
@@ -301,7 +303,7 @@ export const ResumePage: React.FC<ResumePageProps> = ({ onNavigate }) => {
               <object
                 data={`${supabasePdfUrl}#toolbar=1&navpanes=0&scrollbar=1`}
                 type="application/pdf"
-                className="w-full h-full rounded-lg border border-light-border/60 dark:border-[#2D3039]"
+                className="w-full h-full rounded-lg border border-light-border/60 dark:border-dark-border"
               >
                 {/* Fallback if browser cannot embed PDF */}
                 <div className="flex flex-col items-center justify-center p-8 text-center space-y-4 max-w-md mx-auto">
@@ -332,9 +334,10 @@ export const ResumePage: React.FC<ResumePageProps> = ({ onNavigate }) => {
           </div>
         ) : (
           /* LaTeX Source Tab */
-          <div className="interactive-card group relative bg-light-surface-card dark:bg-[#181920] border border-light-border dark:border-[#2D3039] rounded-xl overflow-hidden shadow-akari dark:shadow-night-glow">
+          <div className="interactive-card group relative bg-light-surface-card dark:bg-dark-surface border border-light-border dark:border-dark-border rounded-xl overflow-hidden shadow-akari dark:shadow-night-glow classical-card-frame">
+            <CornerBrackets size="lg" />
             {/* Header with quick stats */}
-            <div className="px-4 py-2.5 bg-light-surface-muted/90 dark:bg-[#131418] border-b border-light-border dark:border-[#2D3039] flex items-center justify-between text-xs text-light-ink-muted dark:text-dark-ink-muted">
+            <div className="px-4 py-2.5 bg-light-surface-muted/90 dark:bg-dark-surface-muted border-b border-light-border dark:border-dark-border flex items-center justify-between text-xs text-light-ink-muted dark:text-dark-ink-muted">
               <div className="flex items-center gap-2">
                 <span className="w-2.5 h-2.5 rounded-full bg-bamboo/70 inline-block" />
                 <span className="font-mono">resume.tex (TeX / LaTeX 2e)</span>

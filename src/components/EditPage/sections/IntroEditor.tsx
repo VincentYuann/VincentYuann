@@ -1,69 +1,81 @@
 import React, { useState, useEffect } from 'react';
-import { Save, CheckCircle2, AlertCircle, Loader2, Plus, Trash2 } from 'lucide-react';
+import { Save, CheckCircle2, AlertCircle, Plus, Trash2, Loader2 } from 'lucide-react';
 import { supabase, formatErrorMessage } from '../../../lib/supabase';
+import { useSiteData } from '../../../context/SiteDataContext';
+import { CornerBrackets } from '../../CornerBrackets';
+import { Button } from '../../ui/button';
+import { Input } from '../../ui/input';
+import { Textarea } from '../../ui/textarea';
+import { Label } from '../../ui/label';
 import { toast } from 'sonner';
-import { useSiteData, CapabilityPillar, DEFAULT_PROFILE } from '../../../context/SiteDataContext';
-
-interface IntroData {
-  name: string;
-  headline: string;
-  tagline: string;
-  email: string;
-  github: string;
-  linkedin: string;
-  role: string;
-  capability_pillars: CapabilityPillar[];
-}
 
 type SaveState = 'idle' | 'saving' | 'success' | 'error';
 
-const inputCls =
-  'w-full px-3 py-2 rounded-lg text-sm bg-light-surface dark:bg-dark-surface border border-light-border dark:border-dark-border text-light-ink dark:text-dark-ink placeholder:text-light-ink-subtle dark:placeholder:text-dark-ink-subtle focus:outline-none focus:border-terracotta transition-colors';
-const labelCls =
-  'block font-sans text-xs font-semibold text-light-ink dark:text-dark-ink uppercase tracking-widest mb-1.5';
-
 export const IntroEditor: React.FC = () => {
-  const { profile, refresh } = useSiteData();
-  const [data, setData] = useState<IntroData>(DEFAULT_PROFILE);
-  const [loading, setLoading] = useState(true);
+  const { profile: contextProfile, refresh } = useSiteData();
+  const [data, setData] = useState({
+    name: '',
+    role: '',
+    headline: '',
+    tagline: '',
+    email: '',
+    github: '',
+    linkedin: '',
+    capability_pillars: [
+      { label: 'SYSTEMS', items: 'Rust · Docker · Linux' },
+      { label: 'AI & RUNTIME', items: 'PyTorch · llama.cpp · Local LLMs' },
+      { label: 'FULL-STACK', items: 'Next.js · TypeScript · PostgreSQL' },
+    ],
+  });
+
   const [saveState, setSaveState] = useState<SaveState>('idle');
   const [errorMsg, setErrorMsg] = useState('');
+  const [loading, setLoading] = useState(true);
 
+  // Sync from SiteDataContext
   useEffect(() => {
-    if (profile) {
+    if (contextProfile) {
       setData({
-        name: profile.name || DEFAULT_PROFILE.name,
-        headline: profile.headline || DEFAULT_PROFILE.headline,
-        tagline: profile.tagline || DEFAULT_PROFILE.tagline,
-        email: profile.email || DEFAULT_PROFILE.email,
-        github: profile.github || DEFAULT_PROFILE.github,
-        linkedin: profile.linkedin || DEFAULT_PROFILE.linkedin,
-        role: profile.role || DEFAULT_PROFILE.role,
+        name: contextProfile.name || '',
+        role: contextProfile.role || '',
+        headline: contextProfile.headline || '',
+        tagline: contextProfile.tagline || '',
+        email: contextProfile.email || '',
+        github: contextProfile.github || '',
+        linkedin: contextProfile.linkedin || '',
         capability_pillars:
-          Array.isArray(profile.capability_pillars) && profile.capability_pillars.length > 0
-            ? profile.capability_pillars
-            : DEFAULT_PROFILE.capability_pillars,
+          Array.isArray(contextProfile.capability_pillars) &&
+          contextProfile.capability_pillars.length > 0
+            ? contextProfile.capability_pillars
+            : [
+                { label: 'SYSTEMS', items: 'Rust · Docker · Linux' },
+                { label: 'AI & RUNTIME', items: 'PyTorch · llama.cpp · Local LLMs' },
+                { label: 'FULL-STACK', items: 'Next.js · TypeScript · PostgreSQL' },
+              ],
       });
       setLoading(false);
     }
-  }, [profile]);
+  }, [contextProfile]);
 
-  const set = <K extends keyof IntroData>(key: K, val: IntroData[K]) =>
+  const set = (key: string, val: string) =>
     setData((prev) => ({ ...prev, [key]: val }));
 
-  const updatePillar = (idx: number, patch: Partial<CapabilityPillar>) =>
-    setData((prev) => ({
-      ...prev,
-      capability_pillars: prev.capability_pillars.map((p, i) =>
-        i === idx ? { ...p, ...patch } : p,
-      ),
-    }));
+  const updatePillar = (idx: number, patch: Partial<{ label: string; items: string }>) => {
+    setData((prev) => {
+      const next = [...prev.capability_pillars];
+      next[idx] = { ...next[idx], ...patch };
+      return { ...prev, capability_pillars: next };
+    });
+  };
 
   const addPillar = () => {
     if (data.capability_pillars.length >= 3) return;
     setData((prev) => ({
       ...prev,
-      capability_pillars: [...prev.capability_pillars, { label: '', items: '' }],
+      capability_pillars: [
+        ...prev.capability_pillars,
+        { label: 'NEW PILLAR', items: 'Tool 1 · Tool 2 · Tool 3' },
+      ],
     }));
   };
 
@@ -102,7 +114,7 @@ export const IntroEditor: React.FC = () => {
   if (loading) {
     return (
       <div className="py-20 text-center font-sans text-sm text-light-ink-muted dark:text-dark-ink-muted">
-        Loading profile…
+        Loading profile from database…
       </div>
     );
   }
@@ -110,7 +122,7 @@ export const IntroEditor: React.FC = () => {
   return (
     <div className="space-y-8">
       {/* Header Row */}
-      <div className="flex items-start justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
         <div>
           <h2 className="font-serif text-2xl text-light-ink dark:text-dark-ink font-normal">
             Intro &amp; Profile
@@ -121,92 +133,97 @@ export const IntroEditor: React.FC = () => {
         </div>
 
         {/* Save Button */}
-        <div className="flex flex-col items-end gap-2 shrink-0">
-          <button
-            onClick={handleSave}
-            disabled={saveState === 'saving' || saveState === 'success'}
-            className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg font-sans text-xs font-semibold uppercase tracking-widest transition-all ${
+        <div className="flex items-center gap-3 shrink-0">
+          <Button
+            type="button"
+            variant={
               saveState === 'success'
-                ? 'bg-bamboo/80 text-white cursor-default'
+                ? 'secondary'
                 : saveState === 'error'
-                ? 'bg-red-500 text-white hover:bg-red-600'
-                : saveState === 'saving'
-                ? 'bg-terracotta/60 text-white cursor-wait'
-                : 'bg-terracotta hover:bg-terracotta-hover text-white'
-            }`}
+                ? 'destructive'
+                : 'default'
+            }
+            size="sm"
+            disabled={saveState === 'saving'}
+            onClick={handleSave}
+            className="gap-2"
           >
-            {saveState === 'saving' && <Loader2 className="w-4 h-4 animate-spin" />}
-            {saveState === 'success' && <CheckCircle2 className="w-4 h-4" />}
-            {saveState === 'error' && <AlertCircle className="w-4 h-4" />}
-            {saveState === 'idle' && <Save className="w-4 h-4" />}
-            {saveState === 'saving'
-              ? 'Saving…'
-              : saveState === 'success'
-              ? 'Saved!'
-              : saveState === 'error'
-              ? 'Retry'
-              : 'Save'}
-          </button>
-          {saveState === 'error' && (
+            {saveState === 'saving' && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
+            {saveState === 'success' && <CheckCircle2 className="w-3.5 h-3.5 text-bamboo" />}
+            {saveState === 'error' && <AlertCircle className="w-3.5 h-3.5" />}
+            {saveState === 'idle' && <Save className="w-3.5 h-3.5" />}
+            <span>
+              {saveState === 'saving'
+                ? 'Saving…'
+                : saveState === 'success'
+                ? 'Saved to DB'
+                : saveState === 'error'
+                ? 'Retry'
+                : 'Save All'}
+            </span>
+          </Button>
+          {saveState === 'error' && errorMsg && (
             <p className="font-sans text-[11px] text-red-400 max-w-xs text-right">
-              {errorMsg || 'Save failed.'}
+              {errorMsg}
             </p>
           )}
         </div>
       </div>
 
       {/* Form Card */}
-      <div className="bg-light-surface-card dark:bg-[#181920] border border-light-border dark:border-[#2D3039] rounded-2xl p-8 space-y-6 shadow-sm">
+      <div className="relative bg-light-surface-card dark:bg-dark-surface border border-light-border dark:border-dark-border rounded-2xl p-6 sm:p-8 space-y-6 shadow-xs classical-card-frame">
+        <CornerBrackets size="md" />
+
         {/* Identity */}
-        <div>
-          <p className="font-sans text-[10px] font-semibold text-terracotta uppercase tracking-widest mb-3">
-            Identity &amp; Seal Card
+        <div className="space-y-3">
+          <p className="font-mono text-xs font-semibold text-terracotta uppercase tracking-widest">
+            § Identity &amp; Seal Card
           </p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className={labelCls}>Display Name</label>
-              <input
+              <Label className="mb-1.5">Display Name</Label>
+              <Input
                 type="text"
-                className={inputCls}
                 value={data.name}
                 onChange={(e) => set('name', e.target.value)}
                 placeholder="Your full name"
+                className="font-medium"
               />
             </div>
             <div>
-              <label className={labelCls}>Role / Subtitle</label>
-              <input
+              <Label className="mb-1.5">Role / Subtitle</Label>
+              <Input
                 type="text"
-                className={inputCls}
                 value={data.role}
                 onChange={(e) => set('role', e.target.value)}
                 placeholder="e.g. Software & Generative AI Engineer"
+                className="font-medium"
               />
             </div>
           </div>
         </div>
 
         {/* Hero Text */}
-        <div>
-          <p className="font-sans text-[10px] font-semibold text-terracotta uppercase tracking-widest mb-3">
-            Hero Section Text
+        <div className="space-y-3 pt-2 border-t border-light-border/60 dark:border-dark-border/60">
+          <p className="font-mono text-xs font-semibold text-terracotta uppercase tracking-widest">
+            § Hero Section Text
           </p>
           <div className="space-y-4">
             <div>
-              <label className={labelCls}>Headline (H1)</label>
-              <textarea
+              <Label className="mb-1.5">Headline (H1 - Resizable)</Label>
+              <Textarea
                 rows={2}
-                className={`${inputCls} resize-none`}
+                className="min-h-[64px] font-serif text-base"
                 value={data.headline}
                 onChange={(e) => set('headline', e.target.value)}
                 placeholder="Main hero heading…"
               />
             </div>
             <div>
-              <label className={labelCls}>Body Paragraph</label>
-              <textarea
+              <Label className="mb-1.5">Body Paragraph (Tagline - Resizable)</Label>
+              <Textarea
                 rows={3}
-                className={`${inputCls} resize-none`}
+                className="min-h-[84px] leading-relaxed"
                 value={data.tagline}
                 onChange={(e) => set('tagline', e.target.value)}
                 placeholder="Narrative paragraph below headline…"
@@ -216,36 +233,33 @@ export const IntroEditor: React.FC = () => {
         </div>
 
         {/* Contact Links */}
-        <div>
-          <p className="font-sans text-[10px] font-semibold text-terracotta uppercase tracking-widest mb-3">
-            Contact Links
+        <div className="space-y-3 pt-2 border-t border-light-border/60 dark:border-dark-border/60">
+          <p className="font-mono text-xs font-semibold text-terracotta uppercase tracking-widest">
+            § Contact Links
           </p>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
-              <label className={labelCls}>Email</label>
-              <input
+              <Label className="mb-1.5">Email</Label>
+              <Input
                 type="email"
-                className={inputCls}
                 value={data.email}
                 onChange={(e) => set('email', e.target.value)}
                 placeholder="you@example.com"
               />
             </div>
             <div>
-              <label className={labelCls}>Github URL</label>
-              <input
+              <Label className="mb-1.5">GitHub URL</Label>
+              <Input
                 type="url"
-                className={inputCls}
                 value={data.github}
                 onChange={(e) => set('github', e.target.value)}
                 placeholder="https://github.com/…"
               />
             </div>
             <div>
-              <label className={labelCls}>Linkedin URL</label>
-              <input
+              <Label className="mb-1.5">LinkedIn URL</Label>
+              <Input
                 type="url"
-                className={inputCls}
                 value={data.linkedin}
                 onChange={(e) => set('linkedin', e.target.value)}
                 placeholder="https://linkedin.com/in/…"
@@ -255,24 +269,26 @@ export const IntroEditor: React.FC = () => {
         </div>
 
         {/* Capability Pillars */}
-        <div>
-          <div className="flex items-center justify-between mb-3">
+        <div className="space-y-3 pt-2 border-t border-light-border/60 dark:border-dark-border/60">
+          <div className="flex items-center justify-between">
             <div>
-              <p className="font-sans text-[10px] font-semibold text-terracotta uppercase tracking-widest">
-                Capability Pillars (max 3)
+              <p className="font-mono text-xs font-semibold text-terracotta uppercase tracking-widest">
+                § Capability Pillars (DOMAINS Ribbon - max 3)
               </p>
               <p className="font-sans text-[11px] text-light-ink-muted dark:text-dark-ink-muted">
-                These appear as the DOMAINS ribbon in your Hero section.
+                These appear as the technical domains ribbon in your Hero section.
               </p>
             </div>
             {data.capability_pillars.length < 3 && (
-              <button
+              <Button
                 type="button"
+                variant="ghost"
+                size="sm"
                 onClick={addPillar}
-                className="inline-flex items-center gap-1 font-sans text-[11px] text-terracotta hover:underline"
+                className="text-terracotta hover:text-terracotta hover:bg-terracotta/10 text-xs h-7"
               >
-                <Plus className="w-3 h-3" /> Add Pillar
-              </button>
+                <Plus className="w-3.5 h-3.5 mr-1" /> Add Pillar
+              </Button>
             )}
           </div>
 
@@ -280,45 +296,48 @@ export const IntroEditor: React.FC = () => {
             {data.capability_pillars.map((p, idx) => (
               <div key={idx} className="flex items-center gap-3 w-full">
                 {/* Pillar Label Input */}
-                <input
+                <Input
                   type="text"
-                  className="w-40 shrink-0 px-3 py-2 rounded-lg text-sm bg-light-surface dark:bg-dark-surface border border-light-border dark:border-dark-border text-light-ink dark:text-dark-ink placeholder:text-light-ink-subtle dark:placeholder:text-dark-ink-subtle focus:outline-none focus:border-terracotta transition-colors font-mono uppercase text-xs"
+                  className="w-36 sm:w-44 shrink-0 font-mono uppercase text-xs"
                   value={p.label}
                   onChange={(e) => updatePillar(idx, { label: e.target.value })}
                   placeholder="LABEL (e.g. SYSTEMS)"
                 />
 
                 {/* Pillar Items Input */}
-                <input
+                <Input
                   type="text"
-                  className="flex-1 min-w-0 px-3 py-2 rounded-lg text-sm bg-light-surface dark:bg-dark-surface border border-light-border dark:border-dark-border text-light-ink dark:text-dark-ink placeholder:text-light-ink-subtle dark:placeholder:text-dark-ink-subtle focus:outline-none focus:border-terracotta transition-colors"
+                  className="flex-1 min-w-0 text-xs sm:text-sm"
                   value={p.items}
                   onChange={(e) => updatePillar(idx, { items: e.target.value })}
                   placeholder="Tech · Stack · Items (e.g. Rust · Docker · Linux)"
                 />
 
                 {/* Trash Button */}
-                <button
+                <Button
                   type="button"
+                  variant="ghost"
+                  size="sm"
                   onClick={() => removePillar(idx)}
-                  className="p-2 text-light-ink-muted hover:text-red-500 shrink-0 transition-colors rounded-lg hover:bg-light-surface-raised dark:hover:bg-dark-surface-raised"
+                  className="h-9 w-9 p-0 text-light-ink-muted hover:text-red-500 hover:bg-red-500/10 shrink-0"
                   title="Remove pillar"
                 >
                   <Trash2 className="w-4 h-4" />
-                </button>
+                </Button>
               </div>
             ))}
 
             {data.capability_pillars.length === 0 && (
               <p className="font-sans text-xs text-light-ink-muted dark:text-dark-ink-muted italic py-2">
                 No capability pillars added.{' '}
-                <button
+                <Button
                   type="button"
+                  variant="link"
                   onClick={addPillar}
-                  className="text-terracotta hover:underline"
+                  className="text-terracotta p-0 h-auto"
                 >
                   Add one
-                </button>
+                </Button>
               </p>
             )}
           </div>

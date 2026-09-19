@@ -4,6 +4,7 @@ import { sendContactMessage } from '../lib/supabase';
 import { BambooArt } from './BambooArt';
 import { EnsoOrbital } from './EnsoOrbital';
 import { HankoStamp } from './HankoStamp';
+import { CornerBrackets } from './CornerBrackets';
 import { useSiteData, DEFAULT_PROFILE } from '../context/SiteDataContext';
 
 export const ContactSection: React.FC = () => {
@@ -108,7 +109,7 @@ export const ContactSection: React.FC = () => {
       </div>
 
       <div className="w-full max-w-7xl mx-auto px-6 relative z-10">
-        <div className="interactive-card group relative bg-light-surface-card dark:bg-[#181920] border border-light-border dark:border-[#2D3039] rounded-2xl p-8 sm:p-12 overflow-visible shadow-akari dark:shadow-night-glow classical-card-frame hover:border-terracotta/40 transition-colors duration-500">
+        <div className="interactive-card group relative bg-light-surface-card dark:bg-dark-surface border border-light-border dark:border-dark-border rounded-2xl p-8 sm:p-12 overflow-visible shadow-akari dark:shadow-night-glow classical-card-frame hover:border-terracotta/40 transition-colors duration-500">
           {/* Celestial Ensō Orbital Circle: appears ONLY on the hovered card */}
           <EnsoOrbital
             placement="top-left"
@@ -117,10 +118,7 @@ export const ContactSection: React.FC = () => {
           />
 
           {/* Corner Hairline Brackets */}
-          <div className="corner-bracket corner-bracket-tl absolute top-3 left-3 w-3.5 h-3.5 border-t border-l border-ochre/40 dark:border-ochre/30 pointer-events-none" />
-          <div className="corner-bracket corner-bracket-tr absolute top-3 right-3 w-3.5 h-3.5 border-t border-r border-ochre/40 dark:border-ochre/30 pointer-events-none" />
-          <div className="corner-bracket corner-bracket-bl absolute bottom-3 left-3 w-3.5 h-3.5 border-b border-l border-ochre/40 dark:border-ochre/30 pointer-events-none" />
-          <div className="corner-bracket corner-bracket-br absolute bottom-3 right-3 w-3.5 h-3.5 border-b border-r border-ochre/40 dark:border-ochre/30 pointer-events-none" />
+          <CornerBrackets size="lg" />
 
           {/* Komorebi Japanese Landscape Mask Backdrop — Anchored Clearly on Left Side */}
           <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-full lg:w-[50%] select-none overflow-hidden opacity-75 dark:opacity-55 mix-blend-multiply dark:mix-blend-screen dark:invert animate-gentle-drift rounded-l-2xl">

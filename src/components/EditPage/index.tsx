@@ -20,7 +20,22 @@ const SECTIONS: { id: EditSection; label: string; num: string }[] = [
 ];
 
 export const EditPage: React.FC<EditPageProps> = ({ onNavigate }) => {
-  const [activeSection, setActiveSection] = useState<EditSection>('intro');
+  const [activeSection, setActiveSection] = useState<EditSection>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('portfolio_admin_section') as EditSection | null;
+      if (saved && SECTIONS.some((s) => s.id === saved)) {
+        return saved;
+      }
+    }
+    return 'projects'; // default to projects since it is the primary editing tool
+  });
+
+  const handleSelectSection = (sec: EditSection) => {
+    setActiveSection(sec);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('portfolio_admin_section', sec);
+    }
+  };
 
   return (
     // pt-20 clears the fixed main header (h-20)
@@ -37,7 +52,7 @@ export const EditPage: React.FC<EditPageProps> = ({ onNavigate }) => {
           {SECTIONS.map((s) => (
             <button
               key={s.id}
-              onClick={() => setActiveSection(s.id)}
+              onClick={() => handleSelectSection(s.id)}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md font-sans text-xs whitespace-nowrap transition-all duration-150 shrink-0 ${
                 activeSection === s.id
                   ? 'bg-terracotta/10 text-terracotta border border-terracotta/30 font-semibold'

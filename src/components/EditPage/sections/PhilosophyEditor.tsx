@@ -1,56 +1,74 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, Trash2, Save, CheckCircle2, AlertCircle, Loader2 } from 'lucide-react';
 import { supabase, formatErrorMessage } from '../../../lib/supabase';
+import { useSiteData } from '../../../context/SiteDataContext';
+import { CornerBrackets } from '../../CornerBrackets';
+import { Button } from '../../ui/button';
+import { Input } from '../../ui/input';
+import { Textarea } from '../../ui/textarea';
+import { Label } from '../../ui/label';
+import { Badge } from '../../ui/badge';
 import { toast } from 'sonner';
-import { useSiteData, PhilosophyPillar, DEFAULT_PILLARS } from '../../../context/SiteDataContext';
 
-type SaveState = 'idle' | 'saving' | 'success' | 'error';
+interface PillarEntry {
+  position: number;
+  kanji: string;
+  romaji: string;
+  title: string;
+  tag: string;
+  description: string;
+}
 
-const inputCls =
-  'w-full px-3 py-2 rounded-lg text-sm bg-light-surface dark:bg-dark-surface border border-light-border dark:border-dark-border text-light-ink dark:text-dark-ink placeholder:text-light-ink-subtle dark:placeholder:text-dark-ink-subtle focus:outline-none focus:border-terracotta transition-colors';
-const labelCls =
-  'block font-sans text-[10px] font-semibold text-light-ink-muted dark:text-dark-ink-muted uppercase tracking-widest mb-1';
-
-const blank = (pos: number): PhilosophyPillar => ({
+const newPillar = (pos: number): PillarEntry => ({
   position: pos,
-  kanji: '',
-  romaji: '',
-  title: '',
-  tag: '',
+  kanji: '禅',
+  romaji: 'Zen',
+  title: 'Simplicity',
+  tag: 'Clear Focus',
   description: '',
 });
 
+type SaveState = 'idle' | 'saving' | 'success' | 'error';
+
 export const PhilosophyEditor: React.FC = () => {
   const { pillars: contextPillars, refresh } = useSiteData();
-  const [pillars, setPillars] = useState<PhilosophyPillar[]>(DEFAULT_PILLARS);
-  const [loading, setLoading] = useState(true);
+  const [pillars, setPillars] = useState<PillarEntry[]>([]);
   const [saveState, setSaveState] = useState<SaveState>('idle');
   const [errorMsg, setErrorMsg] = useState('');
+  const [loading, setLoading] = useState(true);
 
+  // Sync from SiteDataContext
   useEffect(() => {
     if (contextPillars && contextPillars.length > 0) {
-      setPillars(contextPillars);
+      setPillars(
+        contextPillars.map((p) => ({
+          position: p.position,
+          kanji: p.kanji,
+          romaji: p.romaji,
+          title: p.title,
+          tag: p.tag,
+          description: p.description,
+        })),
+      );
       setLoading(false);
     }
   }, [contextPillars]);
 
-  const update = (pos: number, patch: Partial<PhilosophyPillar>) =>
+  const update = (pos: number, patch: Partial<PillarEntry>) =>
     setPillars((prev) =>
       prev.map((p) => (p.position === pos ? { ...p, ...patch } : p)),
     );
 
   const addPillar = () => {
     if (pillars.length >= 3) return;
-    const nextPos = pillars.length + 1;
-    setPillars((prev) => [...prev, blank(nextPos)]);
+    setPillars((prev) => [...prev, newPillar(prev.length + 1)]);
   };
 
   const removePillar = (pos: number) => {
-    setPillars((prev) =>
-      prev
-        .filter((p) => p.position !== pos)
-        .map((p, idx) => ({ ...p, position: idx + 1 })),
-    );
+    const next = pillars
+      .filter((p) => p.position !== pos)
+      .map((p, idx) => ({ ...p, position: idx + 1 }));
+    setPillars(next);
   };
 
   const handleSave = async () => {
@@ -101,7 +119,7 @@ export const PhilosophyEditor: React.FC = () => {
   if (loading) {
     return (
       <div className="py-20 text-center font-sans text-sm text-light-ink-muted dark:text-dark-ink-muted">
-        Loading pillars…
+        Loading philosophy pillars from database…
       </div>
     );
   }
@@ -109,56 +127,62 @@ export const PhilosophyEditor: React.FC = () => {
   return (
     <div className="space-y-8">
       {/* Header Row */}
-      <div className="flex items-start justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
         <div>
           <h2 className="font-serif text-2xl text-light-ink dark:text-dark-ink font-normal">
             Philosophy Pillars
           </h2>
           <p className="font-sans text-xs text-light-ink-muted dark:text-dark-ink-muted mt-1">
-            Up to 3 pillars. Each maps directly to one card in the homepage Architectural Philosophy section.
+            Up to 3 architectural pillars. Maps directly to the Japanese Bento section on the homepage.
           </p>
         </div>
         <div className="flex items-center gap-3 shrink-0">
           {pillars.length < 3 && (
-            <button
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
               onClick={addPillar}
-              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg border border-light-border dark:border-dark-border text-light-ink dark:text-dark-ink hover:border-terracotta hover:text-terracotta font-sans text-xs transition-colors"
+              className="gap-1.5"
             >
-              <Plus className="w-3.5 h-3.5" /> Add Pillar
-            </button>
+              <Plus className="w-3.5 h-3.5" />
+              Add Pillar
+            </Button>
           )}
-          <div className="flex flex-col items-end gap-1.5">
-            <button
-              onClick={handleSave}
-              disabled={saveState === 'saving' || saveState === 'success'}
-              className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg font-sans text-xs font-semibold uppercase tracking-widest transition-all ${
-                saveState === 'success'
-                  ? 'bg-bamboo/80 text-white cursor-default'
-                  : saveState === 'error'
-                  ? 'bg-red-500 text-white hover:bg-red-600'
-                  : saveState === 'saving'
-                  ? 'bg-terracotta/60 text-white cursor-wait'
-                  : 'bg-terracotta hover:bg-terracotta-hover text-white'
-              }`}
-            >
-              {saveState === 'saving' && <Loader2 className="w-4 h-4 animate-spin" />}
-              {saveState === 'success' && <CheckCircle2 className="w-4 h-4" />}
-              {saveState === 'error' && <AlertCircle className="w-4 h-4" />}
-              {saveState === 'idle' && <Save className="w-4 h-4" />}
+
+          <Button
+            type="button"
+            variant={
+              saveState === 'success'
+                ? 'secondary'
+                : saveState === 'error'
+                ? 'destructive'
+                : 'default'
+            }
+            size="sm"
+            disabled={saveState === 'saving'}
+            onClick={handleSave}
+            className="gap-2"
+          >
+            {saveState === 'saving' && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
+            {saveState === 'success' && <CheckCircle2 className="w-3.5 h-3.5 text-bamboo" />}
+            {saveState === 'error' && <AlertCircle className="w-3.5 h-3.5" />}
+            {saveState === 'idle' && <Save className="w-3.5 h-3.5" />}
+            <span>
               {saveState === 'saving'
                 ? 'Saving…'
                 : saveState === 'success'
-                ? 'Saved!'
+                ? 'Saved to DB'
                 : saveState === 'error'
                 ? 'Retry'
-                : 'Save'}
-            </button>
-            {saveState === 'error' && (
-              <p className="font-sans text-[11px] text-red-400 text-right max-w-xs">
-                {errorMsg || 'Save failed.'}
-              </p>
-            )}
-          </div>
+                : 'Save All'}
+            </span>
+          </Button>
+          {saveState === 'error' && errorMsg && (
+            <p className="font-sans text-[11px] text-red-400 text-right max-w-xs">
+              {errorMsg}
+            </p>
+          )}
         </div>
       </div>
 
@@ -167,67 +191,78 @@ export const PhilosophyEditor: React.FC = () => {
         {pillars.map((pillar, idx) => (
           <div
             key={pillar.position}
-            className="bg-light-surface-card dark:bg-[#181920] border border-light-border dark:border-[#2D3039] rounded-2xl p-6 shadow-sm"
+            className="relative bg-light-surface-card dark:bg-dark-surface border border-light-border dark:border-dark-border rounded-2xl p-5 sm:p-6 shadow-xs classical-card-frame space-y-4"
           >
-            <div className="flex items-center justify-between mb-5">
-              <span className="font-mono text-xs text-terracotta border border-terracotta/30 rounded px-1.5 py-0.5">
-                PILLAR {String(idx + 1).padStart(2, '0')}
-              </span>
-              <button
+            <CornerBrackets size="sm" />
+            <div className="flex items-center justify-between gap-3 pb-2 border-b border-light-border/60 dark:border-dark-border/60">
+              <div className="flex items-center gap-2.5">
+                <Badge variant="terracotta" className="font-mono text-xs px-2 py-0.5">
+                  PILLAR {String(idx + 1).padStart(2, '0')}
+                </Badge>
+                <span className="font-serif text-sm sm:text-base font-medium text-light-ink dark:text-dark-ink">
+                  {pillar.kanji} · {pillar.romaji} — {pillar.title || 'Untitled Pillar'}
+                </span>
+              </div>
+
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
                 onClick={() => removePillar(pillar.position)}
-                className="p-1.5 rounded text-light-ink-muted hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+                className="h-8 w-8 p-0 text-light-ink-muted hover:text-red-500 hover:bg-red-500/10"
                 title="Delete pillar"
               >
                 <Trash2 className="w-4 h-4" />
-              </button>
+              </Button>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div>
-                <label className={labelCls}>Kanji (Japanese Symbol)</label>
-                <input
+                <Label className="mb-1.5">Kanji (Japanese Symbol)</Label>
+                <Input
                   type="text"
-                  className={inputCls}
                   value={pillar.kanji}
                   onChange={(e) => update(pillar.position, { kanji: e.target.value })}
                   placeholder="e.g. 間"
+                  className="font-serif text-base"
                 />
               </div>
               <div>
-                <label className={labelCls}>Romaji</label>
-                <input
+                <Label className="mb-1.5">Romaji</Label>
+                <Input
                   type="text"
-                  className={inputCls}
                   value={pillar.romaji}
                   onChange={(e) => update(pillar.position, { romaji: e.target.value })}
                   placeholder="e.g. Ma"
                 />
               </div>
               <div>
-                <label className={labelCls}>English Title</label>
-                <input
+                <Label className="mb-1.5">English Title</Label>
+                <Input
                   type="text"
-                  className={inputCls}
                   value={pillar.title}
                   onChange={(e) => update(pillar.position, { title: e.target.value })}
                   placeholder="e.g. Intentional Space"
+                  className="font-medium"
                 />
               </div>
             </div>
-            <div className="mb-4">
-              <label className={labelCls}>Tag Line (Bottom Label)</label>
-              <input
+
+            <div>
+              <Label className="mb-1.5">Tagline (Category / Boundary)</Label>
+              <Input
                 type="text"
-                className={inputCls}
                 value={pillar.tag}
                 onChange={(e) => update(pillar.position, { tag: e.target.value })}
                 placeholder="e.g. Uncluttered System Boundaries"
               />
             </div>
+
             <div>
-              <label className={labelCls}>Description</label>
-              <textarea
+              <Label className="mb-1.5">Description (Philosophical Tenet - Resizable)</Label>
+              <Textarea
                 rows={3}
-                className={`${inputCls} resize-none`}
+                className="min-h-[85px] leading-relaxed"
                 value={pillar.description}
                 onChange={(e) => update(pillar.position, { description: e.target.value })}
                 placeholder="Philosophy paragraph explaining this tenet…"
@@ -238,11 +273,16 @@ export const PhilosophyEditor: React.FC = () => {
       </div>
 
       {pillars.length === 0 && (
-        <div className="text-center py-16 text-light-ink-muted font-sans text-sm">
-          No pillars.{' '}
-          <button className="text-terracotta hover:underline" onClick={addPillar}>
-            Add one
-          </button>
+        <div className="text-center py-16 text-light-ink-muted dark:text-dark-ink-muted font-sans text-sm rounded-xl border border-light-border dark:border-dark-border bg-light-surface-card dark:bg-dark-surface p-8">
+          <p className="mb-3">No philosophy pillars configured.</p>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={addPillar}
+          >
+            Add first pillar
+          </Button>
         </div>
       )}
     </div>

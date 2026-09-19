@@ -4,6 +4,7 @@ import { ArrowRight, Layers, Github, ExternalLink } from 'lucide-react';
 import { ProjectDetailModal } from './ProjectDetailModal';
 import { EnsoOrbital } from './EnsoOrbital';
 import { TechTag } from './TechTag';
+import { CornerBrackets } from './CornerBrackets';
 import { useSiteData } from '../context/SiteDataContext';
 
 interface ProjectsShowcaseProps {
@@ -14,7 +15,9 @@ export const ProjectsShowcase: React.FC<ProjectsShowcaseProps> = ({ onNavigate }
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const { projects } = useSiteData();
 
-  const displayedProjects = (projects && projects.length > 0 ? projects : []).slice(0, 3);
+  const allProjects = projects && projects.length > 0 ? projects : [];
+  const featured = allProjects.filter((p) => p.isFeatured);
+  const displayedProjects = (featured.length > 0 ? featured : allProjects).slice(0, 3);
 
   return (
     <section id="featured-works" className="relative w-full overflow-hidden py-14 lg:py-20">
@@ -101,10 +104,7 @@ export const ProjectsShowcase: React.FC<ProjectsShowcaseProps> = ({ onNavigate }
                 />
 
                 {/* Corner Hairline Brackets */}
-                <div className="corner-bracket corner-bracket-tl absolute top-2.5 left-2.5 w-3 h-3 border-t border-l border-ochre/40 dark:border-ochre/30 pointer-events-none" />
-                <div className="corner-bracket corner-bracket-tr absolute top-2.5 right-2.5 w-3 h-3 border-t border-r border-ochre/40 dark:border-ochre/30 pointer-events-none" />
-                <div className="corner-bracket corner-bracket-bl absolute bottom-2.5 left-2.5 w-3 h-3 border-b border-l border-ochre/40 dark:border-ochre/30 pointer-events-none" />
-                <div className="corner-bracket corner-bracket-br absolute bottom-2.5 right-2.5 w-3 h-3 border-b border-r border-ochre/40 dark:border-ochre/30 pointer-events-none" />
+                <CornerBrackets size="md" />
 
                 <div
                   className={`grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center ${

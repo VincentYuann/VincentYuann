@@ -2,6 +2,7 @@ import React from 'react';
 import { Compass, Feather, ShieldCheck } from 'lucide-react';
 import { BambooArt } from './BambooArt';
 import { EnsoOrbital } from './EnsoOrbital';
+import { CornerBrackets } from './CornerBrackets';
 import { useSiteData, DEFAULT_PILLARS } from '../context/SiteDataContext';
 
 const PILLAR_CONFIGS = [
@@ -162,16 +163,13 @@ export const PhilosophyBento: React.FC = () => {
             return (
               <div
                 key={pillar.position || idx}
-                className="interactive-card bg-light-surface-card/95 dark:bg-[#1B1C22]/95 backdrop-blur-sm border border-light-border dark:border-[#2D3039] rounded-xl p-7 sm:p-8 flex flex-col justify-between shadow-sm relative overflow-visible group hover:bg-light-surface dark:hover:bg-[#202229] transition-all duration-300 hover:shadow-akari dark:hover:shadow-night-glow classical-card-frame"
+                className="interactive-card bg-light-surface-card/95 dark:bg-dark-surface/95 backdrop-blur-sm border border-light-border dark:border-dark-border rounded-xl p-7 sm:p-8 flex flex-col justify-between shadow-sm relative overflow-visible group hover:bg-light-surface dark:hover:bg-dark-surface-raised transition-all duration-300 hover:shadow-akari dark:hover:shadow-night-glow classical-card-frame"
               >
                 {/* Celestial Ensō Orbital Circle: appears ONLY on the hovered card */}
                 <EnsoOrbital placement="top-left" size={112} hoverOnly={true} />
 
                 {/* Corner Hairline Brackets */}
-                <div className="corner-bracket corner-bracket-tl absolute top-2.5 left-2.5 w-3 h-3 border-t border-l border-ochre/40 dark:border-ochre/30 pointer-events-none" />
-                <div className="corner-bracket corner-bracket-tr absolute top-2.5 right-2.5 w-3 h-3 border-t border-r border-ochre/40 dark:border-ochre/30 pointer-events-none" />
-                <div className="corner-bracket corner-bracket-bl absolute bottom-2.5 left-2.5 w-3 h-3 border-b border-l border-ochre/40 dark:border-ochre/30 pointer-events-none" />
-                <div className="corner-bracket corner-bracket-br absolute bottom-2.5 right-2.5 w-3 h-3 border-b border-r border-ochre/40 dark:border-ochre/30 pointer-events-none" />
+                <CornerBrackets size="md" />
 
                 {/* Top Accent Kanji & Icon */}
                 <div className="space-y-4 relative z-10">

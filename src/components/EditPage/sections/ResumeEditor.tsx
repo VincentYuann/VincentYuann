@@ -19,6 +19,9 @@ import {
   formatErrorMessage,
 } from '../../../lib/supabase';
 import { toast } from 'sonner';
+import { CornerBrackets } from '../../CornerBrackets';
+import { Button } from '../../ui/button';
+import { Tabs, TabsList, TabsTrigger } from '../../ui/tabs';
 
 type SaveState = 'idle' | 'saving' | 'success' | 'error';
 type Tab = 'upload' | 'editor';
@@ -174,10 +177,10 @@ export const ResumeEditor: React.FC = () => {
   return (
     <div className="space-y-8">
       {/* Header */}
-      <div className="flex items-start justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
         <div>
           <h2 className="font-serif text-2xl text-light-ink dark:text-dark-ink font-normal">
-            Resume / CV
+            Resume &amp; CV
           </h2>
           <p className="font-sans text-xs text-light-ink-muted dark:text-dark-ink-muted mt-1">
             Upload a PDF to store in your Supabase S3 bucket, or write / paste LaTeX directly.
@@ -186,69 +189,63 @@ export const ResumeEditor: React.FC = () => {
         </div>
 
         {/* Save button */}
-        <div className="flex flex-col items-end gap-1.5 shrink-0">
-          <button
-            onClick={handleSave}
-            disabled={saveState === 'saving' || saveState === 'success'}
-            className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg font-sans text-xs font-semibold uppercase tracking-widest transition-all ${
+        <div className="flex items-center gap-3 shrink-0">
+          <Button
+            type="button"
+            variant={
               saveState === 'success'
-                ? 'bg-bamboo/80 text-white cursor-default'
+                ? 'secondary'
                 : saveState === 'error'
-                ? 'bg-red-500 text-white hover:bg-red-600'
-                : saveState === 'saving'
-                ? 'bg-terracotta/60 text-white cursor-wait'
-                : 'bg-terracotta hover:bg-terracotta-hover text-white'
-            }`}
+                ? 'destructive'
+                : 'default'
+            }
+            size="sm"
+            disabled={saveState === 'saving'}
+            onClick={handleSave}
+            className="gap-2"
           >
-            {saveState === 'saving' && <Loader2 className="w-4 h-4 animate-spin" />}
-            {saveState === 'success' && <CheckCircle2 className="w-4 h-4" />}
-            {saveState === 'error' && <AlertCircle className="w-4 h-4" />}
-            {saveState === 'idle' && <Save className="w-4 h-4" />}
-            {saveState === 'saving'
-              ? 'Saving…'
-              : saveState === 'success'
-              ? 'Saved!'
-              : saveState === 'error'
-              ? 'Retry'
-              : 'Save'}
-          </button>
-          {saveState === 'error' && (
-            <p className="font-sans text-[11px] text-red-400 text-right max-w-xs">
-              {errorMsg || 'Save failed.'}
-            </p>
+            {saveState === 'saving' && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
+            {saveState === 'success' && <CheckCircle2 className="w-3.5 h-3.5 text-bamboo" />}
+            {saveState === 'error' && <AlertCircle className="w-3.5 h-3.5" />}
+            {saveState === 'idle' && <Save className="w-3.5 h-3.5" />}
+            <span>
+              {saveState === 'saving'
+                ? 'Saving…'
+                : saveState === 'success'
+                ? 'Saved to DB'
+                : saveState === 'error'
+                ? 'Retry'
+                : 'Save All'}
+            </span>
+          </Button>
+          {saveState === 'error' && errorMsg && (
+            <p className="font-sans text-[11px] text-red-400 text-right max-w-xs">{errorMsg}</p>
           )}
         </div>
       </div>
 
       {/* Tab toggles */}
-      <div className="flex items-center gap-1 p-1 bg-light-surface dark:bg-dark-surface rounded-xl border border-light-border dark:border-dark-border w-fit">
-        <button
-          onClick={() => setTab('upload')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-lg font-sans text-xs font-medium transition-all ${
-            tab === 'upload'
-              ? 'bg-light-surface-raised dark:bg-dark-surface-raised text-light-ink dark:text-dark-ink shadow-sm'
-              : 'text-light-ink-muted dark:text-dark-ink-muted hover:text-light-ink dark:hover:text-dark-ink'
-          }`}
-        >
-          <Upload className="w-3.5 h-3.5" />
-          Upload PDF / .tex
-        </button>
-        <button
-          onClick={() => setTab('editor')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-lg font-sans text-xs font-medium transition-all ${
-            tab === 'editor'
-              ? 'bg-light-surface-raised dark:bg-dark-surface-raised text-light-ink dark:text-dark-ink shadow-sm'
-              : 'text-light-ink-muted dark:text-dark-ink-muted hover:text-light-ink dark:hover:text-dark-ink'
-          }`}
-        >
-          <FileCode2 className="w-3.5 h-3.5" />
-          LaTeX Editor
-        </button>
-      </div>
+      <Tabs
+        value={tab}
+        onValueChange={(val) => setTab(val as Tab)}
+        className="w-full"
+      >
+        <TabsList className="h-10">
+          <TabsTrigger value="upload" className="gap-2">
+            <Upload className="w-3.5 h-3.5" />
+            <span>Upload PDF / .tex</span>
+          </TabsTrigger>
+          <TabsTrigger value="editor" className="gap-2">
+            <FileCode2 className="w-3.5 h-3.5" />
+            <span>LaTeX Editor</span>
+          </TabsTrigger>
+        </TabsList>
+      </Tabs>
 
       {/* Upload panel */}
       {tab === 'upload' && (
-        <div className="bg-light-surface-card dark:bg-[#181920] border border-light-border dark:border-[#2D3039] rounded-2xl p-8 shadow-sm">
+        <div className="relative bg-light-surface-card dark:bg-dark-surface border border-light-border dark:border-dark-border rounded-2xl p-6 sm:p-8 shadow-xs classical-card-frame">
+          <CornerBrackets size="md" />
           <input
             ref={fileInputRef}
             type="file"
@@ -258,7 +255,7 @@ export const ResumeEditor: React.FC = () => {
           />
 
           {uploadedFile ? (
-            <div className="flex items-center gap-4 p-5 rounded-xl bg-light-surface dark:bg-dark-surface border border-bamboo/30">
+            <div className="flex items-center gap-4 p-5 rounded-xl bg-light-surface dark:bg-dark-surface-muted border border-bamboo/30">
               <FileText className="w-8 h-8 text-bamboo shrink-0" />
               <div className="flex-1 min-w-0">
                 <p className="font-sans text-sm font-medium text-light-ink dark:text-dark-ink truncate">
@@ -268,20 +265,23 @@ export const ResumeEditor: React.FC = () => {
                   {(uploadedFile.size / 1024).toFixed(1)} KB
                 </p>
               </div>
-              <button
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
                 onClick={() => {
                   setUploadedFile(null);
                   if (fileInputRef.current) fileInputRef.current.value = '';
                 }}
-                className="p-1.5 text-light-ink-muted hover:text-red-500 transition-colors"
+                className="h-8 w-8 p-0 text-light-ink-muted hover:text-red-500"
               >
                 <X className="w-4 h-4" />
-              </button>
+              </Button>
             </div>
           ) : (
             <button
               onClick={() => fileInputRef.current?.click()}
-              className="w-full flex flex-col items-center gap-4 py-14 border-2 border-dashed border-light-border dark:border-dark-border rounded-xl hover:border-terracotta hover:bg-terracotta/5 transition-all group"
+              className="w-full flex flex-col items-center gap-4 py-14 border-2 border-dashed border-light-border dark:border-dark-border rounded-xl hover:border-terracotta hover:bg-terracotta/5 transition-all group cursor-pointer"
             >
               <Upload className="w-10 h-10 text-light-ink-subtle dark:text-dark-ink-subtle group-hover:text-terracotta transition-colors" />
               <div className="text-center">
@@ -304,22 +304,26 @@ export const ResumeEditor: React.FC = () => {
 
       {/* LaTeX Editor */}
       {tab === 'editor' && (
-        <div className="bg-light-surface-card dark:bg-[#181920] border border-light-border dark:border-[#2D3039] rounded-2xl shadow-sm overflow-hidden">
+        <div className="relative bg-light-surface-card dark:bg-dark-surface border border-light-border dark:border-dark-border rounded-2xl shadow-xs overflow-hidden classical-card-frame">
+          <CornerBrackets size="md" />
           {/* Editor toolbar */}
-          <div className="flex items-center justify-between px-4 py-2 bg-light-surface dark:bg-[#111218] border-b border-light-border dark:border-dark-border">
+          <div className="flex items-center justify-between px-4 py-2.5 bg-light-surface/80 dark:bg-dark-surface-muted/60 border-b border-light-border dark:border-dark-border">
             <div className="flex items-center gap-2">
               <FileCode2 className="w-3.5 h-3.5 text-terracotta" />
               <span className="font-mono text-[11px] text-light-ink-muted dark:text-dark-ink-muted">
                 resume.tex
               </span>
             </div>
-            <button
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
               onClick={() => setPreviewMode((v) => !v)}
-              className="inline-flex items-center gap-1.5 font-sans text-[11px] text-light-ink-muted dark:text-dark-ink-muted hover:text-terracotta transition-colors"
+              className="gap-1.5 h-7 text-xs text-light-ink-muted dark:text-dark-ink-muted hover:text-terracotta"
             >
               {previewMode ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
-              {previewMode ? 'Edit' : 'Preview'}
-            </button>
+              <span>{previewMode ? 'Edit Mode' : 'Preview Mode'}</span>
+            </Button>
           </div>
 
           {previewMode ? (

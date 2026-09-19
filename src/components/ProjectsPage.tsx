@@ -5,6 +5,7 @@ import { ProjectDetailModal } from './ProjectDetailModal';
 import { EnsoOrbital } from './EnsoOrbital';
 import { HankoStamp } from './HankoStamp';
 import { TechTag } from './TechTag';
+import { CornerBrackets } from './CornerBrackets';
 import { useSiteData } from '../context/SiteDataContext';
 
 interface ProjectsPageProps {
@@ -122,7 +123,7 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({ onNavigate }) => {
           {filteredProjects.map((project) => (
             <div
               key={project.id}
-              className="interactive-card group relative bg-light-surface-card dark:bg-[#181920] border border-light-border dark:border-[#2D3039] rounded-xl overflow-visible p-5 shadow-akari dark:shadow-night-glow hover:border-terracotta/40 transition-all duration-300 flex flex-col justify-between"
+              className="interactive-card group relative bg-light-surface-card dark:bg-dark-surface border border-light-border dark:border-dark-border rounded-xl overflow-visible p-5 shadow-akari dark:shadow-night-glow hover:border-terracotta/40 transition-all duration-300 flex flex-col justify-between classical-card-frame"
             >
               {/* Ensō Bloom: Top-left only on hover */}
               <EnsoOrbital
@@ -132,14 +133,11 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({ onNavigate }) => {
               />
 
               {/* Corner Hairline Brackets */}
-              <div className="corner-bracket corner-bracket-tl absolute top-2.5 left-2.5 w-2.5 h-2.5 border-t border-l border-ochre/40 dark:border-ochre/30 pointer-events-none" />
-              <div className="corner-bracket corner-bracket-tr absolute top-2.5 right-2.5 w-2.5 h-2.5 border-t border-r border-ochre/40 dark:border-ochre/30 pointer-events-none" />
-              <div className="corner-bracket corner-bracket-bl absolute bottom-2.5 left-2.5 w-2.5 h-2.5 border-b border-l border-ochre/40 dark:border-ochre/30 pointer-events-none" />
-              <div className="corner-bracket corner-bracket-br absolute bottom-2.5 right-2.5 w-2.5 h-2.5 border-b border-r border-ochre/40 dark:border-ochre/30 pointer-events-none" />
+              <CornerBrackets size="sm" />
 
               <div>
                 {/* Thumbnail Image Header */}
-                <div className="relative aspect-[16/9] w-full rounded-lg overflow-hidden mb-4 bg-light-surface-muted dark:bg-[#121316]">
+                <div className="relative aspect-[16/9] w-full rounded-lg overflow-hidden mb-4 bg-light-surface-muted dark:bg-dark-surface-muted">
                   <img
                     src={project.image}
                     alt={project.title}
