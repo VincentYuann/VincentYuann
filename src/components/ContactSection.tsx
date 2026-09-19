@@ -76,12 +76,11 @@ export const ContactSection: React.FC = () => {
 
       <div className="w-full max-w-7xl mx-auto px-6 relative z-10">
         <div className="interactive-card group relative bg-light-surface-card dark:bg-[#181920] border border-light-border dark:border-[#2D3039] rounded-2xl p-8 sm:p-12 overflow-visible shadow-akari dark:shadow-night-glow classical-card-frame hover:border-terracotta/40 transition-colors duration-500">
-          {/* Celestial Ensō Orbital Circle covering the card's top-left corner */}
+          {/* Celestial Ensō Orbital Circle: appears ONLY on the hovered card */}
           <EnsoOrbital
             placement="top-left"
             size={120}
-            interactive={true}
-            className="opacity-75 group-hover:opacity-100 transition-opacity"
+            hoverOnly={true}
           />
 
           {/* Corner Hairline Brackets */}

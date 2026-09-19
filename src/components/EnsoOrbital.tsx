@@ -5,6 +5,7 @@ interface EnsoOrbitalProps {
   size?: number; // Size in px (default 128)
   placement?: 'top-left' | 'top-right' | 'center' | 'custom';
   interactive?: boolean;
+  hoverOnly?: boolean;
 }
 
 /**
@@ -15,13 +16,14 @@ interface EnsoOrbitalProps {
  * 3. Incandescent pulsing vermilion bead (Ruby apex)
  * 4. Concentric dashed red orbit trail
  * 5. Orbiting celestial dust motes
- * Directly derived from user reference media_1789779914674.png
+ * Directly derived from user reference media_1789779914674.png and media_1789780458624.png
  */
 export const EnsoOrbital: React.FC<EnsoOrbitalProps> = ({
   className = '',
   size = 128,
   placement = 'top-left',
   interactive = true,
+  hoverOnly = true,
 }) => {
   const placementClasses = {
     'top-left': '-top-7 -left-7 sm:-top-8 sm:-left-8',
@@ -30,10 +32,14 @@ export const EnsoOrbital: React.FC<EnsoOrbitalProps> = ({
     custom: '',
   }[placement];
 
+  const hoverClasses = hoverOnly
+    ? 'opacity-0 scale-90 pointer-events-none group-hover:opacity-100 group-hover:scale-100 transition-all duration-500 ease-out'
+    : 'opacity-100 transition-transform duration-500';
+
   return (
     <div
-      className={`absolute ${placementClasses} pointer-events-none select-none z-20 transition-transform duration-500 ${
-        interactive ? 'group-hover:scale-110' : ''
+      className={`absolute ${placementClasses} pointer-events-none select-none z-20 ${hoverClasses} ${
+        interactive ? 'group-hover:scale-105' : ''
       } ${className}`}
       style={{ width: `${size}px`, height: `${size}px` }}
       aria-hidden="true"

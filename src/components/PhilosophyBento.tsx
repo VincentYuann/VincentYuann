@@ -166,12 +166,11 @@ export const PhilosophyBento: React.FC = () => {
                 key={idx}
                 className="interactive-card bg-light-surface-card/95 dark:bg-[#1B1C22]/95 backdrop-blur-sm border border-light-border dark:border-[#2D3039] rounded-xl p-7 sm:p-8 flex flex-col justify-between shadow-sm relative overflow-visible group hover:bg-light-surface dark:hover:bg-[#202229] transition-all duration-300 hover:shadow-akari dark:hover:shadow-night-glow classical-card-frame"
               >
-                {/* Celestial Ensō Orbital Circle covering the top-left of each card with sick animation */}
+                {/* Celestial Ensō Orbital Circle: appears ONLY on the hovered card */}
                 <EnsoOrbital
                   placement="top-left"
                   size={112}
-                  interactive={true}
-                  className="opacity-70 group-hover:opacity-100 transition-opacity"
+                  hoverOnly={true}
                 />
 
                 {/* Corner Hairline Brackets */}

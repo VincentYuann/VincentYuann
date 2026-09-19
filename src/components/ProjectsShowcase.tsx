@@ -112,12 +112,11 @@ export const ProjectsShowcase: React.FC = () => {
               }}
               className="interactive-card group relative w-full bg-light-surface-card dark:bg-[#1B1C22] hover:bg-light-surface dark:hover:bg-[#202229] border border-light-border dark:border-[#2D3039] rounded-xl p-6 sm:p-8 transition-all duration-300 shadow-sm hover:shadow-akari dark:hover:shadow-night-glow cursor-pointer classical-card-frame overflow-visible"
             >
-              {/* Celestial Ensō Orbital Circle covering the top-left corner */}
+              {/* Celestial Ensō Orbital Circle: appears ONLY on the hovered project card */}
               <EnsoOrbital
                 placement="top-left"
                 size={96}
-                interactive={true}
-                className="opacity-50 group-hover:opacity-100 transition-opacity"
+                hoverOnly={true}
               />
 
               {/* Corner Hairline Brackets */}
