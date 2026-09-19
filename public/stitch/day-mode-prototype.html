@@ -1,0 +1,571 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<meta content="web_standard" name="shell-type">
+<title>Vincent Yuann — Software &amp; AI Engineer</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,500;0,600;1,400&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<style>
+    @layer base {
+      html, body { margin: 0; padding: 0; }
+      body { overscroll-behavior: none; }
+      main > :first-child { margin-top: 0 !important; }
+      main > :last-child { margin-bottom: 0 !important; }
+    }
+    ::-webkit-scrollbar { display: none; }
+  </style>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "on-error-container": "#93000a",
+            "surface-dim": "#dcd9d9",
+            "on-primary-container": "#ffefeb",
+            "surface-variant": "#e4e2e1",
+            "surface": "#fcf9f8",
+            "inverse-primary": "#ffb4a5",
+            "on-surface-variant": "#5a413c",
+            "on-secondary": "#ffffff",
+            "error": "#ba1a1a",
+            "primary-container": "#c83c23",
+            "tertiary-fixed-dim": "#fabc4d",
+            "surface-container-low": "#f6f3f2",
+            "error-container": "#ffdad6",
+            "outline": "#8e706a",
+            "inverse-on-surface": "#f3f0f0",
+            "on-secondary-fixed-variant": "#2d4d40",
+            "tertiary-container": "#936600",
+            "primary-fixed": "#ffdad3",
+            "on-tertiary-fixed-variant": "#604100",
+            "surface-container-lowest": "#ffffff",
+            "on-secondary-container": "#4a6b5d",
+            "surface-container-high": "#eae7e7",
+            "on-tertiary-container": "#fff0df",
+            "primary-fixed-dim": "#ffb4a5",
+            "secondary": "#446557",
+            "on-primary-fixed-variant": "#8e1300",
+            "secondary-container": "#c6ebd9",
+            "outline-variant": "#e2bfb8",
+            "on-primary-fixed": "#3e0400",
+            "surface-container": "#f0eded",
+            "on-error": "#ffffff",
+            "secondary-fixed": "#c6ebd9",
+            "on-background": "#1b1c1c",
+            "surface-bright": "#fcf9f8",
+            "surface-tint": "#b12c14",
+            "on-tertiary-fixed": "#281900",
+            "on-surface": "#1b1c1c",
+            "background": "#fcf9f8",
+            "tertiary-fixed": "#ffdead",
+            "surface-container-highest": "#e4e2e1",
+            "inverse-surface": "#303030",
+            "on-tertiary": "#ffffff",
+            "on-primary": "#ffffff",
+            "tertiary": "#744f00",
+            "primary": "#a5230c",
+            "secondary-fixed-dim": "#abcebe",
+            "on-secondary-fixed": "#002116"
+          },
+          borderRadius: {
+            DEFAULT: "0.125rem",
+            lg: "0.25rem",
+            xl: "0.5rem",
+            full: "0.75rem"
+          },
+          spacing: {
+            "margin-mobile": "1.25rem",
+            "space-xl": "3.5rem",
+            "gutter-mobile": "0.75rem",
+            "space-md": "1.25rem",
+            "space-xs": "0.375rem",
+            "margin": "4rem",
+            "gutter": "1.5rem",
+            "space-sm": "0.75rem",
+            "space-lg": "2rem"
+          },
+          fontFamily: {
+            "display-hero": ["Noto Serif", "serif"],
+            "body-md": ["Plus Jakarta Sans", "sans-serif"],
+            "body-sm": ["Plus Jakarta Sans", "sans-serif"],
+            "vertical-accent": ["Noto Serif", "serif"],
+            "headline-lg-mobile": ["Noto Serif", "serif"],
+            "body-lg": ["Plus Jakarta Sans", "sans-serif"],
+            "label-caps": ["Plus Jakarta Sans", "sans-serif"],
+            "headline-lg": ["Noto Serif", "serif"],
+            "display-hero-mobile": ["Noto Serif", "serif"],
+            "headline-sm": ["Noto Serif", "serif"],
+            "headline-md": ["Noto Serif", "serif"]
+          }
+        }
+      }
+    };
+  </script>
+</head>
+<body class="bg-[#FCF9F8] font-body-md text-on-surface antialiased selection:bg-primary-fixed selection:text-on-primary-fixed">
+<!-- TOP APPBAR NAVIGATION -->
+<header class="fixed top-0 left-0 right-0 z-50 bg-[#FCF9F8]/90 backdrop-blur-md border-b border-[#E8DFC8]/60 transition-all duration-200">
+<div class="h-20 w-full max-w-7xl mx-auto px-gutter flex items-center justify-between gap-gutter">
+<!-- Left Brand with Transparent Hanko Seal -->
+<div class="flex items-center gap-space-md">
+<a class="flex items-center gap- space-sm group" data-path="home" href="#">
+<div class="relative flex items-center justify-center -rotate-1 transition-transform duration-200 group-hover:rotate-0">
+<img alt="Hanko Stamp Logo 原" class="h-8 w-8 object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1UQ8LHcrXW8PVjsUo1gxw88fvG6KDvnQo_8DJ0WNpOUliGqt_UMYLTBrdgeYb8eZJHfp51r2C_Y_Ne7pqLykuqPmrSSqgMU9173u1TVnw6ivK7sAmzPzmRo6Fj8ZvtGo-ib-yJzklg4m-1cZgUg2Xyj5PwO4nMArtEvbmm-JZpo0fCrU51POvmHW-ubkemOhg2qulX_BfoYvwaJx6_M9Um0LR3zwda3IlvD6ltxU2fEdTTbRhw8FFdVtOE">
+</div>
+<div class="flex flex-col ml-2.5">
+<span class="font-headline-sm text-headline-sm tracking-tight text-on-surface leading-none">Vincent Yuann</span>
+<span class="font-label-caps text-label-caps uppercase text-outline tracking-wider mt-0.5">Software &amp; AI Engineer</span>
+</div>
+</a>
+<div class="hidden xl:flex items-center gap-space-xs pl-space-sm py-1 border-l border-[#E8DFC8]/70 ml-2">
+<span class="inline-flex h-2 w-2 rounded-full bg-secondary animate-pulse"></span>
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider">Open to Full-Stack &amp; AI Roles</span>
+</div>
+</div>
+<!-- Center Links -->
+<nav class="hidden md:flex items-center gap-space-lg" data-active-classes="text-primary font-semibold">
+<a aria-current="page" class="tracking-wide transition-colors flex items-center gap-1.5 text-primary font-semibold text-body-sm" data-path="home" href="#">
+<span class="opacity-50 text-[10px]">01</span>
+<span class="">Home</span>
+</a>
+<a class="font-body-sm text-body-sm tracking-wide text-on-surface-variant hover:text-on-surface transition-colors flex items-center gap-1.5" data-path="projects" href="#featured-works">
+<span class="opacity-50 text-[10px]">02</span>
+<span class="">Projects</span>
+</a>
+<a class="font-body-sm text-body-sm tracking-wide text-on-surface-variant hover:text-on-surface transition-colors flex items-center gap-1.5" data-path="about" href="#philosophy">
+<span class="opacity-50 text-[10px]">03</span>
+<span class="">About</span>
+</a>
+<a class="font-body-sm text-body-sm tracking-wide text-on-surface-variant hover:text-on-surface transition-colors flex items-center gap-1.5" data-path="resume" href="#system-craft">
+<span class="opacity-50 text-[10px]">04</span>
+<span class="">Craft</span>
+</a>
+<a class="font-body-sm text-body-sm tracking-wide text-on-surface-variant hover:text-on-surface transition-colors flex items-center gap-1.5" data-path="contact" href="#contact">
+<span class="opacity-50 text-[10px]">05</span>
+<span class="">Contact</span>
+</a>
+</nav>
+<!-- Right Controls: Day/Night + Profile Accent -->
+<div class="flex items-center gap-space-md">
+<div class="flex items-center bg-[#F2EDE4]/80 px-1 py-1 rounded-full border border-[#E4D7C3]/80 shadow-[inset_0_1px_2px_rgba(0,0,0,0.03)] text-[11px]">
+<span class="px-2.5 py-0.5 font-label-caps text-label-caps text-on-surface rounded-full bg-surface-container-lowest shadow-xs font-semibold">DAY</span>
+<span class="px-2.5 py-0.5 font-label-caps text-label-caps text-on-surface-variant hover:text-on-surface cursor-pointer">NIGHT</span>
+</div>
+<div class="relative w-8 h-8 rounded-full bg-[#F5EFE6] border border-[#E4D7C3] flex items-center justify-center overflow-hidden">
+<span class="material-symbols-outlined text-[#A5230C] text-[16px]">person</span>
+</div>
+</div>
+</div>
+</header>
+<main class="relative w-full pt-20 bg-[#FCF9F8]">
+<!-- HERO SECTION WITH SEAMLESSLY MASKED SUMI-E LANDSCAPE -->
+<section class="relative w-full max-w-7xl mx-auto px-gutter py-space-xl lg:py-24 overflow-hidden">
+<!-- Atmospheric Masked Mountain Ink Painting -->
+<div class="pointer-events-none absolute inset-0 -z-0 overflow-hidden select-none">
+<img alt="Sumi-e ink landscape painting backdrop" class="absolute right-0 top-0 h-full w-3/4 max-w-4xl object-cover object-right opacity-35 mix-blend-multiply" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDWs_Fm5Ot9IeVilr4OF5HJKZLyKseXK_0h1RYd1zCPMwIlQr13Uvlh2F2k3SDc7dVB9Az1nk0p_3SyGffVM5ztx9hkhF1bNJmn-6d7Pj8AtuVpR5IrPTfVLFOLXw1XQmYWELWb2tAlRNBHQ21ZLvlzw8_olny6FU3SdydbT8Lplh8KwEOhgAu9baF7zk6-ipAr5Le6PNaWhxIdcLQf4ZCsqw1Pko1irqJAjGP9jREyRlxnkH3JNOkh4kyVM-9kQzHJRcY" style="mask-image: radial-gradient(at 70% 50%, black 25%, transparent 75%);">
+<!-- Soft natural atmospheric gradient -->
+<div class="absolute inset-0 bg-gradient-to-r from-[#FCF9F8] via-[#FCF9F8]/85 to-transparent w-2/3"></div>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-lg items-start relative z-10">
+<!-- Main Content Column (8 cols) -->
+<div class="lg:col-span-8 flex flex-col space-y-space-md">
+<!-- Status Pill -->
+<div class="flex flex-wrap items-center gap-space-sm">
+<div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#F8F5F1] border border-[#E4D7C3] shadow-xs">
+<span class="inline-block w-2 h-2 rounded-full bg-secondary animate-pulse"></span>
+<span class="font-label-caps text-label-caps tracking-widest text-on-surface-variant uppercase">Open to Full-Stack &amp; AI Roles</span>
+</div>
+<span class="font-body-sm text-body-sm text-outline hidden sm:inline">•</span>
+<span class="font-label-caps text-label-caps text-outline uppercase tracking-wider">Tokyo &amp; Remote</span>
+</div>
+<!-- Headline -->
+<h1 class="font-headline-lg text-headline-lg lg:text-display-hero text-on-surface leading-[1.18] tracking-tight">
+            Crafting thoughtful digital experiences with algorithmic clarity &amp; Japanese <span class="italic font-normal text-primary">wabi-sabi</span> harmony.
+          </h1>
+<!-- Narrative Description -->
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl leading-relaxed">
+            Specializing in robust distributed web architecture, local &amp; cloud generative AI systems, and serene user interfaces governed by the timeless cadence of intentional space (<span class="text-on-surface font-medium">間 · Ma</span>). No noise, no excess—pure intentionality.
+          </p>
+<!-- CTA Action Buttons -->
+<div class="pt-space-xs flex flex-wrap items-center gap-space-md">
+<a class="group inline-flex items-center gap-2 px-6 py-3.5 bg-[#26262E] hover:bg-on-surface text-surface-container-lowest font-body-md text-body-md rounded-lg shadow-sm transition-all duration-200" href="#featured-works">
+<span class="">Explore Selected Works</span>
+<span class="material-symbols-outlined text-[18px] transition-transform duration-200 group-hover:translate-x-1">arrow_forward</span>
+</a>
+<a class="group inline-flex items-center gap-2 px-6 py-3.5 bg-surface-container-low hover:bg-surface-container-high border border-[#E4D7C3] text-on-surface font-body-md text-body-md rounded-lg shadow-sm transition-all duration-200" href="#philosophy">
+<span class="">Read Notes &amp; Philosophy</span>
+<span class="font-vertical-accent text-vertical-accent text-primary transition-transform duration-200 group-hover:rotate-45">✦</span>
+</a>
+</div>
+<!-- Tech Capabilities Chip Ribbon -->
+<div class="pt-space-sm flex flex-wrap items-center gap-2 text-on-surface-variant">
+<span class="font-label-caps text-label-caps uppercase text-outline mr-2">Core Stacks</span>
+<span class="px-2.5 py-1 text-[11px] font-label-caps tracking-wider rounded bg-[#FAF7F2] border border-[#E4D7C3]/70 text-on-surface">TYPESCRIPT</span>
+<span class="px-2.5 py-1 text-[11px] font-label-caps tracking-wider rounded bg-[#FAF7F2] border border-[#E4D7C3]/70 text-on-surface">NEXT.JS</span>
+<span class="px-2.5 py-1 text-[11px] font-label-caps tracking-wider rounded bg-[#FAF7F2] border border-[#E4D7C3]/70 text-on-surface">PYTHON / PYTORCH</span>
+<span class="px-2.5 py-1 text-[11px] font-label-caps tracking-wider rounded bg-[#FAF7F2] border border-[#E4D7C3]/70 text-on-surface">POSTGRESQL</span>
+<span class="px-2.5 py-1 text-[11px] font-label-caps tracking-wider rounded bg-[#FAF7F2] border border-[#E4D7C3]/70 text-on-surface">FASTAPI</span>
+<span class="px-2.5 py-1 text-[11px] font-label-caps tracking-wider rounded bg-[#FAF7F2] border border-[#E4D7C3]/70 text-on-surface">LOCAL LLMS</span>
+</div>
+</div>
+<!-- Right Column: Classical Seal Showcase Box (4 cols) -->
+<div class="lg:col-span-4 flex flex-col items-center lg:items-end justify-between self-stretch pt-space-md lg:pt-0">
+<div class="relative w-full max-w-xs bg-surface-container-lowest/90 backdrop-blur-sm border border-[#E4D7C3] p-space-md rounded-xl shadow-xs flex flex-col items-center text-center">
+<div class="w-full flex items-center justify-between pb-space-xs mb-space-sm border-b border-[#E4D7C3]/60">
+<span class="font-label-caps text-label-caps text-outline uppercase text-[10px]">SEAL / 認印</span>
+<span class="font-label-caps text-label-caps text-secondary uppercase tracking-widest text-[10px]">VERIFIED CRAFT</span>
+</div>
+<!-- The Transparent Cinnabar Hanko Seal Image -->
+<div class="relative p-3 flex items-center justify-center -rotate-1 hover:rotate-0 transition-transform duration-300">
+<img alt="Hanko Stamp Logo 原" class="relative z-10 w-20 h-20 object-contain drop-shadow-xs" src="https://lh3.googleusercontent.com/aida/AEtjO1UQ8LHcrXW8PVjsUo1gxw88fvG6KDvnQo_8DJ0WNpOUliGqt_UMYLTBrdgeYb8eZJHfp51r2C_Y_Ne7pqLykuqPmrSSqgMU9173u1TVnw6ivK7sAmzPzmRo6Fj8ZvtGo-ib-yJzklg4m-1cZgUg2Xyj5PwO4nMArtEvbmm-JZpo0fCrU51POvmHW-ubkemOhg2qulX_BfoYvwaJx6_M9Um0LR3zwda3IlvD6ltxU2fEdTTbRhw8FFdVtOE">
+</div>
+<div class="mt-space-sm text-center">
+<h4 class="font-headline-sm text-headline-sm text-on-surface">Vincent Yuann</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Software &amp; Generative AI Engineer</p>
+</div>
+<!-- Vertical Tategaki Japanese Prose snippet -->
+<div class="w-full mt-space-md pt-space-sm bg-[#F9F5EE] border border-[#E4D7C3]/70 rounded-lg p-3 flex items-center justify-center gap-6">
+<div class="[writing-mode:vertical-rl] font-vertical-accent text-[13px] tracking-[0.28em] text-on-surface-variant opacity-80 h-32 leading-relaxed">
+                間と余白の美学
+              </div>
+<div class="[writing-mode:vertical-rl] font-vertical-accent text-[13px] tracking-[0.28em] text-primary h-32 leading-relaxed">
+                静寂と簡素な調和
+              </div>
+<div class="[writing-mode:vertical-rl] font-vertical-accent text-[13px] tracking-[0.28em] text-on-surface-variant opacity-60 h-32 leading-relaxed">
+                職人の精緻な組手
+              </div>
+</div>
+<!-- Decorative label -->
+<div class="w-full mt-space-sm pt-2 flex items-center justify-center gap-1.5 opacity-80">
+<span class="font-vertical-accent text-primary text-xs">❖</span>
+<span class="font-label-caps text-[10px] text-outline uppercase tracking-widest">WABI-SABI CRAFT</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION SCROLLING DIVIDER: Double Hairlines & Seigaiha Arch with Pill Label -->
+<div class="relative w-full max-w-7xl mx-auto px-gutter my-space-lg flex items-center justify-center">
+<div class="relative w-full flex items-center justify-center">
+<!-- SVG Hairline Motif -->
+<div class="w-full absolute inset-x-0 flex items-center justify-center pointer-events-none">
+<img alt="Seigaiha divider" class="w-full max-w-4xl opacity-70" src="https://lh3.googleusercontent.com/aida/AEtjO1VCs1XT8AbG3KazhDJ5_5rLKYb-fQvDWVZHW8ZUAaQGNc4HBJhi1IK1kFzLEppuCaM7pQC2N_ffKBKBUr3hZw702gmMJhlyk-bgL_lW82SRmXFNDwT2ot0AjBV9QMhulKjzOqX8tD0TDc4sCpnX_-9NSFd2vNz5os8esH941vYEhoFCggjfi7s-4G-IG6-TBv86DINncuYL-mTFFY-0FClMdilP_0o6wJMPBONvxxS_beNaIAgk1CG1nIA">
+</div>
+<!-- Center Label Pill -->
+<div class="relative z-10 inline-flex items-center gap-3 px-5 py-1.5 rounded-full bg-[#F5EFE6] border border-[#E4D7C3] shadow-xs backdrop-blur-xs">
+<span class="font-label-caps text-label-caps tracking-[0.24em] text-outline uppercase text-[10px]">MA · WABI-SABI · CRAFT</span>
+</div>
+</div>
+</div>
+<!-- FEATURED WORKS SECTION -->
+<section class="w-full max-w-7xl mx-auto px-gutter py-space-lg" id="featured-works">
+<div class="flex flex-col md:flex-row md:items-end justify-between mb-space-lg gap-space-sm">
+<div>
+<div class="flex items-center gap-2 mb-1">
+<span class="text-primary font-vertical-accent text-vertical-accent">01 //</span>
+<span class="font-label-caps text-label-caps text-outline uppercase tracking-widest">SELECTED PORTFOLIO</span>
+</div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface">
+            Featured Works <span class="font-vertical-accent font-normal text-on-surface-variant text-headline-md ml-2">主な作品</span>
+</h2>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant max-w-md">
+          Each project represents a delicate synthesis of ambient intelligence, resilient system architecture, and tactile aesthetic balance.
+        </p>
+</div>
+<!-- The 3 Horizontal Project Cards -->
+<div class="flex flex-col space-y-space-md">
+<!-- PROJECT CARD 1: Sumi OS & Workspace -->
+<article class="group relative w-full bg-surface-container-low/90 hover:bg-surface-container border border-[#E4D7C3]/70 rounded-xl p-space-md sm:p-space-lg transition-colors duration-200 shadow-sm">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-md lg:gap-space-lg items-center">
+<div class="lg:col-span-5 w-full h-56 sm:h-64 rounded-lg overflow-hidden relative shadow-inner border border-[#E4D7C3]/60">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out" data-alt="Serene Japanese tatami room with light-toned wooden desk, an open notebook, an earthen ceramic vase with green foliage, morning sunlight." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCA9qDHi5-FJduuaWhcsUdWCUbTjfGHL_q6b0UsM40UlCtFvi5iG-_tZwsFIP3LA9-3P0lE8fsKOejIHxD3NmkvFP8M-12zORzowBu1c7fAFeOPjaXmT1z0ir7f3RMQClTuS9qpz7kj5pbbokmsZhqabL13ChmBtnUCLfj7SJo3A2QYvglLZX8iszVXninWP_4h_oS5xijX8dX_RS3hcyW_ZguNKt_OCV4oIn4WZKoPoz_0Y_CN3P4YCg">
+<div class="absolute top-3 left-3 px-2.5 py-0.5 rounded bg-surface/90 backdrop-blur-sm border border-[#E4D7C3]/60 flex items-center gap-1.5">
+<span class="font-label-caps text-[10px] text-on-surface uppercase tracking-wider font-semibold">DISTRIBUTED DESKTOP</span>
+</div>
+</div>
+<div class="lg:col-span-7 flex flex-col justify-between space-y-space-sm">
+<div>
+<div class="flex items-center justify-between">
+<h3 class="font-headline-md text-headline-md text-on-surface tracking-tight group-hover:text-primary transition-colors duration-200">
+                    Sumi OS &amp; Workspace
+                  </h3>
+<div class="flex items-center gap-1.5">
+<span class="font-vertical-accent text-vertical-accent text-primary opacity-75">墨</span>
+</div>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant mt-2 leading-relaxed">
+                  A distraction-free, contemplative digital environment engineered around local privacy-first LLMs, e-paper display emulation, and ambient notifications governed by user attention telemetry.
+                </p>
+</div>
+<div class="flex flex-wrap items-center gap-2 pt-space-xs">
+<span class="px-3 py-1 rounded-full bg-surface-container-lowest border border-[#E4D7C3]/70 text-on-surface font-label-caps text-label-caps uppercase shadow-xs">REACT</span>
+<span class="px-3 py-1 rounded-full bg-surface-container-lowest border border-[#E4D7C3]/70 text-on-surface font-label-caps text-label-caps uppercase shadow-xs">NEXT.JS</span>
+<span class="px-3 py-1 rounded-full bg-surface-container-lowest border border-[#E4D7C3]/70 text-on-surface font-label-caps text-label-caps uppercase shadow-xs">PYTHON</span>
+<span class="px-3 py-1 rounded-full bg-surface-container-lowest border border-[#E4D7C3]/70 text-on-surface font-label-caps text-label-caps uppercase shadow-xs">DOCKER</span>
+<span class="px-3 py-1 rounded-full bg-surface-container-lowest border border-[#E4D7C3]/70 text-on-surface font-label-caps text-label-caps uppercase shadow-xs">LLAMA-3 LOCAL</span>
+</div>
+<div class="pt-space-xs">
+<a class="inline-flex items-center gap-1.5 font-body-md text-body-md font-medium text-on-surface group-hover:text-primary transition-colors" href="#">
+<span class="underline underline-offset-4 decoration-outline-variant hover:decoration-primary">View Project Architecture</span>
+<span class="material-symbols-outlined text-[18px] transition-transform duration-200 group-hover:translate-x-1">arrow_forward</span>
+</a>
+</div>
+</div>
+</div>
+</article>
+<!-- PROJECT CARD 2: Komorebi Living Architecture -->
+<article class="group relative w-full bg-surface-container-low/90 hover:bg-surface-container border border-[#E4D7C3]/70 rounded-xl p-space-md sm:p-space-lg transition-colors duration-200 shadow-sm">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-md lg:gap-space-lg items-center">
+<div class="lg:col-span-5 w-full h-56 sm:h-64 rounded-lg overflow-hidden relative shadow-inner border border-[#E4D7C3]/60">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out" data-alt="Misty landscape in the style of Japanese sumi-e ink wash painting, distant mountain silhouettes shrouded in atmospheric fog." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAlYgHs0UUq6VCVzx9PDWxC8Mo9dnHpNu-oWLO1tVRz18b_pe-gvDf8Ti1E6zd4YuDKDrUztO8QueZWKAUGTugUobh4vRRsiQtLgnzjydvbfF6I4oXBgiuRBU2gvdtFjparmBY_3WefNBPl1xxHbxlJOv4a--3jH_xSoD72PnEPS4dN6kDesCDfpIxelzluoo-AsfyL1cPr6F0FMjUIwgZJQmjcE91FmiA1UjosxZR4Y_wzO7ZAzHEN7Q">
+<div class="absolute top-3 left-3 px-2.5 py-0.5 rounded bg-surface/90 backdrop-blur-sm border border-[#E4D7C3]/60 flex items-center gap-1.5">
+<span class="font-label-caps text-[10px] text-on-surface uppercase tracking-wider font-semibold">SPATIAL TELEMETRY &amp; AI</span>
+</div>
+</div>
+<div class="lg:col-span-7 flex flex-col justify-between space-y-space-sm">
+<div>
+<div class="flex items-center justify-between">
+<h3 class="font-headline-md text-headline-md text-on-surface tracking-tight group-hover:text-primary transition-colors duration-200">
+                    Komorebi Living Architecture
+                  </h3>
+<div class="flex items-center gap-1.5">
+<span class="font-vertical-accent text-vertical-accent text-primary opacity-75">木漏れ日</span>
+</div>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant mt-2 leading-relaxed">
+                  Spatial intelligence platform synthesizing environmental sensor telemetry into real-time generative audio-visual ambiance. Transforms raw architectural air quality and sunlight data into organic responsive art.
+                </p>
+</div>
+<div class="flex flex-wrap items-center gap-2 pt-space-xs">
+<span class="px-3 py-1 rounded-full bg-surface-container-lowest border border-[#E4D7C3]/70 text-on-surface font-label-caps text-label-caps uppercase shadow-xs">FASTAPI</span>
+<span class="px-3 py-1 rounded-full bg-surface-container-lowest border border-[#E4D7C3]/70 text-on-surface font-label-caps text-label-caps uppercase shadow-xs">PYTORCH</span>
+<span class="px-3 py-1 rounded-full bg-surface-container-lowest border border-[#E4D7C3]/70 text-on-surface font-label-caps text-label-caps uppercase shadow-xs">THREE.JS / WEBGL</span>
+<span class="px-3 py-1 rounded-full bg-surface-container-lowest border border-[#E4D7C3]/70 text-on-surface font-label-caps text-label-caps uppercase shadow-xs">POSTGRES</span>
+<span class="px-3 py-1 rounded-full bg-surface-container-lowest border border-[#E4D7C3]/70 text-on-surface font-label-caps text-label-caps uppercase shadow-xs">MQTT</span>
+</div>
+<div class="pt-space-xs">
+<a class="inline-flex items-center gap-1.5 font-body-md text-body-md font-medium text-on-surface group-hover:text-primary transition-colors" href="#">
+<span class="underline underline-offset-4 decoration-outline-variant hover:decoration-primary">View Project Case Study</span>
+<span class="material-symbols-outlined text-[18px] transition-transform duration-200 group-hover:translate-x-1">arrow_forward</span>
+</a>
+</div>
+</div>
+</div>
+</article>
+<!-- PROJECT CARD 3: Akari Light & Commerce -->
+<article class="group relative w-full bg-surface-container-low/90 hover:bg-surface-container border border-[#E4D7C3]/70 rounded-xl p-space-md sm:p-space-lg transition-colors duration-200 shadow-sm">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-md lg:gap-space-lg items-center">
+<div class="lg:col-span-5 w-full h-56 sm:h-64 rounded-lg overflow-hidden relative shadow-inner border border-[#E4D7C3]/60">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out" data-alt="Handmade Japanese washi paper light sculpture lantern standing on a wooden workshop table, warm diffuse glow." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBBw30oLt7biu0BBGA2c_LRf2rUjk7fUCgkMYag2_LasxjgE9Pw6rdkUg-e8wiLgGSa53jn_lSPURMfKPzM2dMe2CMoFFQWhlSincpcB26uPB4hZN6-2Jd7qYHjgTlk3f44BTg9xuzaFoYaFYkWpZUELBCY-tksDacpOowgssHsTbGUHSbpUBPG4yJAs40-L_MCNKKVLZcrpbxsxZwseBMvjSENVObt3K0T67BqItDq0sMySP3MZFIrmg">
+<div class="absolute top-3 left-3 px-2.5 py-0.5 rounded bg-surface/90 backdrop-blur-sm border border-[#E4D7C3]/60 flex items-center gap-1.5">
+<span class="font-label-caps text-[10px] text-on-surface uppercase tracking-wider font-semibold">HEADLESS COMMERCE</span>
+</div>
+</div>
+<div class="lg:col-span-7 flex flex-col justify-between space-y-space-sm">
+<div>
+<div class="flex items-center justify-between">
+<h3 class="font-headline-md text-headline-md text-on-surface tracking-tight group-hover:text-primary transition-colors duration-200">
+                    Akari Light &amp; Commerce
+                  </h3>
+<div class="flex items-center gap-1.5">
+<span class="font-vertical-accent text-vertical-accent text-primary opacity-75">明かり</span>
+</div>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant mt-2 leading-relaxed">
+                  Headless bespoke commerce experience celebrating handcrafted Japanese washi paper lighting fixtures and artisan provenance. Features sub-second global page loads, dynamic currency hedging, and custom interactive 3D configurator.
+                </p>
+</div>
+<div class="flex flex-wrap items-center gap-2 pt-space-xs">
+<span class="px-3 py-1 rounded-full bg-surface-container-lowest border border-[#E4D7C3]/70 text-on-surface font-label-caps text-label-caps uppercase shadow-xs">NEXT.JS 14</span>
+<span class="px-3 py-1 rounded-full bg-surface-container-lowest border border-[#E4D7C3]/70 text-on-surface font-label-caps text-label-caps uppercase shadow-xs">TAILWIND CSS</span>
+<span class="px-3 py-1 rounded-full bg-surface-container-lowest border border-[#E4D7C3]/70 text-on-surface font-label-caps text-label-caps uppercase shadow-xs">STRIPE ENGINE</span>
+<span class="px-3 py-1 rounded-full bg-surface-container-lowest border border-[#E4D7C3]/70 text-on-surface font-label-caps text-label-caps uppercase shadow-xs">SUPABASE</span>
+<span class="px-3 py-1 rounded-full bg-surface-container-lowest border border-[#E4D7C3]/70 text-on-surface font-label-caps text-label-caps uppercase shadow-xs">EDGE CACHE</span>
+</div>
+<div class="pt-space-xs">
+<a class="inline-flex items-center gap-1.5 font-body-md text-body-md font-medium text-on-surface group-hover:text-primary transition-colors" href="#">
+<span class="underline underline-offset-4 decoration-outline-variant hover:decoration-primary">Explore Store Architecture</span>
+<span class="material-symbols-outlined text-[18px] transition-transform duration-200 group-hover:translate-x-1">arrow_forward</span>
+</a>
+</div>
+</div>
+</div>
+</article>
+</div>
+</section>
+<!-- CODE & PIPELINE DEMONSTRATION WIDGET WITH ORGANIC BLENDED BAMBOO -->
+<section class="w-full max-w-7xl mx-auto px-gutter py-space-lg" id="system-craft">
+
+</section>
+<!-- SECTION SCROLLING DIVIDER 2 (Before Philosophy): Elegant Seigaiha pill -->
+<div class="relative w-full max-w-7xl mx-auto px-gutter my-space-lg flex items-center justify-center">
+<div class="relative w-full flex items-center justify-center">
+<!-- SVG Hairline Motif -->
+<div class="w-full absolute inset-x-0 flex items-center justify-center pointer-events-none">
+<img alt="Seigaiha divider" class="w-full max-w-4xl opacity-70" src="https://lh3.googleusercontent.com/aida/AEtjO1VCs1XT8AbG3KazhDJ5_5rLKYb-fQvDWVZHW8ZUAaQGNc4HBJhi1IK1kFzLEppuCaM7pQC2N_ffKBKBUr3hZw702gmMJhlyk-bgL_lW82SRmXFNDwT2ot0AjBV9QMhulKjzOqX8tD0TDc4sCpnX_-9NSFd2vNz5os8esH941vYEhoFCggjfi7s-4G-IG6-TBv86DINncuYL-mTFFY-0FClMdilP_0o6wJMPBONvxxS_beNaIAgk1CG1nIA">
+</div>
+<!-- Center Label Pill -->
+<div class="relative z-10 inline-flex items-center gap-3 px-5 py-1.5 rounded-full bg-[#F5EFE6] border border-[#E4D7C3] shadow-xs backdrop-blur-xs">
+<span class="font-label-caps text-label-caps tracking-[0.24em] text-outline uppercase text-[10px]">PHILOSOPHY · SHOKUNIN · MA</span>
+</div>
+</div>
+</div>
+<!-- CORE CRAFT & PHILOSOPHY SECTION (3 Bento Pillars) -->
+<section class="w-full max-w-7xl mx-auto px-gutter py-space-lg" id="philosophy">
+<div class="max-w-2xl mb-space-lg">
+<div class="flex items-center gap-2 mb-1">
+<span class="text-primary font-vertical-accent text-vertical-accent">03 //</span>
+<span class="font-label-caps text-label-caps text-outline uppercase tracking-widest">GUIDING PRINCIPLES</span>
+</div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface">
+          Architectural Philosophy <span class="font-vertical-accent font-normal text-on-surface-variant text-headline-md ml-2">哲学</span>
+</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mt-2">
+          Software is not merely mechanical logic; it is a spatial environment where human minds dwell. I build systems honoring three core tenets.
+        </p>
+</div>
+<!-- 3 Core Philosophy Cards with Corner Ornament Accent -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-space-md">
+<!-- Card 1: Ma -->
+<div class="bg-surface-container-low/90 border border-[#E4D7C3]/70 rounded-xl p-space-lg flex flex-col justify-between shadow-sm relative overflow-hidden group hover:bg-surface-container transition-colors">
+<div class="space-y-space-sm">
+<div class="flex items-center justify-between">
+<span class="font-vertical-accent text-display-hero-mobile text-primary font-normal leading-none">間</span>
+<div class="flex items-center gap-1.5">
+<span class="font-label-caps text-label-caps text-outline uppercase tracking-widest">PILLAR 01</span>
+</div>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Ma (Intentional Space)</h3>
+<p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">
+              Empty space is not an absence of features; it is an active structural element. Clean microservices, unencumbered visual layouts, and minimal latency let user attention focus without fatigue.
+            </p>
+</div>
+<div class="pt-space-md flex items-center gap-2 text-outline">
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+<span class="font-label-caps text-[11px] uppercase tracking-wider">Uncluttered System Boundaries</span>
+</div>
+</div>
+<!-- Card 2: Wabi-Sabi -->
+<div class="bg-surface-container-low/90 border border-[#E4D7C3]/70 rounded-xl p-space-lg flex flex-col justify-between shadow-sm relative overflow-hidden group hover:bg-surface-container transition-colors">
+<div class="space-y-space-sm">
+<div class="flex items-center justify-between">
+<span class="font-vertical-accent text-display-hero-mobile text-primary font-normal leading-none">侘寂</span>
+<div class="flex items-center gap-1.5">
+<span class="font-label-caps text-label-caps text-outline uppercase tracking-widest">PILLAR 02</span>
+</div>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Wabi-Sabi (Authenticity)</h3>
+<p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">
+              Embracing real-world imperfection with honesty. Tactile finishes, organic ink wash motifs, resilient error-recovery strategies, and software that ages gracefully with its users over time.
+            </p>
+</div>
+<div class="pt-space-md flex items-center gap-2 text-outline">
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+<span class="font-label-caps text-[11px] uppercase tracking-wider">Graceful Degradation &amp; Warmth</span>
+</div>
+</div>
+<!-- Card 3: Shokunin -->
+<div class="bg-surface-container-low/90 border border-[#E4D7C3]/70 rounded-xl p-space-lg flex flex-col justify-between shadow-sm relative overflow-hidden group hover:bg-surface-container transition-colors">
+<div class="space-y-space-sm">
+<div class="flex items-center justify-between">
+<span class="font-vertical-accent text-display-hero-mobile text-primary font-normal leading-none">職人</span>
+<div class="flex items-center gap-1.5">
+<span class="font-label-caps text-label-caps text-outline uppercase tracking-widest">PILLAR 03</span>
+</div>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Shokunin (Obsessive Craft)</h3>
+<p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">
+              The craftsman’s obligation to perform one’s best work for the social welfare. Rigorous test coverage, deterministic API contracts, and fine joinery in every line of TypeScript and Python.
+            </p>
+</div>
+<div class="pt-space-md flex items-center gap-2 text-outline">
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+<span class="font-label-caps text-[11px] uppercase tracking-wider">Deep Code Integrity &amp; Care</span>
+</div>
+</div>
+</div>
+</section>
+<!-- GET IN TOUCH / CALL TO ACTION BANNER (Matching User Upload 4) -->
+<section class="w-full max-w-7xl mx-auto px-gutter py-space-lg mb-space-sm" id="contact">
+<div class="relative bg-[#F5EFE6] border border-[#E4D7C3] rounded-2xl p-space-lg md:p-space-xl overflow-hidden shadow-sm">
+<!-- Mountain Ink Wash Faded Organically into Right Side -->
+<div class="pointer-events-none absolute right-0 top-0 bottom-0 w-3/5 select-none overflow-hidden opacity-30 mix-blend-multiply">
+<img alt="Sumi-e misty mountain backdrop" class="w-full h-full object-cover object-center" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDzd4IZT7-V8983uX-a-P7SfXpeGPBa4pO8hkXwE2Ud_xSHxAOzL7q-F6Mqdh192XCk0XDwoFnqRD8sHoHTgHMkUsV8-1LBtYY-rKQF_GggsAet1ySfpAJ3nljY9auHPRUf1tOAlI6TF_WzoSKuKtXu1DsnqMI8EYLN7PR_cpmDJ3Hcepx8xlWX8VJk5XQp4Yock0VQZTfPEpzByXBJ8VaOcUKmScA20VK-f6Mmmz1MYPDNdM4ek-U9w_0fnC8FODBez7E" style="mask-image: linear-gradient(to left, black 25%, transparent 85%);">
+</div>
+<!-- Architectural Corner Ornament in top-left subtle hint -->
+<div class="absolute top-3 left-3 w-6 h-6 opacity-30 pointer-events-none">
+<img alt="Corner ornament" class="w-full h-full object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1Uf8jNlLLa8tOFKc8aIxdTOp9eq1pOWCxPcmI1PjlP1-7Xdp_Btqab7nyydQUKFAkPFUOSDGXsVfTkE-IqEIfei0IJJm84TnS2a5_Aab6muXz51vx8s3ET4oAx1vG9T9IFjVmW7RWFtbLaIIGFvCpqRExqEyT13i4k0lFxb_53hRaXnJUvZqi4w5CSidHZ2ED3tvwS16l93Wl7iGLyGhWiQAXRLcN5L4888DQcj74Ii-i2KFaVQpGMWwog5">
+</div>
+<div class="relative z-10 max-w-2xl flex flex-col space-y-space-md">
+<div class="flex items-center gap-2">
+<img alt="Hanko Seal" class="h-5 w-5 object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1UQ8LHcrXW8PVjsUo1gxw88fvG6KDvnQo_8DJ0WNpOUliGqt_UMYLTBrdgeYb8eZJHfp51r2C_Y_Ne7pqLykuqPmrSSqgMU9173u1TVnw6ivK7sAmzPzmRo6Fj8ZvtGo-ib-yJzklg4m-1cZgUg2Xyj5PwO4nMArtEvbmm-JZpo0fCrU51POvmHW-ubkemOhg2qulX_BfoYvwaJx6_M9Um0LR3zwda3IlvD6ltxU2fEdTTbRhw8FFdVtOE">
+<span class="font-vertical-accent text-vertical-accent text-primary">原 //</span>
+<span class="font-label-caps text-label-caps text-outline uppercase tracking-widest text-[11px]">INITIATE A DIALOGUE</span>
+</div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface">
+            Interested in building something deliberate together?
+          </h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant">
+            Currently open to Senior / Lead Full-Stack Engineering, Generative AI Systems design, and high-impact advisory ventures. Let us discuss possibilities over a cup of tea or a message.
+          </p>
+<div class="pt-space-xs flex flex-wrap items-center gap-space-md">
+<a class="inline-flex items-center gap-2 px-6 py-3.5 bg-primary hover:bg-primary-container text-on-primary font-body-md text-body-md rounded-lg shadow-sm transition-colors duration-200" href="mailto:vincent@yuann.dev">
+<span class="material-symbols-outlined text-[18px]">mail</span>
+<span class="">vincent@yuann.dev</span>
+</a>
+<a class="inline-flex items-center gap-2 px-5 py-3.5 bg-surface-container-lowest border border-[#E4D7C3] hover:bg-surface-container-high text-on-surface font-body-sm text-body-sm rounded-lg shadow-xs transition-colors" href="https://github.com" rel="noopener noreferrer" target="_blank">
+<span class="font-label-caps uppercase tracking-wider">GitHub</span>
+<span class="material-symbols-outlined text-[14px]">open_in_new</span>
+</a>
+<a class="inline-flex items-center gap-2 px-5 py-3.5 bg-surface-container-lowest border border-[#E4D7C3] hover:bg-surface-container-high text-on-surface font-body-sm text-body-sm rounded-lg shadow-xs transition-colors" href="https://linkedin.com" rel="noopener noreferrer" target="_blank">
+<span class="font-label-caps uppercase tracking-wider">LinkedIn</span>
+<span class="material-symbols-outlined text-[14px]">open_in_new</span>
+</a>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- FOOTER -->
+<footer class="w-full bg-[#F5EFE6] border-t border-[#E4D7C3] mt-space-xl">
+<div class="max-w-7xl mx-auto px-gutter py-space-xl">
+<div class="flex flex-col md:flex-row items-center justify-between gap-space-lg pb-space-lg">
+<div class="flex flex-col items-center md:items-start">
+<div class="flex items-center gap-space-sm mb-space-xs">
+<img alt="Hanko Seal" class="h-6 w-6 object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1UQ8LHcrXW8PVjsUo1gxw88fvG6KDvnQo_8DJ0WNpOUliGqt_UMYLTBrdgeYb8eZJHfp51r2C_Y_Ne7pqLykuqPmrSSqgMU9173u1TVnw6ivK7sAmzPzmRo6Fj8ZvtGo-ib-yJzklg4m-1cZgUg2Xyj5PwO4nMArtEvbmm-JZpo0fCrU51POvmHW-ubkemOhg2qulX_BfoYvwaJx6_M9Um0LR3zwda3IlvD6ltxU2fEdTTbRhw8FFdVtOE">
+<span class="font-headline-sm text-headline-sm text-on-surface">Vincent Yuann</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant max-w-md text-center md:text-left">
+            Synthesizing classical Japanese aesthetic principles with modern high-scale distributed systems and ambient AI experiences.
+          </p>
+</div>
+<div class="flex items-center gap-space-lg">
+<div class="flex flex-col text-center md:text-right">
+<span class="font-label-caps text-label-caps text-outline uppercase">Status</span>
+<span class="font-body-sm text-body-sm text-secondary font-medium mt-0.5">Available for Next Venture</span>
+</div>
+<div class="flex flex-col text-center md:text-right">
+<span class="font-label-caps text-label-caps text-outline uppercase">Philosophy</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">間・侘寂・瞬間</span>
+</div>
+</div>
+</div>
+<div class="pt-space-md border-t border-[#E4D7C3]/60 flex flex-col sm:flex-row items-center justify-between gap-space-sm">
+<div class="flex items-center gap-space-xs text-on-surface-variant">
+<span class="font-vertical-accent text-vertical-accent text-outline">❖</span>
+<span class="font-body-sm text-body-sm text-outline">© 2025 Vincent Yuann. Crafted with restraint and clarity.</span>
+</div>
+<div class="flex items-center gap-space-md">
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest text-[11px]">Tokyo / Global</span>
+<span class="font-vertical-accent text-vertical-accent text-outline">✦</span>
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest text-[11px]">Built on Solid Washi</span>
+</div>
+</div>
+</div>
+</footer>
+
+
+</body></html>

@@ -1,97 +1,60 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { ArrowUpRight, Settings } from 'lucide-react';
-import { PROFILE_INFO } from '../data/projects';
-import '../styles/footer.css';
 
-import type { ProfileData } from '../lib/useProfile';
-
-interface FooterProps {
-  profile?: ProfileData;
-  showCta?: boolean;
-}
-
-export const Footer: React.FC<FooterProps> = ({ profile, showCta = true }) => {
-  const currentProfile = profile || {
-    name: PROFILE_INFO.name,
-    role: PROFILE_INFO.title,
-    status: PROFILE_INFO.status,
-    email: PROFILE_INFO.email,
-    github: PROFILE_INFO.github,
-    linkedin: PROFILE_INFO.linkedin,
-    about: PROFILE_INFO.about,
-    tagline: PROFILE_INFO.tagline,
-    location: PROFILE_INFO.location,
-  };
+export const Footer: React.FC = () => {
   return (
-    <footer className="footer-container" id="contact">
-      <div className="footer-grid">
-        <div className="footer-main-col">
-          <h3 className="footer-heading">
-            Let's build something exceptional together.
-          </h3>
-          <p className="footer-bio">
-            {currentProfile.about || (
-              <>
-                Currently available for Full-Stack and Applied AI Engineering roles. Whether you want to discuss real-time WebSockets, LLM vector search architectures, or just talk tech, I'd love to connect.
-              </>
-            )}
-          </p>
-
-          {/* Short & Concise Call-to-Action Card */}
-          {showCta && (
-            <div className="p-5 rounded-2xl bg-card border border-border mb-6 space-y-3 shadow-2xs">
-              <div className="space-y-1">
-                <h4 className="text-base font-serif font-bold text-foreground">
-                  Have a challenge or an open role?
-                </h4>
-                <p className="text-xs text-muted-foreground leading-relaxed max-w-lg">
-                  Building real-time systems, applied AI, or looking for an engineer who values craft—let's talk.
-                </p>
-              </div>
-
-              <div className="flex flex-wrap items-center gap-3 pt-0.5">
-                <Link
-                  to="/contact"
-                  className="footer-btn-primary group"
-                >
-                  <span>Hire Me / Get in Touch</span>
-                  <span className="group-hover:translate-x-0.5 transition-transform">→</span>
-                </Link>
-
-                <Link
-                  to="/projects"
-                  className="footer-btn-secondary"
-                >
-                  <span>Browse Systems</span>
-                  <ArrowUpRight className="w-3.5 h-3.5 text-muted-foreground" />
-                </Link>
-              </div>
+    <footer className="w-full bg-light-surface-card dark:bg-dark-surface border-t border-light-border dark:border-dark-border mt-16">
+      <div className="max-w-7xl mx-auto px-6 py-12">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-8 pb-8">
+          {/* Brand & Narrative */}
+          <div className="flex flex-col items-center md:items-start text-center md:text-left">
+            <div className="flex items-center gap-3 mb-2">
+              <img
+                src="/stitch/hanko-stamp.svg"
+                alt="Hanko Seal"
+                className="h-6 w-6 object-contain"
+              />
+              <span className="font-serif text-lg font-medium text-light-ink dark:text-dark-ink">
+                Vincent Yuann
+              </span>
             </div>
-          )}
-        </div>
-
-        <div className="footer-side-col">
-          <div className="footer-colophon-box">
-            <div className="footer-colophon-title">
-              Architecture Colophon
-            </div>
-            <p className="footer-colophon-desc">
-              Designed as an organic, static showcase. Powered by <strong>React 19</strong>,{' '}
-              <strong>Vite</strong>, <strong>Tailwind CSS</strong>, and <strong>Supabase</strong> with Postgres RLS.
-              Zero server overhead, zero exposed secrets, deployed automatically via GitHub Pages.
+            <p className="font-sans text-xs text-light-ink-muted dark:text-dark-ink-muted max-w-md">
+              Synthesizing classical Japanese aesthetic principles with modern high-scale distributed systems and
+              ambient AI experiences.
             </p>
           </div>
 
-          <div className="footer-copyright flex items-center justify-between">
-            <span>© {new Date().getFullYear()} {currentProfile.name}. Built with care and craft.</span>
-            <Link
-              to="/admin"
-              className="opacity-40 hover:opacity-100 transition-opacity p-1 text-gray-500 hover:text-gray-900 cursor-pointer"
-              title="Admin CMS & Settings"
-            >
-              <Settings className="w-3.5 h-3.5" />
-            </Link>
+          {/* Quick Metrics / Philosophy Tags */}
+          <div className="flex items-center gap-8">
+            <div className="flex flex-col text-center md:text-right">
+              <span className="font-sans text-[10px] font-semibold text-light-ink-subtle dark:text-dark-ink-subtle uppercase tracking-wider">
+                Availability
+              </span>
+              <span className="font-sans text-xs text-bamboo dark:text-bamboo-light font-medium mt-0.5">
+                Open to Full-Stack & AI Roles
+              </span>
+            </div>
+            <div className="flex flex-col text-center md:text-right">
+              <span className="font-sans text-[10px] font-semibold text-light-ink-subtle dark:text-dark-ink-subtle uppercase tracking-wider">
+                Philosophy
+              </span>
+              <span className="font-serif text-xs text-light-ink-muted dark:text-dark-ink-muted mt-0.5 tracking-wider">
+                間・侘寂・瞬間
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Hairline Bottom Bar */}
+        <div className="pt-6 border-t border-light-border/60 dark:border-dark-border/60 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-2 text-light-ink-subtle dark:text-dark-ink-subtle text-xs font-sans">
+            <span className="font-serif text-terracotta">❖</span>
+            <span>© {new Date().getFullYear()} Vincent Yuann. Crafted with restraint and clarity.</span>
+          </div>
+
+          <div className="flex items-center gap-3 text-light-ink-subtle dark:text-dark-ink-subtle text-xs font-sans">
+            <span className="uppercase tracking-widest text-[11px]">Tokyo / Global</span>
+            <span className="text-terracotta text-xs">✦</span>
+            <span className="uppercase tracking-widest text-[11px]">Built on Solid Washi</span>
           </div>
         </div>
       </div>

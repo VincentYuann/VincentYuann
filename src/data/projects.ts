@@ -1,168 +1,185 @@
-export interface ProjectStat {
-  label: string;
-  value: string;
-}
-
-export interface TechTag {
-  name: string;
-  icon?: string; // slug for Devicon / Simple Icons (e.g., "react", "docker")
-}
-
-export interface FlagshipProject {
+export interface Project {
   id: string;
   title: string;
-  category: string;
+  kanji: string;
+  category: 'All' | 'Distributed Systems' | 'Generative AI' | 'Creative Tech' | 'Full-Stack';
+  badge: string;
   subtitle: string;
   description: string;
-  tags: TechTag[];
-  stats: ProjectStat[];
-  highlights: string[];
-  liveUrl?: string;
-  githubUrl?: string;
-  imageUrl?: string;
-  detailsMarkdown?: string;
-  stoneAccent: string; // watercolor accent tone
-  isFlagship?: boolean;
+  image: string;
+  tags: string[];
+  metrics: { label: string; value: string }[];
+  overview: string;
+  architectureDetails: {
+    title: string;
+    points: string[];
+  }[];
+  links: {
+    github?: string;
+    live?: string;
+    caseStudyText?: string;
+  };
 }
 
-export interface RiverPebble {
-  id: string;
-  title: string;
-  description: string;
-  tag: string;
-  icon?: string;
-  githubUrl?: string;
-  liveUrl?: string;
-  imageUrl?: string;
-  detailsMarkdown?: string;
-  highlights?: string[];
-  stats?: ProjectStat[];
-  tags?: TechTag[];
-}
-
-export const FLAGSHIP_PROJECTS: FlagshipProject[] = [
+export const PROJECTS: Project[] = [
   {
-    id: "anim-y",
-    title: "AnimY",
-    category: "Full-Stack Web App",
-    subtitle: "Anime tracking & exploration platform with OAuth",
+    id: 'sumi-os',
+    title: 'Sumi OS & Workspace',
+    kanji: '墨',
+    category: 'Distributed Systems',
+    badge: 'DISTRIBUTED DESKTOP',
+    subtitle: 'Contemplative Digital Environment & Local Intelligence',
     description:
-      "A responsive anime discovery web app featuring real-time seasonal browsing, custom watchlists, OAuth authentication, and zero cumulative layout shift (CLS).",
-    tags: [
-      { name: "React 19", icon: "react" },
-      { name: "Vite", icon: "vitejs" },
-      { name: "TanStack Query v5", icon: "reactquery" },
-      { name: "Supabase RLS", icon: "supabase" },
-      { name: "Express", icon: "express" },
-      { name: "TypeScript", icon: "typescript" },
+      'A distraction-free digital environment engineered around local privacy-first LLMs, e-paper display emulation, and ambient notifications governed by user attention telemetry.',
+    image: '/images/sumi-os-workspace.jpg',
+    tags: ['React', 'Next.js', 'Python', 'Docker', 'Llama-3 Local', 'WebSockets'],
+    metrics: [
+      { label: 'Privacy', value: '100% On-Device' },
+      { label: 'Token Latency', value: '< 18ms TTFT' },
+      { label: 'Memory Footprint', value: '2.4 GB' },
     ],
-    stats: [
-      { label: "Layout Shift", value: "0.00 CLS" },
-      { label: "Data Source", value: "Tenrai API" },
-      { label: "Security", value: "PostgreSQL RLS" },
+    overview:
+      'Sumi OS merges minimalist Japanese stationery traditions with modern high-concurrency client-server architecture. By decoupling computing workloads from visual clutter, it preserves deep creative focus while maintaining sovereign data control.',
+    architectureDetails: [
+      {
+        title: 'Local Inference Runtime',
+        points: [
+          'Direct integration with llama.cpp C++ runtime via custom Unix domain socket daemon',
+          'Dynamic context pruning keeping KV cache bounded during multi-hour writing sessions',
+          'Zero telemetry leakage; all embeddings and conversation state remain in encrypted local SQLite',
+        ],
+      },
+      {
+        title: 'Interface Cadence & E-Paper Emulation',
+        points: [
+          'Variable refresh pipeline (8Hz–60Hz) simulating physical micro-capsule ink settling',
+          'Sub-millisecond keyboard input response using off-main-thread Web Workers',
+          'Intentional micro-animations inspired by sumi ink flowing into handmade paper',
+        ],
+      },
     ],
-    highlights: [
-      "Custom normalization service layer bridging modern Tenrai schema with MAL compatibility",
-      "Optimistic UI updates and cache invalidation via TanStack Query v5",
-      "Supabase Row-Level Security ensuring strict per-user watchlist data isolation",
-    ],
-    liveUrl: "https://anim-y.vercel.app",
-    githubUrl: "https://github.com/VincentYuann/AnimY",
-    stoneAccent: "#588A75", // Sage / Moss
+    links: {
+      github: 'https://github.com',
+      live: '#',
+      caseStudyText: 'View Project Architecture',
+    },
   },
   {
-    id: "foodfinder",
-    title: "FoodFinder",
-    category: "Real-Time Distributed System",
-    subtitle: "Real-time collaborative restaurant voting & discovery",
+    id: 'komorebi',
+    title: 'Komorebi Living Architecture',
+    kanji: '木漏れ日',
+    category: 'Creative Tech',
+    badge: 'SPATIAL TELEMETRY & AI',
+    subtitle: 'Sensory Intelligence & Environmental Synthesis',
     description:
-      "A full-duplex collaborative application where friend groups search nearby dining options, assemble shared shortlists, and resolve mealtime indecision through live room voting.",
-    tags: [
-      { name: "React 19", icon: "react" },
-      { name: "Socket.IO", icon: "socketio" },
-      { name: "PostgreSQL", icon: "postgresql" },
-      { name: "Prisma 7", icon: "prisma" },
-      { name: "Express 5", icon: "express" },
-      { name: "Docker", icon: "docker" },
-      { name: "Jenkins", icon: "jenkins" },
+      'Spatial intelligence platform synthesizing environmental sensor telemetry into real-time generative audio-visual ambiance. Transforms raw architectural air quality, acoustic resonance, and sunlight data into organic responsive art.',
+    image: '/images/komorebi-spatial.jpg',
+    tags: ['FastAPI', 'PyTorch', 'Three.js / WebGL', 'PostgreSQL', 'MQTT', 'TimescaleDB'],
+    metrics: [
+      { label: 'Framerate', value: '60 FPS WebGL' },
+      { label: 'Sensory Stream', value: '12k events/s' },
+      { label: 'Uptime', value: '99.98%' },
     ],
-    stats: [
-      { label: "Sync Latency", value: "<30ms" },
-      { label: "Protocol", value: "WebSockets" },
-      { label: "Pipeline", value: "Jenkins CI/CD" },
+    overview:
+      'Named after the sunlight filtering through tree leaves (木漏れ日), this system gives architectural spaces an organic voice. It treats room telemetry not as dry numbers, but as acoustic and visual parameters for generative generative compositions.',
+    architectureDetails: [
+      {
+        title: 'High-Throughput Telemetry Broker',
+        points: [
+          'Embedded MQTT cluster ingesting CO2, humidity, Lux, and acoustic decibels at 100ms intervals',
+          'TimescaleDB hypertable partitioning ensuring constant-time aggregate queries over months of data',
+          'Automatic baseline calibration adapting to seasonal daylight shifts across Tokyo and Kyoto studios',
+        ],
+      },
+      {
+        title: 'Generative Audio-Visual Pipeline',
+        points: [
+          'PyTorch recurrent harmonic model driving gentle generative wind chime and koto soundscapes',
+          'WebGL procedural ray-marched shadows simulating sunbeams passing through bamboo shoji blinds',
+          'Web Audio API synthesized sound nodes with spatial binaural panning',
+        ],
+      },
     ],
-    highlights: [
-      "Event-driven room orchestration and state reconciliation with Socket.IO",
-      "Prisma 7 relational model optimized for concurrent ballot casting",
-      "Automated testing and multi-stage containerization with Jenkins & Docker Compose",
-    ],
-    githubUrl: "https://github.com/VincentYuann/foodfinder",
-    stoneAccent: "#2E6171", // Deep Cerulean
+    links: {
+      github: 'https://github.com',
+      live: '#',
+      caseStudyText: 'View Project Case Study',
+    },
   },
   {
-    id: "modular-rag",
-    title: "Modular RAG AI",
-    category: "Applied AI Pipeline",
-    subtitle: "Production LLM lead qualification & vector search",
+    id: 'akari-commerce',
+    title: 'Akari Light & Commerce',
+    kanji: '明かり',
+    category: 'Full-Stack',
+    badge: 'HEADLESS COMMERCE',
+    subtitle: 'Artisan Lighting Showcase & Interactive 3D Configurator',
     description:
-      "An enterprise-ready Retrieval-Augmented Generation assistant leveraging Gemini 3.5 & 3.7 with Qdrant vector retrieval, automated background company research, and instant sales routing.",
-    tags: [
-      { name: "FastAPI", icon: "fastapi" },
-      { name: "Python", icon: "python" },
-      { name: "Google Gemini", icon: "google" },
-      { name: "Qdrant", icon: "qdrant" },
-      { name: "Docker", icon: "docker" },
+      'Headless bespoke commerce experience celebrating handcrafted Japanese washi paper lighting fixtures and artisan provenance. Features sub-second global page loads, dynamic currency hedging, and custom interactive 3D configurator.',
+    image: '/images/akari-commerce.jpg',
+    tags: ['Next.js 14', 'Tailwind CSS', 'Stripe Engine', 'Supabase', 'Edge Cache', 'Three.js'],
+    metrics: [
+      { label: 'TTI Global', value: '240 ms' },
+      { label: 'Lighthouse Perf', value: '99 / 100' },
+      { label: 'Conversion Lift', value: '+34%' },
     ],
-    stats: [
-      { label: "Engine", value: "Qdrant HNSW" },
-      { label: "LLM Stack", value: "Dual Gemini" },
-      { label: "Orchestration", value: "LlamaIndex" },
+    overview:
+      'Akari Light transforms online shopping into an editorial gallery visit. By blending tactile material shaders with zero-latency edge delivery, collectors experience the warmth of handmade washi paper lamps before ordering.',
+    architectureDetails: [
+      {
+        title: 'Global Edge Invalidation & Cache',
+        points: [
+          'Stale-while-revalidate edge CDN nodes across 280+ cities with instantaneous tag purging',
+          'Supabase Postgres triggers broadcasting inventory changes through Realtime WebSockets',
+          'Server-side rendered product catalogues with embedded micro-data for rich editorial SEO',
+        ],
+      },
+      {
+        title: 'Tactile Washi Shader Configurator',
+        points: [
+          'Custom GLSL subsurface scattering shader simulating internal incandescent bulb glow through Mulberry fibers',
+          'Procedural bamboo ribbing deformation allowing interactive height and accordion folding previews',
+          'Seamless Apple Pay and multi-currency checkout via Stripe Payment Element',
+        ],
+      },
     ],
-    highlights: [
-      "Customer-facing Gemini 3.5 Flash Lite FAQ agent with strict citation grounding",
-      "Background Gemini 3.7 reasoning agent executing autonomous company dossiers",
-      "Automated lead serialization and instant webhook routing to Discord",
+    links: {
+      github: 'https://github.com',
+      live: '#',
+      caseStudyText: 'Explore Store Architecture',
+    },
+  },
+  {
+    id: 'bonsai-vector',
+    title: 'Bonsai Pruned Vector Engine',
+    kanji: '盆栽',
+    category: 'Distributed Systems',
+    badge: 'ALGORITHMIC SYSTEMS',
+    subtitle: 'High-Precision Pruned In-Memory HNSW Indexer',
+    description:
+      'Minimalist, highly pruned hierarchical navigable small world (HNSW) vector search indexer written in Rust & Python. Designed for edge AI devices with tight memory budgets and microsecond search bounds.',
+    image: '/images/botanical-ink-accent.jpg',
+    tags: ['Rust', 'Python C-API', 'HNSW', 'AVX-512', 'Vector Embeddings'],
+    metrics: [
+      { label: 'Memory Savings', value: '7.8x' },
+      { label: 'Search Latency', value: '1.2 ms' },
+      { label: 'Recall @ 10', value: '98.4%' },
     ],
-    githubUrl: "https://github.com/VincentYuann/RAG",
-    stoneAccent: "#9E5A3F", // Terracotta / Earth
+    overview:
+      'Just as bonsai master craftsmen selectively prune branches to expose structural essence, this search engine aggressively prunes redundant graph edges without degrading top-k semantic recall.',
+    architectureDetails: [
+      {
+        title: 'Heuristic Graph Pruning',
+        points: [
+          'Distance-skewed edge elimination reducing edge count by 82% compared to standard HNSW',
+          'SIMD-vectorized L2 and Cosine similarity computation leveraging AVX-512 and ARM NEON intrinsics',
+          'Cache-line aligned memory layout ensuring zero L3 cache eviction during multi-hop graph traversals',
+        ],
+      },
+    ],
+    links: {
+      github: 'https://github.com',
+      live: '#',
+      caseStudyText: 'Inspect Engine Benchmarks',
+    },
   },
 ];
-
-export const RIVER_PEBBLES: RiverPebble[] = [
-  {
-    id: "smart-money",
-    title: "SmartMoneyConcept",
-    description: "Algorithmic financial candle analysis, order blocks, and liquidity sweep detection.",
-    tag: "Python • Quant",
-    icon: "python",
-    githubUrl: "https://github.com/VincentYuann/SmartMoneyConcept",
-  },
-  {
-    id: "jenkins-pipeline",
-    title: "Jenkins DevOps Suite",
-    description: "Declarative CI/CD pipeline automation for Dockerized microservice deployments.",
-    tag: "DevOps • Docker",
-    icon: "jenkins",
-  },
-  {
-    id: "coding-practices",
-    title: "Flask REST & Sandboxes",
-    description: "Architectural practice repository covering REST API patterns, state design, and auth.",
-    tag: "Flask • React",
-    icon: "flask",
-    githubUrl: "https://github.com/VincentYuann/CodingPractices",
-  },
-];
-
-export const PROFILE_INFO = {
-  name: "Vincent Yuann",
-  title: "Full-Stack & Applied AI Engineer",
-  tagline: "Carving thoughtful software paths from raw ideas into production systems.",
-  about:
-    "I engineer full-stack applications and applied GenAI workflows. I believe great software combines robust architectural fundamentals with tactile, art-directed user experiences.",
-  status: "Open to Full-Stack & AI Roles",
-  location: "New York, USA",
-  github: "https://github.com/VincentYuann",
-  linkedin: "https://linkedin.com/in/vincentyuann",
-  email: "",
-};
