@@ -100,16 +100,6 @@ export const ProjectsShowcase: React.FC = () => {
             <article
               key={project.id}
               onClick={() => setSelectedProject(project)}
-              onMouseMove={(e) => {
-                const target = e.currentTarget;
-                const rect = target.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-                target.style.backgroundImage = `radial-gradient(circle 380px at ${x}px ${y}px, rgba(45, 48, 57, 0.4), transparent 80%)`;
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundImage = '';
-              }}
               className="interactive-card group relative w-full bg-light-surface-card dark:bg-[#1B1C22] hover:bg-light-surface dark:hover:bg-[#202229] border border-light-border dark:border-[#2D3039] rounded-xl p-6 sm:p-8 transition-all duration-300 shadow-sm hover:shadow-akari dark:hover:shadow-night-glow cursor-pointer classical-card-frame overflow-visible"
             >
               {/* Celestial Ensō Orbital Circle: appears ONLY on the hovered project card */}
