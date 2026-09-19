@@ -1,0 +1,83 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --canvas-bg: #FCF9F8;
+  --pattern-dot: #E4D7C3;
+  --surface-bg: #F7F0E3;
+  --ink-color: #2B2E3A;
+  --ink-muted: #6B6559;
+  --border-color: #E4D7C3;
+}
+
+.dark {
+  --canvas-bg: #121317;
+  --pattern-dot: #2D3039;
+  --surface-bg: #1E1F23;
+  --ink-color: #EDEAE4;
+  --ink-muted: #9E988F;
+  --border-color: #2D3039;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    margin: 0;
+    padding: 0;
+  }
+  
+  body {
+    overscroll-behavior: none;
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+    background-color: var(--canvas-bg);
+    color: var(--ink-color);
+    transition: background-color 0.25s ease, color 0.25s ease;
+  }
+}
+
+@layer utilities {
+  /* Washi Paper Texture Subtle Background */
+  .washi-pattern {
+    background-color: var(--canvas-bg);
+    background-image: radial-gradient(var(--pattern-dot) 0.8px, transparent 0.8px),
+      radial-gradient(var(--pattern-dot) 0.8px, var(--canvas-bg) 0.8px);
+    background-size: 24px 24px;
+    background-position: 0 0, 12px 12px;
+  }
+
+  /* Japanese Tategaki (Vertical Writing Mode) */
+  .writing-vertical-rl {
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+  }
+}
+
+/* Custom Minimalist Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(142, 112, 106, 0.25);
+  border-radius: 9999px;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: rgba(122, 117, 109, 0.35);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(200, 60, 35, 0.6);
+}
+
+/* Material Symbols Adjustments */
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 350, 'GRAD' 0, 'opsz' 24;
+  vertical-align: middle;
+}

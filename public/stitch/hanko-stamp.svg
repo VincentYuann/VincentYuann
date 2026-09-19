@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <rect width="200" height="200" fill="#fcf9f8"/>
+  <!-- Hanko red square stamp with weathered wabi-sabi rounded border -->
+  <rect x="25" y="25" width="150" height="150" rx="20" ry="20" fill="none" stroke="#c83c23" stroke-width="12" stroke-linecap="round"/>
+  <!-- Inner fine frame border -->
+  <rect x="38" y="38" width="124" height="124" rx="12" ry="12" fill="none" stroke="#c83c23" stroke-width="2" opacity="0.6"/>
+  <!-- Traditional Chinese / Kanji Character '原' rendered in bold seal-script aesthetic -->
+  <text x="100" y="132" font-family="'Noto Serif JP', 'Songti TC', serif" font-weight="900" font-size="96" fill="#c83c23" text-anchor="middle">原</text>
+  <circle cx="152" cy="48" r="4" fill="#c83c23"/>
+</svg>
