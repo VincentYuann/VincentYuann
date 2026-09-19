@@ -80,6 +80,32 @@
   }
 }
 
+@keyframes enso-rotate {
+  0% {
+    transform: rotate(0deg) scale(1);
+    opacity: 0.65;
+  }
+  50% {
+    transform: rotate(3deg) scale(1.03);
+    opacity: 0.85;
+  }
+  100% {
+    transform: rotate(0deg) scale(1);
+    opacity: 0.65;
+  }
+}
+
+@keyframes seal-breathe {
+  0%, 100% {
+    filter: drop-shadow(0 0 8px rgba(200, 60, 35, 0.35));
+    transform: scale(1) rotate(-1deg);
+  }
+  50% {
+    filter: drop-shadow(0 0 16px rgba(200, 60, 35, 0.65));
+    transform: scale(1.025) rotate(-0.5deg);
+  }
+}
+
 @keyframes status-glow {
   0%, 100% {
     box-shadow: 0 0 0 0 rgba(68, 101, 87, 0.45);
@@ -100,12 +126,38 @@
   }
 }
 
+@keyframes dust-float {
+  0% {
+    transform: translateY(0px) translateX(0px);
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.45;
+  }
+  80% {
+    opacity: 0.45;
+  }
+  100% {
+    transform: translateY(-80px) translateX(25px);
+    opacity: 0;
+  }
+}
+
 .animate-gentle-drift {
   animation: gentle-drift 14s var(--ease-zen) infinite ease-in-out;
 }
 
 .animate-enso-pulse {
   animation: enso-pulse 5.5s var(--ease-zen) infinite ease-in-out;
+}
+
+.animate-enso-breathe {
+  animation: enso-rotate 16s ease-in-out infinite;
+  transform-origin: center center;
+}
+
+.animate-seal-breathe {
+  animation: seal-breathe 6s ease-in-out infinite;
 }
 
 .animate-status-glow {
@@ -117,6 +169,75 @@
   transform-origin: bottom center;
 }
 
+.mote-1 { animation: dust-float 11s linear infinite 0.5s; }
+.mote-2 { animation: dust-float 15s linear infinite 3.5s; }
+.mote-3 { animation: dust-float 13s linear infinite 7s; }
+
+/* Classical Japanese Double Hairline Frame from Night Design */
+.double-hairline-frame {
+  box-shadow: 0 0 0 1px #E4D7C3, inset 0 0 0 1px #E4D7C3, inset 0 0 0 4px #F7F0E3, inset 0 0 0 5px rgba(212, 155, 106, 0.25);
+}
+
+.dark .double-hairline-frame {
+  box-shadow: 0 0 0 1px #2D3039, inset 0 0 0 1px #2D3039, inset 0 0 0 4px #1B1C22, inset 0 0 0 5px rgba(212, 155, 106, 0.25);
+}
+
+/* Classical Card Frame with delicate inner perimeter */
+.classical-card-frame {
+  position: relative;
+}
+
+.classical-card-frame::before {
+  content: '';
+  position: absolute;
+  inset: 6px;
+  border: 1px solid rgba(212, 155, 106, 0.12);
+  pointer-events: none;
+  border-radius: 0.375rem;
+  transition: border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.classical-card-frame:hover::before {
+  border-color: rgba(200, 60, 35, 0.28);
+}
+
+/* Corner Hairline Brackets interactive highlights */
+.corner-bracket {
+  transition: border-color 0.35s ease, transform 0.35s ease;
+}
+
+.interactive-card:hover .corner-bracket {
+  border-color: #C83C23 !important;
+}
+
+.interactive-card:hover .corner-bracket-tl { transform: translate(-2px, -2px); }
+.interactive-card:hover .corner-bracket-tr { transform: translate(2px, -2px); }
+.interactive-card:hover .corner-bracket-bl { transform: translate(-2px, 2px); }
+.interactive-card:hover .corner-bracket-br { transform: translate(2px, 2px); }
+
+/* Kanji Accent Glow on hover */
+.pillar-kanji {
+  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), text-shadow 0.45s ease, color 0.3s ease;
+}
+
+.interactive-card:hover .pillar-kanji {
+  transform: scale(1.06);
+  text-shadow: 0 0 18px rgba(200, 60, 35, 0.45);
+}
+
+/* Button Bloom */
+.btn-bloom {
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease, background-color 0.25s ease;
+}
+
+.btn-bloom:hover {
+  transform: translateY(-1.5px);
+  box-shadow: 0 8px 24px -4px rgba(200, 60, 35, 0.45);
+}
+
+.btn-bloom:active {
+  transform: translateY(0);
+}
 
 /* Custom Minimalist Scrollbar */
 ::-webkit-scrollbar {

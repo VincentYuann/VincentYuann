@@ -4,9 +4,7 @@ import { Header } from './components/Header';
 import { Hero } from './components/Hero';
 import { SectionDivider } from './components/SectionDivider';
 import { ProjectsShowcase } from './components/ProjectsShowcase';
-import { SystemCraft } from './components/SystemCraft';
 import { PhilosophyBento } from './components/PhilosophyBento';
-import { MotifsGallery } from './components/MotifsGallery';
 import { ContactSection } from './components/ContactSection';
 import { Footer } from './components/Footer';
 
@@ -21,19 +19,13 @@ export const App: React.FC = () => {
         <main className="flex-1 w-full">
           <Hero />
 
-          <SectionDivider label="01 · SELECTED WORKS · 作品" />
+          <SectionDivider label="MA · WABI-SABI · CRAFT" />
           <ProjectsShowcase />
 
-          <SectionDivider label="02 · SYSTEM JOINERY · 技術" />
-          <SystemCraft />
-
-          <SectionDivider label="03 · ARCHITECTURAL PHILOSOPHY · 哲学" />
+          <SectionDivider label="PHILOSOPHY · SHOKUNIN · MA" />
           <PhilosophyBento />
 
-          <SectionDivider label="04 · WABI-SABI MOTIFS · 文様" />
-          <MotifsGallery />
-
-          <SectionDivider label="05 · INITIATE A DIALOGUE · 対話" />
+          <SectionDivider label="INITIATE A DIALOGUE · 対話" />
           <ContactSection />
         </main>
 

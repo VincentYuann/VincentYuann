@@ -57,84 +57,112 @@ export const ProjectsShowcase: React.FC = () => {
         })}
       </div>
 
-      {/* Horizontal Project Cards Stack */}
-      <div className="flex flex-col space-y-6">
-        {filteredProjects.map((project) => (
-          <article
-            key={project.id}
-            onClick={() => setSelectedProject(project)}
-            className="group relative w-full bg-light-surface-card/90 dark:bg-dark-surface/90 hover:bg-light-surface dark:hover:bg-dark-surface-raised border border-light-border/80 dark:border-dark-border/80 rounded-lg p-5 sm:p-7 transition-all duration-200 shadow-sm hover:shadow-akari dark:hover:shadow-night-glow cursor-pointer"
-          >
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center">
-              {/* Left Column: Image with Washi Corner Border */}
-              <div className="lg:col-span-5 w-full h-56 sm:h-64 rounded-md overflow-hidden relative shadow-inner border border-light-border/60 dark:border-dark-border/60 bg-light-surface-muted dark:bg-dark-surface-muted">
-                <img
-                  src={project.image}
-                  alt={project.title}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
-                />
-                <div className="absolute top-3 left-3 px-2.5 py-1 rounded bg-light-surface/90 dark:bg-dark-surface/90 backdrop-blur-sm border border-light-border/60 dark:border-dark-border/60 flex items-center gap-1.5">
-                  <span className="font-sans text-[10px] text-light-ink dark:text-dark-ink uppercase tracking-wider font-semibold">
-                    {project.badge}
-                  </span>
-                </div>
-              </div>
+      {/* Alternating Editorial Project Cards Stack */}
+      <div className="flex flex-col space-y-8">
+        {filteredProjects.map((project, index) => {
+          const isAlternate = index % 2 === 1;
+          return (
+            <article
+              key={project.id}
+              onClick={() => setSelectedProject(project)}
+              onMouseMove={(e) => {
+                const target = e.currentTarget;
+                const rect = target.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                target.style.backgroundImage = `radial-gradient(circle 380px at ${x}px ${y}px, rgba(45, 48, 57, 0.4), transparent 80%)`;
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundImage = '';
+              }}
+              className="interactive-card group relative w-full bg-light-surface-card dark:bg-[#1B1C22] hover:bg-light-surface dark:hover:bg-[#202229] border border-light-border dark:border-[#2D3039] rounded-xl p-6 sm:p-8 transition-all duration-300 shadow-sm hover:shadow-akari dark:hover:shadow-night-glow cursor-pointer classical-card-frame"
+            >
+              {/* Corner Hairline Brackets */}
+              <div className="corner-bracket corner-bracket-tl absolute top-2.5 left-2.5 w-3 h-3 border-t border-l border-ochre/40 dark:border-ochre/30 pointer-events-none" />
+              <div className="corner-bracket corner-bracket-tr absolute top-2.5 right-2.5 w-3 h-3 border-t border-r border-ochre/40 dark:border-ochre/30 pointer-events-none" />
+              <div className="corner-bracket corner-bracket-bl absolute bottom-2.5 left-2.5 w-3 h-3 border-b border-l border-ochre/40 dark:border-ochre/30 pointer-events-none" />
+              <div className="corner-bracket corner-bracket-br absolute bottom-2.5 right-2.5 w-3 h-3 border-b border-r border-ochre/40 dark:border-ochre/30 pointer-events-none" />
 
-              {/* Right Column: Content & Description */}
-              <div className="lg:col-span-7 flex flex-col justify-between space-y-4">
-                <div>
-                  <div className="flex items-center justify-between">
-                    <h3 className="font-serif text-xl sm:text-2xl text-light-ink dark:text-dark-ink tracking-tight group-hover:text-terracotta transition-colors duration-200">
-                      {project.title}
-                    </h3>
-                    <div className="flex items-center gap-1.5">
-                      <span className="font-serif text-lg text-terracotta opacity-85">
-                        {project.kanji}
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center relative z-10">
+                {/* Image Column (Alternates based on index) */}
+                <div
+                  className={`lg:col-span-6 w-full h-60 sm:h-72 rounded-lg overflow-hidden relative shadow-inner p-1.5 border border-light-border/80 dark:border-[#2D3039] bg-light-canvas dark:bg-[#121317] ${
+                    isAlternate ? 'order-1 lg:order-2' : ''
+                  }`}
+                >
+                  <div className="w-full h-full rounded overflow-hidden relative border border-light-border/60 dark:border-[#2D3039]/80">
+                    <img
+                      src={project.image}
+                      alt={project.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out opacity-95 group-hover:opacity-100"
+                    />
+                    <div className="absolute top-3 left-3 px-2.5 py-1 rounded bg-light-surface/90 dark:bg-[#121317]/90 backdrop-blur-sm border border-light-border/80 dark:border-[#2D3039] flex items-center gap-1.5 shadow-sm">
+                      <span className="w-1.5 h-1.5 rounded-full bg-terracotta" />
+                      <span className="font-sans text-[10px] text-light-ink dark:text-[#EDEAE4] uppercase tracking-wider font-semibold">
+                        {project.badge}
                       </span>
                     </div>
                   </div>
-                  <p className="font-sans text-xs text-terracotta font-medium mt-1">
-                    {project.subtitle}
-                  </p>
-                  <p className="font-sans text-sm sm:text-[15px] text-light-ink-muted dark:text-dark-ink-muted mt-2.5 leading-relaxed">
-                    {project.description}
-                  </p>
                 </div>
 
-                {/* Tech Chips */}
-                <div className="flex flex-wrap items-center gap-1.5 pt-1">
-                  {project.tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="px-2.5 py-0.5 rounded-full bg-light-surface-raised dark:bg-dark-surface-muted border border-light-border/70 dark:border-dark-border/70 text-light-ink dark:text-dark-ink font-mono text-[11px] shadow-xs"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
+                {/* Content Column */}
+                <div
+                  className={`lg:col-span-6 flex flex-col justify-between space-y-4 ${
+                    isAlternate ? 'order-2 lg:order-1' : ''
+                  }`}
+                >
+                  <div>
+                    <div className="flex items-baseline justify-between border-b border-light-border/60 dark:border-[#2D3039]/60 pb-3">
+                      <h3 className="font-serif text-2xl sm:text-3xl text-light-ink dark:text-[#EDEAE4] tracking-tight group-hover:text-terracotta transition-colors duration-300 font-normal">
+                        {project.title}
+                      </h3>
+                      <span className="pillar-kanji font-serif text-xl text-terracotta opacity-85 group-hover:opacity-100 transition-all duration-300 ml-3">
+                        {project.kanji}
+                      </span>
+                    </div>
+                    <p className="font-sans text-xs text-terracotta font-medium mt-2">
+                      {project.subtitle}
+                    </p>
+                    <p className="font-sans text-sm sm:text-[15px] text-light-ink-muted dark:text-[#9E988F] mt-2.5 leading-relaxed font-light">
+                      {project.description}
+                    </p>
+                  </div>
 
-                {/* Card Action Link */}
-                <div className="pt-2 flex items-center justify-between border-t border-light-border/40 dark:border-dark-border/40">
-                  <span className="inline-flex items-center gap-1.5 font-sans text-sm font-medium text-light-ink dark:text-dark-ink group-hover:text-terracotta transition-colors">
-                    <span className="underline underline-offset-4 decoration-light-border-strong dark:decoration-dark-border-strong group-hover:decoration-terracotta">
-                      {project.links.caseStudyText || 'View Architecture & Telemetry'}
-                    </span>
-                    <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
-                  </span>
-
-                  <div className="hidden sm:flex items-center gap-3 text-xs font-mono text-light-ink-subtle dark:text-dark-ink-subtle">
-                    {project.metrics.slice(0, 2).map((m, idx) => (
-                      <span key={idx} className="flex items-center gap-1">
-                        <Sparkles className="w-3 h-3 text-terracotta" />
-                        <span>{m.value}</span>
+                  {/* Tech Chips */}
+                  <div className="flex flex-wrap items-center gap-1.5 pt-1">
+                    {project.tags.map((tag) => (
+                      <span
+                        key={tag}
+                        className="px-2.5 py-1 rounded bg-light-surface-raised dark:bg-[#14151A] border border-light-border/70 dark:border-[#2D3039] text-light-ink dark:text-[#EDEAE4] font-mono text-[10px] uppercase tracking-wider shadow-xs hover:border-terracotta/40 transition-colors"
+                      >
+                        {tag}
                       </span>
                     ))}
                   </div>
+
+                  {/* Card Action Link */}
+                  <div className="pt-2 flex items-center justify-between border-t border-light-border/40 dark:border-[#2D3039]/40">
+                    <span className="inline-flex items-center gap-1.5 font-sans text-xs uppercase tracking-widest text-light-ink dark:text-[#EDEAE4] group-hover:text-terracotta transition-colors">
+                      <span className="underline underline-offset-4 decoration-light-border-strong dark:decoration-[#2D3039] group-hover:decoration-terracotta">
+                        {project.links.caseStudyText || 'View Project Architecture'}
+                      </span>
+                      <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1.5" />
+                    </span>
+
+                    <div className="hidden sm:flex items-center gap-3 text-xs font-mono text-light-ink-subtle dark:text-[#7A756D]">
+                      {project.metrics.slice(0, 2).map((m, idx) => (
+                        <span key={idx} className="flex items-center gap-1">
+                          <Sparkles className="w-3 h-3 text-terracotta" />
+                          <span>{m.value}</span>
+                        </span>
+                      ))}
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          </article>
-        ))}
+            </article>
+          );
+        })}
       </div>
 
       {/* Project Detail Case Study Modal */}

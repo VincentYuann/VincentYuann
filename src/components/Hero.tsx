@@ -38,10 +38,12 @@ export const Hero: React.FC = () => {
           alt="Washi paper texture"
           className="w-full h-full object-cover opacity-15 dark:opacity-5 mix-blend-overlay"
         />
+
+        {/* Ambient Ink Dust Motes floating gently */}
+        <div className="absolute right-1/4 bottom-12 w-1.5 h-1.5 rounded-full bg-terracotta/40 mote-1 blur-[0.5px]" />
+        <div className="absolute right-1/3 bottom-24 w-2 h-2 rounded-full bg-ochre/30 mote-2 blur-[0.5px]" />
+        <div className="absolute right-1/2 bottom-8 w-1 h-1 rounded-full bg-light-ink-muted/30 dark:bg-[#edeae4]/35 mote-3 blur-[0.5px]" />
       </div>
-
-
-
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start relative z-10">
         {/* Main Content Column (8 cols) */}
@@ -84,7 +86,7 @@ export const Hero: React.FC = () => {
           <div className="pt-2 flex flex-wrap items-center gap-4">
             <a
               href="#featured-works"
-              className="group inline-flex items-center gap-2.5 px-6 py-3.5 bg-light-button-dark dark:bg-dark-button-light text-light-on-dark dark:text-dark-on-light font-sans text-sm font-medium rounded-md shadow-sm transition-all duration-200 hover:shadow-md hover:-translate-y-0.5"
+              className="btn-bloom group inline-flex items-center gap-2.5 px-6 py-3.5 bg-light-button-dark dark:bg-dark-button-light text-light-on-dark dark:text-dark-on-light font-sans text-sm font-medium rounded-md shadow-sm transition-all duration-200"
             >
               <span>Explore Selected Works</span>
               <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
@@ -114,36 +116,43 @@ export const Hero: React.FC = () => {
           </div>
         </div>
 
-        {/* Right Column: Classical Seal Showcase Box (4 cols) with Atmospheric Bamboo Art */}
+        {/* Right Column: Classical Seal Showcase Box (4 cols) with Double Hairline Frame & Ensō Background */}
         <div className="lg:col-span-4 flex flex-col items-center lg:items-end justify-between self-stretch pt-6 lg:pt-0 relative">
           {/* Authentic Sumi-e Bamboo Art Floating Beside Seal Box with Gentle Sway */}
           <div className="absolute -left-14 -top-12 hidden lg:block pointer-events-none -z-0">
             <BambooArt className="w-40 h-56" sway={true} opacity={0.75} />
           </div>
 
-          <div className="relative z-10 w-full max-w-sm bg-light-surface-card/90 dark:bg-dark-surface/90 backdrop-blur-sm border border-light-border dark:border-dark-border p-6 rounded-lg shadow-sm flex flex-col items-center text-center transition-all duration-300 hover:border-light-border-strong dark:hover:border-dark-border-strong group">
+          <div className="relative z-10 w-full max-w-sm bg-light-surface-card/95 dark:bg-dark-surface/95 backdrop-blur-md double-hairline-frame p-6 rounded-xl shadow-lg flex flex-col items-center text-center transition-all duration-300 hover:shadow-2xl group">
+            {/* Ensō brushstroke accent positioned elegantly behind seal with ambient breathe */}
+            <div className="absolute -top-10 -right-8 w-36 h-36 opacity-30 pointer-events-none select-none z-0 animate-enso-breathe">
+              <svg className="w-full h-full" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M 50,12 C 68,11 86,22 91,42 C 96,62 89,82 72,92 C 54,101 30,97 17,81 C 4,63 7,37 24,20 C 31,13 41,10 51,12 C 47,15 36,21 30,28 C 15,44 13,67 25,82 C 37,97 59,98 74,88 C 88,77 92,57 86,41 C 81,25 65,16 50,15 Z" fill="#e5b882" opacity="0.65" />
+                <path d="M 53,10 C 70,11 88,23 92,44 C 95,57 91,72 82,83" fill="none" opacity="0.8" stroke="#c83c23" strokeLinecap="round" strokeWidth="2.5" />
+              </svg>
+            </div>
+
             {/* Box Header */}
-            <div className="w-full flex items-center justify-between pb-2 mb-4 border-b border-light-border/60 dark:border-dark-border/60">
+            <div className="w-full flex items-center justify-between pb-2 mb-4 border-b border-light-border/60 dark:border-dark-border/60 relative z-10">
               <span className="font-sans font-semibold text-light-ink-subtle dark:text-dark-ink-subtle uppercase text-[10px] tracking-wider">
                 SEAL / 認印
               </span>
-              <span className="font-sans text-bamboo uppercase tracking-widest text-[10px] font-semibold flex items-center gap-1.5">
-                <span className="inline-block w-1.5 h-1.5 rounded-full bg-bamboo animate-status-glow"></span>
+              <span className="font-sans text-bamboo dark:text-[#ffb871] uppercase tracking-widest text-[10px] font-semibold flex items-center gap-1.5">
+                <span className="inline-block w-1.5 h-1.5 rounded-full bg-bamboo dark:bg-[#ffb871] animate-status-glow"></span>
                 VERIFIED CRAFT
               </span>
             </div>
 
-
             {/* Hanko Seal Mark with Breathing Pulse */}
-            <div className="relative p-2 flex items-center justify-center animate-enso-pulse">
+            <div className="relative p-2 flex items-center justify-center animate-seal-breathe z-10">
               <img
                 src="/stitch/hanko-stamp.svg"
                 alt="Hanko Stamp Logo 原"
-                className="relative z-10 w-20 h-20 object-contain drop-shadow-sm transition-transform duration-300 group-hover:scale-105"
+                className="w-20 h-20 object-contain drop-shadow-sm transition-transform duration-300 group-hover:scale-105"
               />
             </div>
 
-            <div className="mt-3 text-center">
+            <div className="mt-3 text-center relative z-10">
               <h3 className="font-serif text-xl font-medium text-light-ink dark:text-dark-ink">Vincent Yuann</h3>
               <p className="font-sans text-xs text-light-ink-muted dark:text-dark-ink-muted mt-0.5">
                 Software & Generative AI Engineer
@@ -151,7 +160,7 @@ export const Hero: React.FC = () => {
             </div>
 
             {/* Vertical Tategaki Japanese Prose snippet */}
-            <div className="w-full mt-4 pt-4 bg-light-surface-raised dark:bg-dark-surface-muted border border-light-border/70 dark:border-dark-border/70 rounded-md p-4 flex items-center justify-center gap-6 group-hover:border-terracotta/30 transition-colors duration-300">
+            <div className="w-full mt-4 pt-4 bg-light-surface-raised dark:bg-dark-surface-muted border border-light-border/70 dark:border-dark-border/70 rounded-md p-4 flex items-center justify-center gap-6 group-hover:border-terracotta/30 transition-colors duration-300 relative z-10">
               <div className="writing-vertical-rl font-vertical text-[13px] tracking-[0.3em] text-light-ink-muted dark:text-dark-ink-muted opacity-85 h-32 leading-relaxed hover:opacity-100 transition-opacity cursor-default">
                 間と余白の美学
               </div>
@@ -164,7 +173,7 @@ export const Hero: React.FC = () => {
             </div>
 
             {/* Decorative bottom notation */}
-            <div className="w-full mt-4 pt-2 flex items-center justify-center gap-2 opacity-80 border-t border-light-border/40 dark:border-dark-border/40">
+            <div className="w-full mt-4 pt-2 flex items-center justify-center gap-2 opacity-80 border-t border-light-border/40 dark:border-dark-border/40 relative z-10">
               <span className="font-serif text-terracotta text-xs">❖</span>
               <span className="font-sans text-[10px] text-light-ink-subtle dark:text-dark-ink-subtle uppercase tracking-widest">
                 WABI-SABI CRAFT

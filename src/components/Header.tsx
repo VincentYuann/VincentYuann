@@ -16,7 +16,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenContact }) => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 20);
 
-      const sections = ['home', 'featured-works', 'system-craft', 'philosophy', 'motifs', 'contact'];
+      const sections = ['home', 'featured-works', 'philosophy', 'contact'];
       for (const sectionId of sections) {
         const el = document.getElementById(sectionId);
         if (el) {
@@ -36,10 +36,8 @@ export const Header: React.FC<HeaderProps> = ({ onOpenContact }) => {
   const navItems = [
     { id: 'home', num: '01', label: 'Home', href: '#home' },
     { id: 'featured-works', num: '02', label: 'Projects', href: '#featured-works' },
-    { id: 'system-craft', num: '03', label: 'Craft', href: '#system-craft' },
-    { id: 'philosophy', num: '04', label: 'Philosophy', href: '#philosophy' },
-    { id: 'motifs', num: '05', label: 'Motifs', href: '#motifs' },
-    { id: 'contact', num: '06', label: 'Contact', href: '#contact' },
+    { id: 'philosophy', num: '03', label: 'Philosophy', href: '#philosophy' },
+    { id: 'contact', num: '04', label: 'Contact', href: '#contact' },
   ];
 
   return (
@@ -95,7 +93,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenContact }) => {
               <a
                 key={item.id}
                 href={item.href}
-                className={`font-sans text-[13px] tracking-wide transition-colors flex items-center gap-1.5 py-1 ${
+                className={`group relative font-sans text-xs uppercase tracking-widest transition-colors flex items-center gap-1.5 py-1 ${
                   isActive
                     ? 'text-terracotta font-semibold'
                     : 'text-light-ink-muted dark:text-dark-ink-muted hover:text-light-ink dark:hover:text-dark-ink'
@@ -103,6 +101,11 @@ export const Header: React.FC<HeaderProps> = ({ onOpenContact }) => {
               >
                 <span className="opacity-40 text-[10px] font-mono">{item.num}</span>
                 <span>{item.label}</span>
+                <span
+                  className={`absolute bottom-0 left-0 h-[1.5px] bg-terracotta rounded-full transition-all duration-300 ${
+                    isActive ? 'w-full' : 'w-0 group-hover:w-full'
+                  }`}
+                />
               </a>
             );
           })}
