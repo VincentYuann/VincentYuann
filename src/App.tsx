@@ -28,25 +28,40 @@ export const App: React.FC = () => {
   // Only navigate home on the very first successful sign-in, not on every token refresh
   const hasNavigatedAfterLoginRef = useRef(false);
 
-  /* ── Supabase auth listener — single subscription, no duplicate getSession ── */
+  const ADMIN_EMAIL = (import.meta.env.VITE_ADMIN_EMAIL || 'vincentyuan1020@gmail.com').toLowerCase();
+
+  const isOwnerSession = (session: any): boolean => {
+    const email = session?.user?.email?.toLowerCase();
+    return !!email && email === ADMIN_EMAIL;
+  };
+
+  /* ── Supabase auth listener — single subscription, strict admin verification ── */
   useEffect(() => {
     if (!supabase) return;
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      const adminNow = !!session?.user;
+      const isOwner = isOwnerSession(session);
 
       if (event === 'INITIAL_SESSION') {
-        isAdminRef.current = adminNow;
-        setIsAdmin(adminNow);
-        if (adminNow) hasNavigatedAfterLoginRef.current = true;
+        isAdminRef.current = isOwner;
+        setIsAdmin(isOwner);
+        if (isOwner) hasNavigatedAfterLoginRef.current = true;
       } else if (event === 'SIGNED_IN') {
-        isAdminRef.current = true;
-        setIsAdmin(true);
-        if (!hasNavigatedAfterLoginRef.current) {
-          hasNavigatedAfterLoginRef.current = true;
-          setViewRef.current('home');
-          window.history.replaceState(null, '', '#home');
-          window.scrollTo({ top: 0, behavior: 'smooth' });
+        if (isOwner) {
+          isAdminRef.current = true;
+          setIsAdmin(true);
+          if (!hasNavigatedAfterLoginRef.current) {
+            hasNavigatedAfterLoginRef.current = true;
+            setViewRef.current('home');
+            window.history.replaceState(null, '', '#home');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }
+        } else {
+          // Unauthorized GitHub user logged in — revoke and reject
+          isAdminRef.current = false;
+          setIsAdmin(false);
+          supabase?.auth.signOut();
+          alert('Access Denied: Only the portfolio owner is authorized to access the edit dashboard.');
         }
       } else if (event === 'SIGNED_OUT') {
         isAdminRef.current = false;
@@ -54,8 +69,8 @@ export const App: React.FC = () => {
         hasNavigatedAfterLoginRef.current = false;
         setViewRef.current((prev) => (prev === 'edit' ? 'home' : prev));
       } else if (event === 'TOKEN_REFRESHED') {
-        isAdminRef.current = adminNow;
-        setIsAdmin(adminNow);
+        isAdminRef.current = isOwner;
+        setIsAdmin(isOwner);
       }
     });
 

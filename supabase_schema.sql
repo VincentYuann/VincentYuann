@@ -1,10 +1,30 @@
 -- ==============================================================================
--- Portfolio Supabase Database Schema & RLS Policies
+-- Portfolio Supabase Database Schema & Tight RLS Security Policies
 -- Execute this script in your Supabase SQL Editor:
 -- Dashboard > SQL Editor > New query > Paste & Run
 -- ==============================================================================
 
--- 1. Profile Table (Intro / Hero / Seal Card / Contact Links)
+-- 1. Helper function: verifies whether the calling JWT belongs to the admin owner
+CREATE OR REPLACE FUNCTION public.is_admin()
+RETURNS BOOLEAN
+LANGUAGE sql
+SECURITY DEFINER
+SET search_path = public
+STABLE
+AS $$
+  SELECT COALESCE(
+    (auth.jwt() ->> 'email') = 'vincentyuan1020@gmail.com',
+    false
+  );
+$$;
+
+GRANT EXECUTE ON FUNCTION public.is_admin() TO authenticated, anon;
+
+-- ==============================================================================
+-- 2. Tables & Schema Definitions
+-- ==============================================================================
+
+-- Profile Table (Intro / Hero / Seal Card / Contact Links)
 CREATE TABLE IF NOT EXISTS public.profile (
   id INT PRIMARY KEY DEFAULT 1,
   name TEXT DEFAULT 'Vincent Yuan',
@@ -22,12 +42,12 @@ CREATE TABLE IF NOT EXISTS public.profile (
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Seed initial profile row if empty
+-- Seed initial profile row
 INSERT INTO public.profile (id, name, email)
 VALUES (1, 'Vincent Yuan', 'vincentyuan1020@gmail.com')
 ON CONFLICT (id) DO NOTHING;
 
--- 2. Philosophy Pillars Table (Up to 3 cards on homepage)
+-- Philosophy Pillars Table (Up to 3 cards on homepage)
 CREATE TABLE IF NOT EXISTS public.philosophy_pillars (
   position INT PRIMARY KEY,
   kanji TEXT NOT NULL DEFAULT '',
@@ -46,7 +66,7 @@ VALUES
   (3, '職人', 'Shokunin', 'Obsessive Craftsmanship', 'Deep Code Integrity & Care', 'The craftsman''s obligation to perform one''s best work for the social welfare. Rigorous test coverage, deterministic API contracts, and fine joinery in every line of TypeScript and Python.')
 ON CONFLICT (position) DO NOTHING;
 
--- 3. Experience Table
+-- Experience Table
 CREATE TABLE IF NOT EXISTS public.experience (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   title TEXT NOT NULL,
@@ -60,7 +80,7 @@ CREATE TABLE IF NOT EXISTS public.experience (
   CONSTRAINT experience_title_company_unique UNIQUE (title, company)
 );
 
--- 4. Projects Table
+-- Projects Table
 CREATE TABLE IF NOT EXISTS public.projects (
   title TEXT PRIMARY KEY,
   id TEXT,
@@ -81,19 +101,18 @@ CREATE TABLE IF NOT EXISTS public.projects (
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- 5. Resume LaTeX Table (stores live .tex source for in-browser editor)
+-- Resume LaTeX Table
 CREATE TABLE IF NOT EXISTS public.resume_latex (
   id INT PRIMARY KEY DEFAULT 1,
   content TEXT NOT NULL DEFAULT '',
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Seed initial resume LaTeX
 INSERT INTO public.resume_latex (id, content)
 VALUES (1, '% Vincent Yuan Resume LaTeX Source')
 ON CONFLICT (id) DO NOTHING;
 
--- 6. Contact Messages Table
+-- Contact Messages Table
 CREATE TABLE IF NOT EXISTS public.contact_messages (
   id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   name TEXT NOT NULL,
@@ -104,7 +123,7 @@ CREATE TABLE IF NOT EXISTS public.contact_messages (
 );
 
 -- ==============================================================================
--- Enable Row Level Security (RLS) on all tables
+-- 3. Enable Row Level Security (RLS) on all tables
 -- ==============================================================================
 
 ALTER TABLE public.profile ENABLE ROW LEVEL SECURITY;
@@ -115,68 +134,115 @@ ALTER TABLE public.resume_latex ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.contact_messages ENABLE ROW LEVEL SECURITY;
 
 -- ==============================================================================
--- Policies: Public Read Access (Visitors)
+-- 4. Policies: Public Read Access (All Visitors)
 -- ==============================================================================
 
+DROP POLICY IF EXISTS "Allow public read on profile" ON public.profile;
 CREATE POLICY "Allow public read on profile"
   ON public.profile FOR SELECT
   USING (true);
 
+DROP POLICY IF EXISTS "Allow public read on philosophy_pillars" ON public.philosophy_pillars;
 CREATE POLICY "Allow public read on philosophy_pillars"
   ON public.philosophy_pillars FOR SELECT
   USING (true);
 
+DROP POLICY IF EXISTS "Allow public read on experience" ON public.experience;
 CREATE POLICY "Allow public read on experience"
   ON public.experience FOR SELECT
   USING (true);
 
+DROP POLICY IF EXISTS "Allow public read on projects" ON public.projects;
 CREATE POLICY "Allow public read on projects"
   ON public.projects FOR SELECT
   USING (true);
 
+DROP POLICY IF EXISTS "Allow public read on resume_latex" ON public.resume_latex;
 CREATE POLICY "Allow public read on resume_latex"
   ON public.resume_latex FOR SELECT
   USING (true);
 
+DROP POLICY IF EXISTS "Allow public insert on contact_messages" ON public.contact_messages;
 CREATE POLICY "Allow public insert on contact_messages"
   ON public.contact_messages FOR INSERT
   WITH CHECK (true);
 
 -- ==============================================================================
--- Policies: Authenticated Admin Full Write Access
+-- 5. Policies: Strict Admin Write Access (Only vincentyuan1020@gmail.com)
+-- Even if an attacker signs in with another GitHub account, PostgreSQL rejects writes!
 -- ==============================================================================
 
-CREATE POLICY "Allow authenticated admin full access on profile"
+DROP POLICY IF EXISTS "Allow authenticated admin full access on profile" ON public.profile;
+DROP POLICY IF EXISTS "Allow only admin to write profile" ON public.profile;
+CREATE POLICY "Allow only admin to write profile"
   ON public.profile FOR ALL
   TO authenticated
-  USING (true)
-  WITH CHECK (true);
+  USING (public.is_admin())
+  WITH CHECK (public.is_admin());
 
-CREATE POLICY "Allow authenticated admin full access on philosophy_pillars"
+DROP POLICY IF EXISTS "Allow authenticated admin full access on philosophy_pillars" ON public.philosophy_pillars;
+DROP POLICY IF EXISTS "Allow only admin to write philosophy_pillars" ON public.philosophy_pillars;
+CREATE POLICY "Allow only admin to write philosophy_pillars"
   ON public.philosophy_pillars FOR ALL
   TO authenticated
-  USING (true)
-  WITH CHECK (true);
+  USING (public.is_admin())
+  WITH CHECK (public.is_admin());
 
-CREATE POLICY "Allow authenticated admin full access on experience"
+DROP POLICY IF EXISTS "Allow authenticated admin full access on experience" ON public.experience;
+DROP POLICY IF EXISTS "Allow only admin to write experience" ON public.experience;
+CREATE POLICY "Allow only admin to write experience"
   ON public.experience FOR ALL
   TO authenticated
-  USING (true)
-  WITH CHECK (true);
+  USING (public.is_admin())
+  WITH CHECK (public.is_admin());
 
-CREATE POLICY "Allow authenticated admin full access on projects"
+DROP POLICY IF EXISTS "Allow authenticated admin full access on projects" ON public.projects;
+DROP POLICY IF EXISTS "Allow only admin to write projects" ON public.projects;
+CREATE POLICY "Allow only admin to write projects"
   ON public.projects FOR ALL
   TO authenticated
-  USING (true)
-  WITH CHECK (true);
+  USING (public.is_admin())
+  WITH CHECK (public.is_admin());
 
-CREATE POLICY "Allow authenticated admin full access on resume_latex"
+DROP POLICY IF EXISTS "Allow authenticated admin full access on resume_latex" ON public.resume_latex;
+DROP POLICY IF EXISTS "Allow only admin to write resume_latex" ON public.resume_latex;
+CREATE POLICY "Allow only admin to write resume_latex"
   ON public.resume_latex FOR ALL
   TO authenticated
-  USING (true)
-  WITH CHECK (true);
+  USING (public.is_admin())
+  WITH CHECK (public.is_admin());
 
-CREATE POLICY "Allow authenticated admin read on contact_messages"
+DROP POLICY IF EXISTS "Allow authenticated admin read on contact_messages" ON public.contact_messages;
+DROP POLICY IF EXISTS "Allow only admin to read contact_messages" ON public.contact_messages;
+CREATE POLICY "Allow only admin to read contact_messages"
   ON public.contact_messages FOR SELECT
   TO authenticated
-  USING (true);
+  USING (public.is_admin());
+
+-- ==============================================================================
+-- 6. Storage Security Policies for 'portfolio-assets' Bucket
+-- ==============================================================================
+
+DROP POLICY IF EXISTS "Allow public read on portfolio-assets" ON storage.objects;
+CREATE POLICY "Allow public read on portfolio-assets"
+  ON storage.objects FOR SELECT
+  USING (bucket_id = 'portfolio-assets');
+
+DROP POLICY IF EXISTS "Allow only admin to insert portfolio-assets" ON storage.objects;
+CREATE POLICY "Allow only admin to insert portfolio-assets"
+  ON storage.objects FOR INSERT
+  TO authenticated
+  WITH CHECK (bucket_id = 'portfolio-assets' AND public.is_admin());
+
+DROP POLICY IF EXISTS "Allow only admin to update portfolio-assets" ON storage.objects;
+CREATE POLICY "Allow only admin to update portfolio-assets"
+  ON storage.objects FOR UPDATE
+  TO authenticated
+  USING (bucket_id = 'portfolio-assets' AND public.is_admin())
+  WITH CHECK (bucket_id = 'portfolio-assets' AND public.is_admin());
+
+DROP POLICY IF EXISTS "Allow only admin to delete portfolio-assets" ON storage.objects;
+CREATE POLICY "Allow only admin to delete portfolio-assets"
+  ON storage.objects FOR DELETE
+  TO authenticated
+  USING (bucket_id = 'portfolio-assets' AND public.is_admin());
