@@ -4,6 +4,7 @@ import { Project } from '../data/projects';
 import { ProjectDetailModal } from './ProjectDetailModal';
 import { EnsoOrbital } from './EnsoOrbital';
 import { HankoStamp } from './HankoStamp';
+import { TechTag } from './TechTag';
 import { useSiteData } from '../context/SiteDataContext';
 
 interface ProjectsPageProps {
@@ -169,14 +170,9 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({ onNavigate }) => {
 
               <div>
                 {/* Tech Tags */}
-                <div className="flex flex-wrap gap-1.5 mb-4">
+                <div className="flex flex-wrap items-center gap-1.5 mb-4">
                   {project.tags.slice(0, 3).map((tag) => (
-                    <span
-                      key={tag}
-                      className="px-2 py-0.5 rounded bg-light-surface-muted/80 dark:bg-dark-surface-muted/80 border border-light-border/60 dark:border-dark-border/60 text-[10px] font-mono text-light-ink-muted dark:text-dark-ink-muted"
-                    >
-                      {tag}
-                    </span>
+                    <TechTag key={tag} tag={tag} size="sm" />
                   ))}
                   {project.tags.length > 3 && (
                     <span className="px-1.5 py-0.5 text-[10px] font-mono text-light-ink-subtle dark:text-dark-ink-subtle">

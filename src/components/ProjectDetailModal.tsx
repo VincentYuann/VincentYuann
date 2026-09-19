@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { Project } from '../data/projects';
 import { X, ExternalLink, Github, CheckCircle2, Layers } from 'lucide-react';
+import { TechTag } from './TechTag';
 
 interface ProjectDetailModalProps {
   project: Project | null;
@@ -125,14 +126,9 @@ export const ProjectDetailModal: React.FC<ProjectDetailModalProps> = ({ project,
               <div className="font-sans text-[11px] uppercase tracking-wider font-semibold text-light-ink-subtle dark:text-dark-ink-subtle mb-2.5">
                 Technologies &amp; Infrastructure
               </div>
-              <div className="flex flex-wrap gap-1.5 sm:gap-2">
+              <div className="flex flex-wrap gap-2">
                 {project.tags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="px-2.5 py-1 text-xs font-mono rounded bg-light-surface-raised dark:bg-[#14151A] border border-light-border/70 dark:border-[#2D3039] text-light-ink dark:text-dark-ink"
-                  >
-                    {tag}
-                  </span>
+                  <TechTag key={tag} tag={tag} size="lg" />
                 ))}
               </div>
             </div>

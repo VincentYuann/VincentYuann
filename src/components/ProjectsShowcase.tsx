@@ -3,6 +3,7 @@ import { Project } from '../data/projects';
 import { ArrowRight, Layers, Github, ExternalLink } from 'lucide-react';
 import { ProjectDetailModal } from './ProjectDetailModal';
 import { EnsoOrbital } from './EnsoOrbital';
+import { TechTag } from './TechTag';
 import { useSiteData } from '../context/SiteDataContext';
 
 interface ProjectsShowcaseProps {
@@ -151,14 +152,9 @@ export const ProjectsShowcase: React.FC<ProjectsShowcaseProps> = ({ onNavigate }
                     </p>
 
                     {/* Minimalist Tech Tags */}
-                    <div className="flex flex-wrap gap-1.5 pt-1">
+                    <div className="flex flex-wrap gap-2 pt-1">
                       {project.tags.map((tag) => (
-                        <span
-                          key={tag}
-                          className="px-2.5 py-1 rounded text-[11px] font-mono tracking-tight bg-light-surface-muted/90 dark:bg-[#14151A] border border-light-border/70 dark:border-[#2D3039] text-light-ink-muted dark:text-dark-ink-muted"
-                        >
-                          {tag}
-                        </span>
+                        <TechTag key={tag} tag={tag} size="md" />
                       ))}
                     </div>
 
