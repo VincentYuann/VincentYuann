@@ -53,6 +53,71 @@
   }
 }
 
+/* Custom Refined Japanese Easing & Animations */
+:root {
+  --ease-zen: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes gentle-drift {
+  0%, 100% {
+    transform: translateY(0px) scale(1);
+    opacity: 0.35;
+  }
+  50% {
+    transform: translateY(-8px) scale(1.02);
+    opacity: 0.45;
+  }
+}
+
+@keyframes enso-pulse {
+  0%, 100% {
+    transform: scale(1) rotate(-1deg);
+    filter: drop-shadow(0 2px 6px rgba(165, 35, 12, 0.12));
+  }
+  50% {
+    transform: scale(1.035) rotate(0.5deg);
+    filter: drop-shadow(0 6px 14px rgba(165, 35, 12, 0.22));
+  }
+}
+
+@keyframes status-glow {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(68, 101, 87, 0.45);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 0 5px rgba(68, 101, 87, 0);
+    transform: scale(1.15);
+  }
+}
+
+@keyframes bamboo-sway {
+  0%, 100% {
+    transform: rotate(0deg) translateY(0);
+  }
+  50% {
+    transform: rotate(1.8deg) translateY(-3px);
+  }
+}
+
+.animate-gentle-drift {
+  animation: gentle-drift 14s var(--ease-zen) infinite ease-in-out;
+}
+
+.animate-enso-pulse {
+  animation: enso-pulse 5.5s var(--ease-zen) infinite ease-in-out;
+}
+
+.animate-status-glow {
+  animation: status-glow 2.8s var(--ease-zen) infinite;
+}
+
+.animate-bamboo-sway {
+  animation: bamboo-sway 7s ease-in-out infinite alternate;
+  transform-origin: bottom center;
+}
+
+
 /* Custom Minimalist Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;

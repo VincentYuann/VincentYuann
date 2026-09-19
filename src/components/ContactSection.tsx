@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Mail, Github, Linkedin, Send, CheckCircle2, AlertCircle } from 'lucide-react';
 import { sendContactMessage } from '../lib/supabase';
+import { BambooArt } from './BambooArt';
 
 export const ContactSection: React.FC = () => {
   const [name, setName] = useState('');
@@ -43,13 +44,22 @@ export const ContactSection: React.FC = () => {
   return (
     <section id="contact" className="w-full max-w-7xl mx-auto px-6 py-12 lg:py-16 mb-8">
       <div className="relative bg-light-surface-card dark:bg-dark-surface border border-light-border dark:border-dark-border rounded-xl p-8 sm:p-12 overflow-hidden shadow-akari dark:shadow-night-glow">
-        {/* Sumi-e Mountain Mask Backdrop */}
-        <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-3/5 select-none overflow-hidden opacity-15 dark:opacity-10">
+        {/* Sumi-e Mountain Landscape Mask Backdrop with Ambient Drift */}
+        <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-3/5 select-none overflow-hidden opacity-30 dark:opacity-20 mix-blend-multiply dark:mix-blend-screen animate-gentle-drift">
           <img
-            src="/images/washi-paper-texture.jpg"
-            alt="Misty landscape background"
+            src="/images/contact-sumie-mountain.png"
+            alt="Sumi-e misty mountain backdrop"
             className="w-full h-full object-cover object-center"
+            style={{
+              maskImage: 'linear-gradient(to left, black 25%, transparent 85%)',
+              WebkitMaskImage: 'linear-gradient(to left, black 25%, transparent 85%)',
+            }}
           />
+        </div>
+
+        {/* Architectural Corner Bamboo Art with Gentle Sway */}
+        <div className="absolute top-4 left-4 w-10 h-14 opacity-35 dark:opacity-25 pointer-events-none">
+          <BambooArt className="w-full h-full" sway={true} opacity={0.75} />
         </div>
 
         <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
@@ -59,13 +69,14 @@ export const ContactSection: React.FC = () => {
               <img
                 src="/stitch/hanko-stamp.svg"
                 alt="Hanko Seal"
-                className="h-6 w-6 object-contain"
+                className="h-6 w-6 object-contain animate-enso-pulse"
               />
               <span className="font-serif text-terracotta text-sm">原 //</span>
               <span className="font-sans text-[11px] font-semibold text-light-ink-subtle dark:text-dark-ink-subtle uppercase tracking-widest">
                 INITIATE A DIALOGUE
               </span>
             </div>
+
 
             <h2 className="font-serif text-2xl sm:text-4xl text-light-ink dark:text-dark-ink leading-tight">
               Interested in building something deliberate together?

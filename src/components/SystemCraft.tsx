@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { CODE_SNIPPETS } from '../data/codeSnippets';
 import { Copy, Check, Terminal, Play, Code2 } from 'lucide-react';
+import { BambooArt } from './BambooArt';
 
 export const SystemCraft: React.FC = () => {
   const [selectedSnippetId, setSelectedSnippetId] = useState(CODE_SNIPPETS[0].id);
@@ -9,6 +10,7 @@ export const SystemCraft: React.FC = () => {
   const [simulationLogs, setSimulationLogs] = useState<string[] | null>(null);
 
   const snippet = CODE_SNIPPETS.find((s) => s.id === selectedSnippetId) || CODE_SNIPPETS[0];
+
 
   const handleCopy = () => {
     navigator.clipboard.writeText(snippet.code);
@@ -48,9 +50,15 @@ export const SystemCraft: React.FC = () => {
   };
 
   return (
-    <section id="system-craft" className="w-full max-w-7xl mx-auto px-6 py-12 lg:py-16">
+    <section id="system-craft" className="relative w-full max-w-7xl mx-auto px-6 py-12 lg:py-16 overflow-hidden">
+      {/* Organic Blended Bamboo Art Backdrop (referenced from frontendDesign/code.html) */}
+      <div className="absolute right-4 top-8 pointer-events-none select-none opacity-25 dark:opacity-15 hidden lg:block -z-0">
+        <BambooArt className="w-44 h-60" sway={true} opacity={0.65} />
+      </div>
+
       {/* Section Header */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
+      <div className="relative z-10 flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
+
         <div>
           <div className="flex items-center gap-2 mb-1.5">
             <span className="text-terracotta font-serif text-sm">02 //</span>

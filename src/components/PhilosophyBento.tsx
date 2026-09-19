@@ -1,5 +1,6 @@
 import React from 'react';
 import { Compass, Feather, ShieldCheck } from 'lucide-react';
+import { BambooArt } from './BambooArt';
 
 export const PhilosophyBento: React.FC = () => {
   const pillars = [
@@ -96,15 +97,23 @@ export const PhilosophyBento: React.FC = () => {
               </div>
 
               {/* Bottom Tag */}
-              <div className="pt-6 mt-6 border-t border-light-border/50 dark:border-dark-border/50 flex items-center gap-2 text-light-ink-subtle dark:text-dark-ink-subtle">
+              <div className="relative z-10 pt-6 mt-6 border-t border-light-border/50 dark:border-dark-border/50 flex items-center gap-2 text-light-ink-subtle dark:text-dark-ink-subtle">
                 <span className="w-1.5 h-1.5 rounded-full bg-terracotta" />
                 <span className="font-sans text-xs uppercase font-medium tracking-wider">
                   {pillar.tag}
                 </span>
               </div>
+
+              {/* Bamboo Art Watermark for Shokunin (Flexibility & Resilience) */}
+              {pillar.romaji === 'Shokunin' && (
+                <div className="absolute -right-4 -bottom-4 w-28 h-40 opacity-20 dark:opacity-10 pointer-events-none">
+                  <BambooArt className="w-full h-full" sway={false} opacity={0.75} />
+                </div>
+              )}
             </div>
           );
         })}
+
       </div>
     </section>
   );
