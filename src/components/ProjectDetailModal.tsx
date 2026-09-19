@@ -162,14 +162,6 @@ export const ProjectDetailModal: React.FC<ProjectDetailModalProps> = ({ project,
                 <span>Repository</span>
               </a>
             )}
-            <a
-              href="#contact"
-              onClick={onClose}
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-sans font-medium rounded bg-light-button-dark dark:bg-dark-button-light text-light-on-dark dark:text-dark-on-light hover:opacity-90 transition-opacity"
-            >
-              <span>Inquire About Project</span>
-              <ExternalLink className="w-3.5 h-3.5" />
-            </a>
           </div>
 
           <button

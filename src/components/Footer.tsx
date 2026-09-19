@@ -25,7 +25,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                   Vincent Yuan
                 </span>
                 <span className="font-serif text-[11px] text-terracotta dark:text-ochre tracking-widest mt-0.5 block">
-                  原 · CRAFT & COMPUTING
+                  CRAFT & COMPUTING
                 </span>
               </div>
             </div>
@@ -118,7 +118,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
         <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2 text-light-ink-subtle dark:text-dark-ink-subtle text-xs font-sans">
             <span className="font-serif text-terracotta">❖</span>
-            <span>© {new Date().getFullYear()} Vincent Yuan. Crafted with deliberate restraint and clarity.</span>
+            <span>© {new Date().getFullYear()} Vincent Yuan.</span>
           </div>
 
           <div className="flex items-center gap-3 text-light-ink-subtle dark:text-dark-ink-subtle text-xs font-sans">

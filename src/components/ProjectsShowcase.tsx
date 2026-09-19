@@ -177,26 +177,6 @@ export const ProjectsShowcase: React.FC<ProjectsShowcaseProps> = ({ onNavigate }
           })}
         </div>
 
-        {/* View All Projects Bottom Banner */}
-        <div className="mt-12 pt-8 flex flex-col items-center justify-center text-center">
-          <a
-            href="#all-projects"
-            onClick={(e) => {
-              if (onNavigate) {
-                e.preventDefault();
-                onNavigate('projects');
-              }
-            }}
-            className="btn-bloom inline-flex items-center gap-3 px-8 py-4 bg-light-surface-card dark:bg-[#1B1C22] hover:bg-light-surface dark:hover:bg-[#202229] border border-light-border dark:border-[#2D3039] hover:border-terracotta/50 text-light-ink dark:text-dark-ink font-sans text-sm font-medium rounded-xl shadow-akari dark:shadow-night-glow transition-all duration-300 cursor-pointer group"
-          >
-            <span>Explore All Systems ({PROJECTS.length})</span>
-            <ArrowRight className="w-4 h-4 text-terracotta transition-transform duration-300 group-hover:translate-x-1" />
-          </a>
-          <p className="font-sans text-xs text-light-ink-muted dark:text-dark-ink-muted mt-2">
-            Explore complete case studies, system architecture blueprints, and interactive demos.
-          </p>
-        </div>
-
         {/* Project Detail Case Study Modal */}
         <ProjectDetailModal
           project={selectedProject}

@@ -164,7 +164,7 @@ export const ContactSection: React.FC = () => {
                 </a>
 
                 <a
-                  href="https://github.com"
+                  href="https://github.com/VincentYuann"
                   target="_blank"
                   rel="noreferrer"
                   className="inline-flex items-center gap-2 px-5 py-3.5 bg-light-surface-raised dark:bg-[#1B1C22] border border-light-border dark:border-[#2D3039] hover:bg-light-surface dark:hover:bg-[#252831] hover:border-ochre/50 text-light-ink dark:text-[#EDEAE4] font-sans text-xs uppercase tracking-widest rounded-lg shadow-xs transition-all duration-200"

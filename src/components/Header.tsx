@@ -100,7 +100,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenContact, currentView = 'ho
                 onClick={(e) => handleNavClick(e, item)}
                 className={`group relative font-sans text-xs uppercase tracking-widest transition-colors flex items-center gap-1.5 py-1 ${
                   isActive
-                    ? 'text-terracotta font-semibold'
+                    ? 'text-terracotta'
                     : 'text-light-ink-muted dark:text-dark-ink-muted hover:text-light-ink dark:hover:text-dark-ink'
                 }`}
               >
@@ -152,8 +152,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenContact, currentView = 'ho
             onClick={onOpenContact}
             className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-md text-[12px] font-sans font-medium tracking-wide bg-light-button-dark dark:bg-dark-button-light text-light-on-dark dark:text-dark-on-light hover:opacity-90 transition-opacity"
           >
-            <Sparkles className="w-3.5 h-3.5 text-terracotta" />
-            <span>Connect</span>
+            <span>Hire Me</span>
           </a>
 
           {/* Mobile Menu Toggle */}
@@ -180,7 +179,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenContact, currentView = 'ho
                   (currentView === 'resume' && item.id === 'resume') ||
                   (currentView === 'projects' && item.id === 'featured-works') ||
                   (currentView === 'home' && activeSection === item.id)
-                    ? 'text-terracotta font-semibold'
+                    ? 'text-terracotta'
                     : 'text-light-ink-muted dark:text-dark-ink-muted'
                 }`}
               >
