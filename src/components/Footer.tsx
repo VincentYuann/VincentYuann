@@ -1,57 +1,121 @@
 import React from 'react';
 import { HankoStamp } from './HankoStamp';
+import { Compass } from 'lucide-react';
 
-export const Footer: React.FC = () => {
+interface FooterProps {
+  onNavigate?: (view: 'home' | 'projects' | 'resume', sectionId?: string) => void;
+}
+
+export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
   return (
-    <footer className="w-full bg-light-surface-card dark:bg-dark-surface border-t border-light-border dark:border-dark-border mt-16">
+    <footer className="w-full bg-light-surface-card dark:bg-[#15161C] border-t border-light-border dark:border-[#2D3039] mt-16 relative overflow-hidden">
+      {/* Decorative Wabi-Sabi Watermark */}
+      <div className="absolute right-6 -bottom-6 select-none pointer-events-none opacity-[0.03] dark:opacity-[0.05] font-serif text-9xl">
+        侘寂
+      </div>
+
       <div className="max-w-7xl mx-auto px-6 py-12">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-8 pb-8">
-          {/* Brand & Narrative */}
-          <div className="flex flex-col items-center md:items-start text-center md:text-left">
-            <div className="flex items-center gap-3 mb-2">
-              <HankoStamp className="h-6 w-6" />
-              <span className="font-serif text-lg font-medium text-light-ink dark:text-dark-ink">
-                Vincent Yuann
-              </span>
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-8 pb-10 border-b border-light-border/70 dark:border-dark-border/70">
+          {/* Brand & Identity */}
+          <div className="md:col-span-5 flex flex-col items-start text-left">
+            <div className="flex items-center gap-3 mb-3">
+              <HankoStamp className="h-7 w-7" />
+              <div>
+                <span className="font-serif text-lg font-medium text-light-ink dark:text-dark-ink block leading-none">
+                  Vincent Yuan
+                </span>
+                <span className="font-serif text-[11px] text-terracotta dark:text-ochre tracking-widest mt-0.5 block">
+                  原 · CRAFT & COMPUTING
+                </span>
+              </div>
             </div>
-            <p className="font-sans text-xs text-light-ink-muted dark:text-dark-ink-muted max-w-md">
-              Synthesizing classical Japanese aesthetic principles with modern high-scale distributed systems and
-              ambient AI experiences.
+            <p className="font-sans text-xs text-light-ink-muted dark:text-dark-ink-muted max-w-sm leading-relaxed font-light">
+              Synthesizing Japanese aesthetic restraint with high-scale distributed systems, local intelligence runtimes, and responsive ambient UI.
             </p>
           </div>
 
-          {/* Quick Metrics / Philosophy Tags */}
-          <div className="flex items-center gap-8">
-            <div className="flex flex-col text-center md:text-right">
-              <span className="font-sans text-[10px] font-semibold text-light-ink-subtle dark:text-dark-ink-subtle uppercase tracking-wider">
-                Availability
-              </span>
-              <span className="font-sans text-xs text-bamboo dark:text-bamboo-light font-medium mt-0.5">
-                Open to Full-Stack & AI Roles
+          {/* WABI-SABI CRAFT & INSPIRATION PHILOSOPHY */}
+          <div className="md:col-span-4 flex flex-col">
+            <div className="flex items-center gap-1.5 mb-2.5">
+              <Compass className="w-3.5 h-3.5 text-ochre" />
+              <span className="font-sans text-[11px] font-semibold text-light-ink dark:text-dark-ink uppercase tracking-widest">
+                WABI-SABI CRAFT & LINEAGE
               </span>
             </div>
-            <div className="flex flex-col text-center md:text-right">
-              <span className="font-sans text-[10px] font-semibold text-light-ink-subtle dark:text-dark-ink-subtle uppercase tracking-wider">
-                Philosophy
-              </span>
-              <span className="font-serif text-xs text-light-ink-muted dark:text-dark-ink-muted mt-0.5 tracking-wider">
-                間・侘寂・瞬間
-              </span>
+            <p className="font-sans text-xs text-light-ink-muted dark:text-dark-ink-muted leading-relaxed font-light">
+              Inspired by the organic asymmetry of handmade washi paper, natural pine & bamboo ink-wash (*sumi-e*), and the intentional negative space (*Ma* 間) of Kyoto architectural tea houses.
+            </p>
+          </div>
+
+          {/* Navigation Shortcuts */}
+          <div className="md:col-span-3 flex flex-col sm:items-end">
+            <span className="font-sans text-[11px] font-semibold text-light-ink dark:text-dark-ink uppercase tracking-widest mb-3">
+              INDEX & ARCHIVE
+            </span>
+            <div className="flex flex-col sm:items-end space-y-2 text-xs font-sans text-light-ink-muted dark:text-dark-ink-muted">
+              <a
+                href="#home"
+                onClick={(e) => {
+                  if (onNavigate) {
+                    e.preventDefault();
+                    onNavigate('home', 'home');
+                  }
+                }}
+                className="hover:text-terracotta transition-colors"
+              >
+                01 // Selected Overview
+              </a>
+              <a
+                href="#featured-works"
+                onClick={(e) => {
+                  if (onNavigate) {
+                    e.preventDefault();
+                    onNavigate('projects');
+                  }
+                }}
+                className="hover:text-terracotta transition-colors"
+              >
+                02 // All Projects Archive
+              </a>
+              <a
+                href="#resume"
+                onClick={(e) => {
+                  if (onNavigate) {
+                    e.preventDefault();
+                    onNavigate('resume');
+                  }
+                }}
+                className="hover:text-terracotta transition-colors"
+              >
+                03 // Curriculum Vitae (PDF/TeX)
+              </a>
+              <a
+                href="#contact"
+                onClick={(e) => {
+                  if (onNavigate) {
+                    e.preventDefault();
+                    onNavigate('home', 'contact');
+                  }
+                }}
+                className="hover:text-terracotta transition-colors"
+              >
+                04 // Initiate Dialogue
+              </a>
             </div>
           </div>
         </div>
 
         {/* Hairline Bottom Bar */}
-        <div className="pt-6 border-t border-light-border/60 dark:border-dark-border/60 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2 text-light-ink-subtle dark:text-dark-ink-subtle text-xs font-sans">
             <span className="font-serif text-terracotta">❖</span>
-            <span>© {new Date().getFullYear()} Vincent Yuann. Crafted with restraint and clarity.</span>
+            <span>© {new Date().getFullYear()} Vincent Yuan. Crafted with deliberate restraint and clarity.</span>
           </div>
 
           <div className="flex items-center gap-3 text-light-ink-subtle dark:text-dark-ink-subtle text-xs font-sans">
-            <span className="uppercase tracking-widest text-[11px]">Tokyo / Global</span>
+            <span className="uppercase tracking-widest text-[11px] font-mono">Ma · Wabi-Sabi · Shokunin</span>
             <span className="text-terracotta text-xs">✦</span>
-            <span className="uppercase tracking-widest text-[11px]">Built on Solid Washi</span>
+            <span className="uppercase tracking-widest text-[11px]">Solid Washi</span>
           </div>
         </div>
       </div>

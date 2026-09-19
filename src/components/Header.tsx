@@ -5,9 +5,11 @@ import { HankoStamp } from './HankoStamp';
 
 interface HeaderProps {
   onOpenContact?: () => void;
+  currentView?: 'home' | 'projects' | 'resume';
+  onNavigate?: (view: 'home' | 'projects' | 'resume', sectionId?: string) => void;
 }
 
-export const Header: React.FC<HeaderProps> = ({ onOpenContact }) => {
+export const Header: React.FC<HeaderProps> = ({ onOpenContact, currentView = 'home', onNavigate }) => {
   const { theme, setTheme } = useTheme();
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -17,12 +19,14 @@ export const Header: React.FC<HeaderProps> = ({ onOpenContact }) => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 20);
 
+      if (currentView !== 'home') return;
+
       const sections = ['home', 'featured-works', 'philosophy', 'contact'];
       for (const sectionId of sections) {
         const el = document.getElementById(sectionId);
         if (el) {
           const rect = el.getBoundingClientRect();
-          if (rect.top <= 140 && rect.bottom >= 140) {
+          if (rect.top <= 160 && rect.bottom >= 160) {
             setActiveSection(sectionId);
             break;
           }
@@ -32,14 +36,23 @@ export const Header: React.FC<HeaderProps> = ({ onOpenContact }) => {
 
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [currentView]);
 
   const navItems = [
-    { id: 'home', num: '01', label: 'Home', href: '#home' },
-    { id: 'featured-works', num: '02', label: 'Projects', href: '#featured-works' },
-    { id: 'philosophy', num: '03', label: 'Philosophy', href: '#philosophy' },
-    { id: 'contact', num: '04', label: 'Contact', href: '#contact' },
+    { id: 'home', num: '01', label: 'Home', href: '#home', view: 'home' as const },
+    { id: 'featured-works', num: '02', label: 'Projects', href: '#featured-works', view: 'home' as const },
+    { id: 'resume', num: '03', label: 'Resume', href: '#resume', view: 'resume' as const },
+    { id: 'philosophy', num: '04', label: 'Philosophy', href: '#philosophy', view: 'home' as const },
+    { id: 'contact', num: '05', label: 'Contact', href: '#contact', view: 'home' as const },
   ];
+
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, item: typeof navItems[0]) => {
+    if (onNavigate) {
+      e.preventDefault();
+      onNavigate(item.view, item.id);
+      setMobileMenuOpen(false);
+    }
+  };
 
   return (
     <header
@@ -50,46 +63,41 @@ export const Header: React.FC<HeaderProps> = ({ onOpenContact }) => {
       }`}
     >
       <div className="h-20 w-full max-w-7xl mx-auto px-6 flex items-center justify-between gap-4">
-        {/* Left: Brand Identity with Hanko Stamp */}
-        <div className="flex items-center gap-4">
+        {/* Left: Brand Identity — Hanko Seal Stamp Only (No Name Text) */}
+        <div className="flex items-center gap-3">
           <a
             href="#home"
-            className="flex items-center gap-3 group"
+            onClick={(e) => {
+              if (onNavigate) {
+                e.preventDefault();
+                onNavigate('home', 'home');
+              }
+            }}
+            className="flex items-center group cursor-pointer"
+            aria-label="Vincent Yuan — Home"
+            title="Vincent Yuan — Home"
           >
             {/* Hanko Stamp Logo */}
-            <div className="relative flex items-center justify-center -rotate-1 transition-transform duration-300 group-hover:rotate-0">
-              <HankoStamp className="h-9 w-9 transition-all duration-300 group-hover:scale-105" />
-            </div>
-            <div className="flex flex-col">
-              <span className="font-serif text-lg font-medium tracking-tight text-light-ink dark:text-dark-ink leading-tight">
-                Vincent Yuann
-              </span>
-              <span className="font-sans text-[10px] uppercase font-semibold text-light-ink-muted dark:text-dark-ink-muted tracking-widest mt-0.5">
-                Software & AI Engineer
-              </span>
+            <div className="relative flex items-center justify-center -rotate-1 transition-transform duration-300 group-hover:rotate-0 group-hover:scale-105">
+              <HankoStamp className="h-9 w-9 transition-all duration-300" />
             </div>
           </a>
-
-          {/* Availability Status Pill */}
-          <div className="hidden lg:flex items-center gap-2 pl-4 py-1 border-l border-light-border dark:border-dark-border ml-2">
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-terracotta opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-terracotta"></span>
-            </span>
-            <span className="font-sans text-[11px] text-light-ink-muted dark:text-dark-ink-muted uppercase font-medium tracking-wider">
-              Open to Full-Stack & AI Roles
-            </span>
-          </div>
         </div>
 
         {/* Center: Desktop Navigation */}
         <nav className="hidden md:flex items-center gap-6 lg:gap-8">
           {navItems.map((item) => {
-            const isActive = activeSection === item.id;
+            const isActive = currentView === 'resume'
+              ? item.id === 'resume'
+              : currentView === 'projects'
+              ? item.id === 'featured-works'
+              : activeSection === item.id;
+
             return (
               <a
                 key={item.id}
                 href={item.href}
+                onClick={(e) => handleNavClick(e, item)}
                 className={`group relative font-sans text-xs uppercase tracking-widest transition-colors flex items-center gap-1.5 py-1 ${
                   isActive
                     ? 'text-terracotta font-semibold'
@@ -167,9 +175,11 @@ export const Header: React.FC<HeaderProps> = ({ onOpenContact }) => {
               <a
                 key={item.id}
                 href={item.href}
-                onClick={() => setMobileMenuOpen(false)}
+                onClick={(e) => handleNavClick(e, item)}
                 className={`flex items-center justify-between py-2 text-sm font-sans ${
-                  activeSection === item.id
+                  (currentView === 'resume' && item.id === 'resume') ||
+                  (currentView === 'projects' && item.id === 'featured-works') ||
+                  (currentView === 'home' && activeSection === item.id)
                     ? 'text-terracotta font-semibold'
                     : 'text-light-ink-muted dark:text-dark-ink-muted'
                 }`}
@@ -180,14 +190,20 @@ export const Header: React.FC<HeaderProps> = ({ onOpenContact }) => {
             ))}
             <div className="pt-3 border-t border-light-border dark:border-dark-border flex items-center justify-between">
               <span className="text-xs font-sans text-light-ink-muted dark:text-dark-ink-muted">
-                Status: Available
+                Vincent Yuan · 侘寂
               </span>
               <a
                 href="#contact"
-                onClick={() => setMobileMenuOpen(false)}
+                onClick={(e) => {
+                  setMobileMenuOpen(false);
+                  if (onNavigate) {
+                    e.preventDefault();
+                    onNavigate('home', 'contact');
+                  }
+                }}
                 className="text-xs font-sans font-medium text-terracotta"
               >
-                Get in Touch →
+                Initiate a Dialogue →
               </a>
             </div>
           </div>

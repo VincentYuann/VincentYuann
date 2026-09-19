@@ -1,22 +1,26 @@
 import React from 'react';
-import { ArrowRight, Sparkles, MapPin } from 'lucide-react';
+import { ArrowRight, Sparkles } from 'lucide-react';
 import { BambooArt } from './BambooArt';
 import { EnsoOrbital } from './EnsoOrbital';
 import { HankoStamp } from './HankoStamp';
 
-export const Hero: React.FC = () => {
+interface HeroProps {
+  onNavigate?: (view: 'home' | 'projects' | 'resume', sectionId?: string) => void;
+}
+
+export const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
   const coreStacks = [
-    'TYPESCRIPT',
-    'NEXT.JS / REACT',
-    'PYTHON / PYTORCH',
-    'POSTGRESQL',
-    'FASTAPI',
-    'LOCAL LLMS',
-    'DOCKER',
+    'TypeScript',
+    'Next.js / React',
+    'Python / PyTorch',
+    'PostgreSQL',
+    'FastAPI',
+    'Local LLMs',
+    'Docker',
   ];
 
   return (
-    <section id="home" className="relative w-full overflow-hidden pt-28 pb-16 lg:py-28">
+    <section id="home" className="relative w-full overflow-hidden pt-28 pb-16 lg:pt-36 lg:pb-24">
       {/* Full-Bleed Stretched Landscape Hero Banner with Sumi-e Mountains & Bamboo Art */}
       <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden select-none">
         {/* Stretched Panoramic Sumi-e Landscape & Bamboo Masterpiece Banner */}
@@ -56,6 +60,9 @@ export const Hero: React.FC = () => {
           />
         </div>
 
+        {/* Subtle Japanese Washi Dot Texture Layer */}
+        <div className="absolute inset-0 bg-transparent washi-pattern opacity-40 dark:opacity-20 pointer-events-none" />
+
         {/* Soft atmospheric gradient for crisp typography legibility without washing out the pine tree */}
         <div className="absolute inset-y-0 left-0 w-full sm:w-1/2 lg:w-2/5 bg-gradient-to-r from-light-canvas/75 via-light-canvas/30 to-transparent dark:from-dark-canvas/70 dark:via-dark-canvas/25 to-transparent z-10 pointer-events-none" />
 
@@ -65,8 +72,8 @@ export const Hero: React.FC = () => {
         {/* Bottom atmospheric fade: Guarantees 100% seamless blend into canvas with zero harsh line */}
         <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-light-canvas via-light-canvas/90 to-transparent dark:from-dark-canvas dark:via-dark-canvas/90 z-10 pointer-events-none" />
 
-        {/* Ambient Ink Dust Motes floating gently */}
-        <div className="absolute right-1/4 bottom-16 w-1.5 h-1.5 rounded-full bg-terracotta/40 mote-1 blur-[0.5px] z-20" />
+        {/* Subtle Celestial Orbiting Dust Particles */}
+        <div className="absolute left-1/4 top-1/3 w-1.5 h-1.5 rounded-full bg-ochre/40 mote-1 blur-[0.5px] z-20" />
         <div className="absolute right-1/3 bottom-28 w-2 h-2 rounded-full bg-ochre/30 mote-2 blur-[0.5px] z-20" />
         <div className="absolute right-1/2 bottom-12 w-1 h-1 rounded-full bg-light-ink-muted/30 dark:bg-[#edeae4]/35 mote-3 blur-[0.5px] z-20" />
       </div>
@@ -74,22 +81,7 @@ export const Hero: React.FC = () => {
       <div className="w-full max-w-7xl mx-auto px-6 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
         {/* Main Content Column (8 cols) */}
-        <div className="lg:col-span-8 flex flex-col space-y-6">
-          {/* Status & Location Pills */}
-          <div className="flex flex-wrap items-center gap-3">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-light-surface dark:bg-dark-surface border border-light-border dark:border-dark-border shadow-xs hover:border-bamboo/60 transition-colors">
-              <span className="inline-block w-2 h-2 rounded-full bg-bamboo animate-status-glow"></span>
-              <span className="font-sans text-[11px] font-semibold tracking-wider text-light-ink-muted dark:text-dark-ink-muted uppercase">
-                Open to Full-Stack & AI Roles
-              </span>
-            </div>
-            <span className="font-sans text-xs text-light-ink-subtle dark:text-dark-ink-subtle hidden sm:inline">•</span>
-            <div className="inline-flex items-center gap-1.5 text-light-ink-muted dark:text-dark-ink-muted font-sans text-xs">
-              <MapPin className="w-3.5 h-3.5 text-terracotta" />
-              <span>Tokyo & Remote Available</span>
-            </div>
-          </div>
-
+        <div className="lg:col-span-8 flex flex-col space-y-6 pt-2">
           {/* Display Headline */}
           <h1 className="font-serif text-3xl sm:text-5xl lg:text-6xl text-light-ink dark:text-dark-ink leading-[1.14] tracking-tight font-normal">
             Crafting thoughtful digital experiences with algorithmic clarity & Japanese{' '}
@@ -113,16 +105,28 @@ export const Hero: React.FC = () => {
           <div className="pt-2 flex flex-wrap items-center gap-4">
             <a
               href="#featured-works"
-              className="btn-bloom group inline-flex items-center gap-2.5 px-6 py-3.5 bg-light-button-dark dark:bg-dark-button-light text-light-on-dark dark:text-dark-on-light font-sans text-sm font-medium rounded-md shadow-sm transition-all duration-200"
+              onClick={(e) => {
+                if (onNavigate) {
+                  e.preventDefault();
+                  onNavigate('home', 'featured-works');
+                }
+              }}
+              className="btn-bloom group inline-flex items-center gap-2.5 px-6 py-3.5 bg-light-button-dark dark:bg-dark-button-light text-light-on-dark dark:text-dark-on-light font-sans text-sm font-medium rounded-md shadow-sm transition-all duration-200 cursor-pointer"
             >
               <span>Explore Selected Works</span>
               <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
             </a>
             <a
-              href="#philosophy"
-              className="group inline-flex items-center gap-2 px-6 py-3.5 bg-light-surface-card dark:bg-dark-surface border border-light-border dark:border-dark-border hover:border-terracotta/40 text-light-ink dark:text-dark-ink font-sans text-sm font-medium rounded-md shadow-xs transition-all duration-200 hover:-translate-y-0.5"
+              href="#resume"
+              onClick={(e) => {
+                if (onNavigate) {
+                  e.preventDefault();
+                  onNavigate('resume');
+                }
+              }}
+              className="group inline-flex items-center gap-2 px-6 py-3.5 bg-light-surface-card dark:bg-dark-surface border border-light-border dark:border-dark-border hover:border-terracotta/40 text-light-ink dark:text-dark-ink font-sans text-sm font-medium rounded-md shadow-xs transition-all duration-200 hover:-translate-y-0.5 cursor-pointer"
             >
-              <span>Read Notes & Philosophy</span>
+              <span>View Resume & CV</span>
               <Sparkles className="w-3.5 h-3.5 text-terracotta transition-transform duration-200 group-hover:rotate-45" />
             </a>
           </div>
@@ -159,9 +163,8 @@ export const Hero: React.FC = () => {
               <span className="font-sans font-semibold text-light-ink-subtle dark:text-dark-ink-subtle uppercase text-[10px] tracking-wider">
                 SEAL / 認印
               </span>
-              <span className="font-sans text-bamboo dark:text-[#ffb871] uppercase tracking-widest text-[10px] font-semibold flex items-center gap-1.5">
-                <span className="inline-block w-1.5 h-1.5 rounded-full bg-bamboo dark:bg-[#ffb871] animate-status-glow"></span>
-                VERIFIED CRAFT
+              <span className="font-sans text-light-ink-subtle dark:text-dark-ink-subtle uppercase tracking-widest text-[10px] font-mono">
+                KYOTO ARCHIVE
               </span>
             </div>
 
@@ -171,7 +174,7 @@ export const Hero: React.FC = () => {
             </div>
 
             <div className="mt-3 text-center relative z-10">
-              <h3 className="font-serif text-xl font-medium text-light-ink dark:text-dark-ink">Vincent Yuann</h3>
+              <h3 className="font-serif text-xl font-medium text-light-ink dark:text-dark-ink">Vincent Yuan</h3>
               <p className="font-sans text-xs text-light-ink-muted dark:text-dark-ink-muted mt-0.5">
                 Software & Generative AI Engineer
               </p>
@@ -188,14 +191,6 @@ export const Hero: React.FC = () => {
               <div className="writing-vertical-rl font-vertical text-[13px] tracking-[0.3em] text-light-ink-muted dark:text-dark-ink-muted opacity-70 h-32 leading-relaxed hover:opacity-100 transition-opacity cursor-default">
                 職人の精緻な組手
               </div>
-            </div>
-
-            {/* Decorative bottom notation */}
-            <div className="w-full mt-4 pt-2 flex items-center justify-center gap-2 opacity-80 border-t border-light-border/40 dark:border-dark-border/40 relative z-10">
-              <span className="font-serif text-terracotta text-xs">❖</span>
-              <span className="font-sans text-[10px] text-light-ink-subtle dark:text-dark-ink-subtle uppercase tracking-widest">
-                WABI-SABI CRAFT
-              </span>
             </div>
           </div>
         </div>

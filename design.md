@@ -1,7 +1,7 @@
 ---
-version: alpha
-name: Vincent Yuann — Akari Day & Night Portfolio
- description: >-
+version: 1.1.0
+name: Vincent Yuan — Akari Day & Night Portfolio
+description: >-
   A two-theme portfolio design system that combines a warm Akari-inspired
   editorial day mode with a quiet charcoal night mode. The visual language is
   Japanese-influenced, tactile, precise, and deliberately sparse.
@@ -325,11 +325,11 @@ components:
     size: "36px"
 ---
 
-# Vincent Yuann — Akari Day & Night Portfolio
+# Vincent Yuan — Akari Day & Night Portfolio
 
 ## Overview
 
-This is a portfolio design system for **Vincent Yuann, Software & AI Engineer**. It joins the restraint of Japanese editorial and Akari lighting references with the clarity expected of a contemporary technical portfolio. The result should feel calm, crafted, luminous, and quietly precise—not like a generic SaaS dashboard, a neon developer portfolio, or a dense résumé site.
+This is a portfolio design system for **Vincent Yuan, Distributed Systems & Generative AI Engineer**. It joins the restraint of Japanese editorial and Akari lighting references with the clarity expected of a contemporary technical portfolio. The result should feel calm, crafted, luminous, and quietly precise—not like a generic SaaS dashboard, a neon developer portfolio, or a dense résumé site.
 
 The system has two equal themes:
 
