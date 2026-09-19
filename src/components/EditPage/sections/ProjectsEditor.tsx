@@ -12,6 +12,7 @@ import {
   Loader2,
 } from 'lucide-react';
 import { supabase } from '../../../lib/supabase';
+import { useSiteData } from '../../../context/SiteDataContext';
 
 /* ─── Types ──────────────────────────────────────────────────────────── */
 
@@ -294,6 +295,7 @@ const SaveButton: React.FC<{ state: SaveState; errorMsg: string; onClick: () => 
 
 /* ─── Main Component ─────────────────────────────────────────────────── */
 export const ProjectsEditor: React.FC = () => {
+  const { refresh } = useSiteData();
   const [projects, setProjects] = useState<ProjectEntry[]>([newProject()]);
   const [saveState, setSaveState] = useState<SaveState>('idle');
   const [errorMsg, setErrorMsg] = useState('');
@@ -368,6 +370,7 @@ export const ProjectsEditor: React.FC = () => {
       const { error } = await supabase.from('projects').upsert(rows, { onConflict: 'title' });
       if (error) throw error;
 
+      await refresh();
       setSaveState('success');
       setTimeout(() => setSaveState('idle'), 4000);
     } catch (err: unknown) {

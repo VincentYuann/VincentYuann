@@ -4,6 +4,7 @@ import { sendContactMessage } from '../lib/supabase';
 import { BambooArt } from './BambooArt';
 import { EnsoOrbital } from './EnsoOrbital';
 import { HankoStamp } from './HankoStamp';
+import { useSiteData, DEFAULT_PROFILE } from '../context/SiteDataContext';
 
 export const ContactSection: React.FC = () => {
   const [name, setName] = useState('');
@@ -66,7 +67,12 @@ export const ContactSection: React.FC = () => {
     }
   };
 
-  const mailtoHref = `mailto:vincentyuan1020@gmail.com?subject=${encodeURIComponent(
+  const { profile } = useSiteData();
+  const contactEmail = profile?.email || DEFAULT_PROFILE.email;
+  const contactGithub = profile?.github || DEFAULT_PROFILE.github;
+  const contactLinkedin = profile?.linkedin || DEFAULT_PROFILE.linkedin;
+
+  const mailtoHref = `mailto:${contactEmail}?subject=${encodeURIComponent(
     `[Portfolio Contact] - ${name.trim() || 'Direct Inquiry'}`
   )}`;
 
@@ -116,15 +122,15 @@ export const ContactSection: React.FC = () => {
           <div className="corner-bracket corner-bracket-bl absolute bottom-3 left-3 w-3.5 h-3.5 border-b border-l border-ochre/40 dark:border-ochre/30 pointer-events-none" />
           <div className="corner-bracket corner-bracket-br absolute bottom-3 right-3 w-3.5 h-3.5 border-b border-r border-ochre/40 dark:border-ochre/30 pointer-events-none" />
 
-          {/* Sumi-e Mountain Landscape Mask Backdrop with Ambient Drift — Anchored to Left */}
-          <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-full sm:w-3/5 select-none overflow-hidden opacity-35 dark:opacity-30 mix-blend-multiply dark:mix-blend-screen animate-gentle-drift rounded-l-2xl">
+          {/* High-Definition Sumi-e Mountain Landscape Mask Backdrop with Ambient Drift — Anchored to Left */}
+          <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-full sm:w-3/5 select-none overflow-hidden opacity-45 dark:opacity-40 mix-blend-multiply dark:mix-blend-screen dark:invert animate-gentle-drift rounded-l-2xl">
             <img
-              src="./images/contact-sumie-mountain.png"
-              alt="Sumi-e misty mountain backdrop"
+              src="./images/hero-sumie-landscape-banner.jpg"
+              alt="High-resolution Sumi-e misty mountain backdrop"
               className="w-full h-full object-cover object-left-bottom sm:object-left"
               style={{
-                maskImage: 'linear-gradient(to right, black 30%, transparent 90%)',
-                WebkitMaskImage: 'linear-gradient(to right, black 30%, transparent 90%)',
+                maskImage: 'linear-gradient(to right, black 35%, transparent 88%)',
+                WebkitMaskImage: 'linear-gradient(to right, black 35%, transparent 88%)',
               }}
             />
           </div>
@@ -160,11 +166,11 @@ export const ContactSection: React.FC = () => {
                   className="btn-bloom inline-flex items-center gap-2 px-6 py-3.5 bg-terracotta hover:bg-terracotta-hover text-white font-sans text-xs uppercase tracking-widest rounded-lg shadow-sm"
                 >
                   <Mail className="w-4 h-4" />
-                  <span>vincentyuan1020@gmail.com</span>
+                  <span>{contactEmail}</span>
                 </a>
 
                 <a
-                  href="https://github.com/VincentYuann"
+                  href={contactGithub}
                   target="_blank"
                   rel="noreferrer"
                   className="inline-flex items-center gap-2 px-5 py-3.5 bg-light-surface-raised dark:bg-[#1B1C22] border border-light-border dark:border-[#2D3039] hover:bg-light-surface dark:hover:bg-[#252831] hover:border-ochre/50 text-light-ink dark:text-[#EDEAE4] font-sans text-xs uppercase tracking-widest rounded-lg shadow-xs transition-all duration-200"
@@ -174,7 +180,7 @@ export const ContactSection: React.FC = () => {
                 </a>
 
                 <a
-                  href="https://linkedin.com"
+                  href={contactLinkedin}
                   target="_blank"
                   rel="noreferrer"
                   className="inline-flex items-center gap-2 px-5 py-3.5 bg-light-surface-raised dark:bg-[#1B1C22] border border-light-border dark:border-[#2D3039] hover:bg-light-surface dark:hover:bg-[#252831] hover:border-ochre/50 text-light-ink dark:text-[#EDEAE4] font-sans text-xs uppercase tracking-widest rounded-lg shadow-xs transition-all duration-200"

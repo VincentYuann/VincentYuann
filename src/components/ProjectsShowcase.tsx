@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { PROJECTS, Project } from '../data/projects';
+import { Project } from '../data/projects';
 import { ArrowRight, Layers, Github, ExternalLink } from 'lucide-react';
 import { ProjectDetailModal } from './ProjectDetailModal';
 import { EnsoOrbital } from './EnsoOrbital';
+import { useSiteData } from '../context/SiteDataContext';
 
 interface ProjectsShowcaseProps {
   onNavigate?: (view: 'home' | 'projects' | 'resume', sectionId?: string) => void;
@@ -10,8 +11,9 @@ interface ProjectsShowcaseProps {
 
 export const ProjectsShowcase: React.FC<ProjectsShowcaseProps> = ({ onNavigate }) => {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const { projects } = useSiteData();
 
-  const displayedProjects = PROJECTS.slice(0, 3);
+  const displayedProjects = (projects && projects.length > 0 ? projects : []).slice(0, 3);
 
   return (
     <section id="featured-works" className="relative w-full overflow-hidden py-14 lg:py-20">
@@ -75,7 +77,7 @@ export const ProjectsShowcase: React.FC<ProjectsShowcaseProps> = ({ onNavigate }
               className="group inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-light-surface-card dark:bg-[#181920] border border-light-border dark:border-[#2D3039] hover:border-terracotta/50 text-light-ink dark:text-[#EDEAE4] font-sans text-xs uppercase tracking-widest shadow-xs transition-all duration-200"
             >
               <Layers className="w-3.5 h-3.5 text-terracotta" />
-              <span>View All Projects ({PROJECTS.length})</span>
+              <span>View All Projects ({projects?.length || 0})</span>
               <ArrowRight className="w-3.5 h-3.5 text-terracotta transition-transform duration-200 group-hover:translate-x-1" />
             </a>
           </div>

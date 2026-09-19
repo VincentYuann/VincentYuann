@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ThemeProvider } from './context/ThemeContext';
+import { SiteDataProvider } from './context/SiteDataContext';
 import { Header } from './components/Header';
 import { Hero } from './components/Hero';
 import { SectionDivider } from './components/SectionDivider';
@@ -140,47 +141,49 @@ export const App: React.FC = () => {
 
   return (
     <ThemeProvider>
-      <div className="min-h-screen bg-light-canvas dark:bg-dark-canvas text-light-ink dark:text-dark-ink washi-pattern transition-colors duration-300 flex flex-col selection:bg-terracotta/20 selection:text-terracotta">
-        <Header
-          currentView={currentView}
-          onNavigate={handleNavigate}
-          onOpenContact={() => handleNavigate('home', 'contact')}
-          isAdmin={isAdmin}
-          onLogout={handleLogout}
-        />
+      <SiteDataProvider>
+        <div className="min-h-screen bg-light-canvas dark:bg-dark-canvas text-light-ink dark:text-dark-ink washi-pattern transition-colors duration-300 flex flex-col selection:bg-terracotta/20 selection:text-terracotta">
+          <Header
+            currentView={currentView}
+            onNavigate={handleNavigate}
+            onOpenContact={() => handleNavigate('home', 'contact')}
+            isAdmin={isAdmin}
+            onLogout={handleLogout}
+          />
 
-        <main className="flex-1 w-full">
-          {currentView === 'login' && (
-            <LoginPage onNavigate={handleNavigate} />
-          )}
+          <main className="flex-1 w-full">
+            {currentView === 'login' && (
+              <LoginPage onNavigate={handleNavigate} />
+            )}
 
-          {currentView === 'edit' && isAdmin && (
-            <EditPage onNavigate={handleNavigate} />
-          )}
+            {currentView === 'edit' && isAdmin && (
+              <EditPage onNavigate={handleNavigate} />
+            )}
 
-          {currentView === 'resume' && (
-            <ResumePage onNavigate={handleNavigate} />
-          )}
+            {currentView === 'resume' && (
+              <ResumePage onNavigate={handleNavigate} />
+            )}
 
-          {currentView === 'projects' && (
-            <ProjectsPage onNavigate={handleNavigate} />
-          )}
+            {currentView === 'projects' && (
+              <ProjectsPage onNavigate={handleNavigate} />
+            )}
 
-          {currentView === 'home' && (
-            <>
-              <Hero onNavigate={handleNavigate} />
-              <SectionDivider label="MA · WABI-SABI · CRAFT" />
-              <ProjectsShowcase onNavigate={handleNavigate} />
-              <SectionDivider label="PHILOSOPHY · SHOKUNIN · MA" />
-              <PhilosophyBento />
-              <SectionDivider label="INITIATE A DIALOGUE · 対話" />
-              <ContactSection />
-            </>
-          )}
-        </main>
+            {currentView === 'home' && (
+              <>
+                <Hero onNavigate={handleNavigate} />
+                <SectionDivider label="MA · WABI-SABI · CRAFT" />
+                <ProjectsShowcase onNavigate={handleNavigate} />
+                <SectionDivider label="PHILOSOPHY · SHOKUNIN · MA" />
+                <PhilosophyBento />
+                <SectionDivider label="INITIATE A DIALOGUE · 対話" />
+                <ContactSection />
+              </>
+            )}
+          </main>
 
-        {currentView === 'home' && <Footer onNavigate={handleNavigate} />}
-      </div>
+          {currentView === 'home' && <Footer onNavigate={handleNavigate} />}
+        </div>
+      </SiteDataProvider>
     </ThemeProvider>
   );
 };

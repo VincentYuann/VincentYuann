@@ -3,17 +3,23 @@ import { ArrowRight, Sparkles } from 'lucide-react';
 import { BambooArt } from './BambooArt';
 import { EnsoOrbital } from './EnsoOrbital';
 import { HankoStamp } from './HankoStamp';
+import { useSiteData, DEFAULT_PROFILE } from '../context/SiteDataContext';
 
 interface HeroProps {
   onNavigate?: (view: 'home' | 'projects' | 'resume', sectionId?: string) => void;
 }
 
 export const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
-  const capabilityPillars = [
-    { label: 'SYSTEMS', items: 'Rust · Docker · Linux' },
-    { label: 'AI & RUNTIME', items: 'PyTorch · llama.cpp · Local LLMs' },
-    { label: 'FULL-STACK', items: 'Next.js · TypeScript · PostgreSQL' },
-  ];
+  const { profile } = useSiteData();
+
+  const headline = profile?.headline || DEFAULT_PROFILE.headline;
+  const tagline = profile?.tagline || DEFAULT_PROFILE.tagline;
+  const displayName = profile?.name || DEFAULT_PROFILE.name;
+  const displayRole = profile?.role || DEFAULT_PROFILE.role;
+  const capabilityPillars =
+    Array.isArray(profile?.capability_pillars) && profile.capability_pillars.length > 0
+      ? profile.capability_pillars
+      : DEFAULT_PROFILE.capability_pillars;
 
   return (
     <section id="home" className="relative w-full overflow-hidden pt-28 pb-16 lg:pt-36 lg:pb-24">
@@ -65,7 +71,7 @@ export const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
         {/* Top atmospheric fade under fixed appbar */}
         <div className="absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-light-canvas via-light-canvas/70 to-transparent dark:from-dark-canvas dark:via-dark-canvas/70 z-10 pointer-events-none" />
 
-        {/* Bottom atmospheric fade: Guarantees 100% seamless blend into canvas with zero harsh line */}
+        {/* Bottom atmospheric fade */}
         <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-light-canvas via-light-canvas/90 to-transparent dark:from-dark-canvas dark:via-dark-canvas/90 z-10 pointer-events-none" />
 
         {/* Subtle Celestial Orbiting Dust Particles */}
@@ -76,127 +82,121 @@ export const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
 
       <div className="w-full max-w-7xl mx-auto px-6 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
-        {/* Main Content Column (8 cols) */}
-        <div className="lg:col-span-8 flex flex-col space-y-6 pt-2">
-          {/* Display Headline */}
-          <h1 className="font-serif text-3xl sm:text-5xl lg:text-6xl text-light-ink dark:text-dark-ink leading-[1.14] tracking-tight font-normal">
-            Crafting thoughtful digital experiences with algorithmic clarity & Japanese{' '}
-            <span className="italic font-normal text-terracotta hover:scale-[1.01] inline-block transition-transform">
-              wabi-sabi
-            </span>{' '}
-            harmony.
-          </h1>
+          {/* Main Content Column (8 cols) */}
+          <div className="lg:col-span-8 flex flex-col space-y-6 pt-2">
+            {/* Display Headline */}
+            <h1 className="font-serif text-3xl sm:text-5xl lg:text-6xl text-light-ink dark:text-dark-ink leading-[1.14] tracking-tight font-normal">
+              {headline}
+            </h1>
 
-          {/* Narrative Paragraph */}
-          <p className="font-sans text-base sm:text-lg text-light-ink-muted dark:text-dark-ink-muted max-w-2xl leading-relaxed">
-            Specializing in robust distributed web architecture, local & cloud generative AI systems, and serene user
-            interfaces governed by the timeless cadence of intentional space (
-            <span className="text-light-ink dark:text-dark-ink font-medium border-b border-terracotta/40 pb-0.5">
-              間 · Ma
-            </span>
-            ). No noise, no excess—pure intentionality.
-          </p>
+            {/* Narrative Paragraph */}
+            <p className="font-sans text-base sm:text-lg text-light-ink-muted dark:text-dark-ink-muted max-w-2xl leading-relaxed">
+              {tagline}
+            </p>
 
-          {/* CTA Action Buttons */}
-          <div className="pt-2 flex flex-wrap items-center gap-4">
-            <a
-              href="#featured-works"
-              onClick={(e) => {
-                if (onNavigate) {
-                  e.preventDefault();
-                  onNavigate('home', 'featured-works');
-                }
-              }}
-              className="btn-bloom group inline-flex items-center gap-2.5 px-6 py-3.5 bg-light-button-dark dark:bg-dark-button-light text-light-on-dark dark:text-dark-on-light font-sans text-sm font-medium rounded-md shadow-sm transition-all duration-200 cursor-pointer"
-            >
-              <span>Explore Selected Works</span>
-              <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
-            </a>
-            <a
-              href="#resume"
-              onClick={(e) => {
-                if (onNavigate) {
-                  e.preventDefault();
-                  onNavigate('resume');
-                }
-              }}
-              className="group inline-flex items-center gap-2 px-6 py-3.5 bg-light-surface-card dark:bg-dark-surface border border-light-border dark:border-dark-border hover:border-terracotta/40 text-light-ink dark:text-dark-ink font-sans text-sm font-medium rounded-md shadow-xs transition-all duration-200 hover:-translate-y-0.5 cursor-pointer"
-            >
-              <span>View Resume & CV</span>
-              <Sparkles className="w-3.5 h-3.5 text-terracotta transition-transform duration-200 group-hover:rotate-45" />
-            </a>
-          </div>
-
-          {/* Tech Capabilities Ribbon */}
-          <div className="pt-3 flex flex-wrap items-center gap-2.5 text-light-ink-muted dark:text-dark-ink-muted">
-            <span className="font-sans text-[10px] font-semibold uppercase tracking-widest text-light-ink-subtle dark:text-dark-ink-subtle mr-1">
-              DOMAINS:
-            </span>
-            {capabilityPillars.map((pillar) => (
-              <div
-                key={pillar.label}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded bg-light-surface-card dark:bg-dark-surface border border-light-border/80 dark:border-[#2D3039] hover:border-terracotta/40 transition-colors"
+            {/* CTA Action Buttons */}
+            <div className="pt-2 flex flex-wrap items-center gap-4">
+              <a
+                href="#featured-works"
+                onClick={(e) => {
+                  if (onNavigate) {
+                    e.preventDefault();
+                    onNavigate('home', 'featured-works');
+                  }
+                }}
+                className="btn-bloom group inline-flex items-center gap-2.5 px-6 py-3.5 bg-light-button-dark dark:bg-dark-button-light text-light-on-dark dark:text-dark-on-light font-sans text-sm font-medium rounded-md shadow-sm transition-all duration-200 cursor-pointer"
               >
-                <span className="font-mono text-[10px] font-semibold text-terracotta uppercase tracking-wider">
-                  {pillar.label}
+                <span>Explore Selected Works</span>
+                <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
+              </a>
+              <a
+                href="#resume"
+                onClick={(e) => {
+                  if (onNavigate) {
+                    e.preventDefault();
+                    onNavigate('resume');
+                  }
+                }}
+                className="group inline-flex items-center gap-2 px-6 py-3.5 bg-light-surface-card dark:bg-dark-surface border border-light-border dark:border-dark-border hover:border-terracotta/40 text-light-ink dark:text-dark-ink font-sans text-sm font-medium rounded-md shadow-xs transition-all duration-200 hover:-translate-y-0.5 cursor-pointer"
+              >
+                <span>View Resume & CV</span>
+                <Sparkles className="w-3.5 h-3.5 text-terracotta transition-transform duration-200 group-hover:rotate-45" />
+              </a>
+            </div>
+
+            {/* Tech Capabilities Ribbon */}
+            {capabilityPillars.length > 0 && (
+              <div className="pt-3 flex flex-wrap items-center gap-2.5 text-light-ink-muted dark:text-dark-ink-muted">
+                <span className="font-sans text-[10px] font-semibold uppercase tracking-widest text-light-ink-subtle dark:text-dark-ink-subtle mr-1">
+                  DOMAINS:
                 </span>
-                <span className="text-light-ink-subtle dark:text-dark-ink-subtle text-xs">/</span>
-                <span className="font-sans text-xs text-light-ink dark:text-dark-ink font-medium">
-                  {pillar.items}
+                {capabilityPillars.map((pillar) => (
+                  <div
+                    key={pillar.label}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded bg-light-surface-card dark:bg-dark-surface border border-light-border/80 dark:border-[#2D3039] hover:border-terracotta/40 transition-colors"
+                  >
+                    <span className="font-mono text-[10px] font-semibold text-terracotta uppercase tracking-wider">
+                      {pillar.label}
+                    </span>
+                    <span className="text-light-ink-subtle dark:text-dark-ink-subtle text-xs">/</span>
+                    <span className="font-sans text-xs text-light-ink dark:text-dark-ink font-medium">
+                      {pillar.items}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Right Column: Classical Seal Showcase Box (4 cols) with Double Hairline Frame & Ensō Background */}
+          <div className="lg:col-span-4 flex flex-col items-center lg:items-end justify-between self-stretch pt-6 lg:pt-0 relative">
+            {/* Authentic Sumi-e Bamboo Art Floating Beside Seal Box with Gentle Sway */}
+            <div className="absolute -left-14 -top-12 hidden lg:block pointer-events-none -z-0">
+              <BambooArt className="w-40 h-56" sway={true} opacity={0.75} />
+            </div>
+
+            <div className="relative z-10 w-full max-w-sm bg-light-surface-card/95 dark:bg-dark-surface/95 backdrop-blur-md double-hairline-frame p-6 rounded-xl shadow-lg flex flex-col items-center text-center transition-all duration-300 hover:shadow-2xl group">
+              {/* Celestial Ensō Orbital Circle */}
+              <EnsoOrbital placement="top-left" size={136} interactive={true} />
+
+              {/* Box Header */}
+              <div className="w-full flex items-center justify-between pb-2 mb-4 border-b border-light-border/60 dark:border-dark-border/60 relative z-10">
+                <span className="font-sans font-semibold text-light-ink-subtle dark:text-dark-ink-subtle uppercase text-[10px] tracking-wider">
+                  SEAL / 認印
+                </span>
+                <span className="font-sans text-light-ink-subtle dark:text-dark-ink-subtle uppercase tracking-widest text-[10px] font-mono">
+                  KYOTO ARCHIVE
                 </span>
               </div>
-            ))}
-          </div>
-        </div>
 
-        {/* Right Column: Classical Seal Showcase Box (4 cols) with Double Hairline Frame & Ensō Background */}
-        <div className="lg:col-span-4 flex flex-col items-center lg:items-end justify-between self-stretch pt-6 lg:pt-0 relative">
-          {/* Authentic Sumi-e Bamboo Art Floating Beside Seal Box with Gentle Sway */}
-          <div className="absolute -left-14 -top-12 hidden lg:block pointer-events-none -z-0">
-            <BambooArt className="w-40 h-56" sway={true} opacity={0.75} />
-          </div>
-
-          <div className="relative z-10 w-full max-w-sm bg-light-surface-card/95 dark:bg-dark-surface/95 backdrop-blur-md double-hairline-frame p-6 rounded-xl shadow-lg flex flex-col items-center text-center transition-all duration-300 hover:shadow-2xl group">
-            {/* Celestial Ensō Orbital Circle: positioned on card top-left with rotating golden arc and pulsing ruby */}
-            <EnsoOrbital placement="top-left" size={136} interactive={true} />
-
-            {/* Box Header */}
-            <div className="w-full flex items-center justify-between pb-2 mb-4 border-b border-light-border/60 dark:border-dark-border/60 relative z-10">
-              <span className="font-sans font-semibold text-light-ink-subtle dark:text-dark-ink-subtle uppercase text-[10px] tracking-wider">
-                SEAL / 認印
-              </span>
-              <span className="font-sans text-light-ink-subtle dark:text-dark-ink-subtle uppercase tracking-widest text-[10px] font-mono">
-                KYOTO ARCHIVE
-              </span>
-            </div>
-
-            {/* Hanko Seal Mark with Breathing Pulse */}
-            <div className="relative p-2 flex items-center justify-center animate-seal-breathe z-10">
-              <HankoStamp className="w-20 h-20 transition-transform duration-300 group-hover:scale-105" />
-            </div>
-
-            <div className="mt-3 text-center relative z-10">
-              <h3 className="font-serif text-xl font-medium text-light-ink dark:text-dark-ink">Vincent Yuan</h3>
-              <p className="font-sans text-xs text-light-ink-muted dark:text-dark-ink-muted mt-0.5">
-                Software & Generative AI Engineer
-              </p>
-            </div>
-
-            {/* Vertical Tategaki Japanese Prose snippet */}
-            <div className="w-full mt-4 pt-4 bg-light-surface-raised dark:bg-dark-surface-muted border border-light-border/70 dark:border-dark-border/70 rounded-md p-4 flex items-center justify-center gap-6 group-hover:border-terracotta/30 transition-colors duration-300 relative z-10">
-              <div className="writing-vertical-rl font-vertical text-[13px] tracking-[0.3em] text-light-ink-muted dark:text-dark-ink-muted opacity-85 h-32 leading-relaxed hover:opacity-100 transition-opacity cursor-default">
-                間と余白の美学
+              {/* Hanko Seal Mark with Breathing Pulse */}
+              <div className="relative p-2 flex items-center justify-center animate-seal-breathe z-10">
+                <HankoStamp className="w-20 h-20 transition-transform duration-300 group-hover:scale-105" />
               </div>
-              <div className="writing-vertical-rl font-vertical text-[13px] tracking-[0.3em] text-terracotta font-medium h-32 leading-relaxed hover:scale-105 transition-transform cursor-default">
-                静寂と簡素な調和
+
+              <div className="mt-3 text-center relative z-10">
+                <h3 className="font-serif text-xl font-medium text-light-ink dark:text-dark-ink">
+                  {displayName}
+                </h3>
+                <p className="font-sans text-xs text-light-ink-muted dark:text-dark-ink-muted mt-0.5">
+                  {displayRole}
+                </p>
               </div>
-              <div className="writing-vertical-rl font-vertical text-[13px] tracking-[0.3em] text-light-ink-muted dark:text-dark-ink-muted opacity-70 h-32 leading-relaxed hover:opacity-100 transition-opacity cursor-default">
-                職人の精緻な組手
+
+              {/* Vertical Tategaki Japanese Prose snippet */}
+              <div className="w-full mt-4 pt-4 bg-light-surface-raised dark:bg-dark-surface-muted border border-light-border/70 dark:border-dark-border/70 rounded-md p-4 flex items-center justify-center gap-6 group-hover:border-terracotta/30 transition-colors duration-300 relative z-10">
+                <div className="writing-vertical-rl font-vertical text-[13px] tracking-[0.3em] text-light-ink-muted dark:text-dark-ink-muted opacity-85 h-32 leading-relaxed hover:opacity-100 transition-opacity cursor-default">
+                  間と余白の美学
+                </div>
+                <div className="writing-vertical-rl font-vertical text-[13px] tracking-[0.3em] text-terracotta font-medium h-32 leading-relaxed hover:scale-105 transition-transform cursor-default">
+                  静寂と簡素な調和
+                </div>
+                <div className="writing-vertical-rl font-vertical text-[13px] tracking-[0.3em] text-light-ink-muted dark:text-dark-ink-muted opacity-70 h-32 leading-relaxed hover:opacity-100 transition-opacity cursor-default">
+                  職人の精緻な組手
+                </div>
               </div>
             </div>
           </div>
-        </div>
-
         </div>
       </div>
     </section>

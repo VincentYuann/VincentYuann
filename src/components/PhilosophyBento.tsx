@@ -2,66 +2,53 @@ import React from 'react';
 import { Compass, Feather, ShieldCheck } from 'lucide-react';
 import { BambooArt } from './BambooArt';
 import { EnsoOrbital } from './EnsoOrbital';
+import { useSiteData, DEFAULT_PILLARS } from '../context/SiteDataContext';
+
+const PILLAR_CONFIGS = [
+  {
+    icon: Compass,
+    num: 'PILLAR 01',
+    watermark: (
+      <svg
+        className="w-32 h-32 absolute -right-6 -bottom-6 text-light-ink-muted/15 dark:text-dark-ink-muted/10 pointer-events-none"
+        viewBox="0 0 100 100"
+        fill="none"
+        stroke="currentColor"
+      >
+        <circle cx="50" cy="50" r="15" strokeWidth="0.8" strokeDasharray="2 3" />
+        <circle cx="50" cy="50" r="28" strokeWidth="0.8" />
+        <circle cx="50" cy="50" r="42" strokeWidth="0.6" strokeDasharray="3 4" />
+      </svg>
+    ),
+  },
+  {
+    icon: Feather,
+    num: 'PILLAR 02',
+    watermark: (
+      <div className="absolute -right-4 -bottom-4 w-32 h-36 opacity-20 dark:opacity-10 pointer-events-none">
+        <img
+          src="./images/sumie-pine-tree-left.jpg"
+          alt="Pine motif"
+          className="w-full h-full object-contain object-bottom-right mix-blend-multiply dark:mix-blend-screen dark:invert"
+        />
+      </div>
+    ),
+  },
+  {
+    icon: ShieldCheck,
+    num: 'PILLAR 03',
+    watermark: (
+      <div className="absolute -right-4 -bottom-4 w-28 h-40 opacity-25 dark:opacity-15 pointer-events-none">
+        <BambooArt className="w-full h-full" sway={false} opacity={0.8} />
+      </div>
+    ),
+  },
+];
 
 export const PhilosophyBento: React.FC = () => {
-  const pillars = [
-    {
-      kanji: '間',
-      romaji: 'Ma',
-      title: 'Intentional Space',
-      num: 'PILLAR 01',
-      icon: Compass,
-      tag: 'Uncluttered System Boundaries',
-      description:
-        'Empty space is not an absence of features; it is an active structural element. Clean microservices, unencumbered visual layouts, and minimal latency let user attention focus without fatigue.',
-      watermark: (
-        <svg
-          className="w-32 h-32 absolute -right-6 -bottom-6 text-light-ink-muted/15 dark:text-dark-ink-muted/10 pointer-events-none"
-          viewBox="0 0 100 100"
-          fill="none"
-          stroke="currentColor"
-        >
-          <circle cx="50" cy="50" r="15" strokeWidth="0.8" strokeDasharray="2 3" />
-          <circle cx="50" cy="50" r="28" strokeWidth="0.8" />
-          <circle cx="50" cy="50" r="42" strokeWidth="0.6" strokeDasharray="3 4" />
-        </svg>
-      ),
-    },
-    {
-      kanji: '侘寂',
-      romaji: 'Wabi-Sabi',
-      title: 'Authenticity & Patina',
-      num: 'PILLAR 02',
-      icon: Feather,
-      tag: 'Graceful Degradation & Warmth',
-      description:
-        'Embracing real-world imperfection with honesty. Tactile finishes, organic ink wash motifs, resilient error-recovery strategies, and software that ages gracefully with its users over time.',
-      watermark: (
-        <div className="absolute -right-4 -bottom-4 w-32 h-36 opacity-20 dark:opacity-10 pointer-events-none">
-          <img
-            src="./images/sumie-pine-tree-left.jpg"
-            alt="Pine motif"
-            className="w-full h-full object-contain object-bottom-right mix-blend-multiply dark:mix-blend-screen dark:invert"
-          />
-        </div>
-      ),
-    },
-    {
-      kanji: '職人',
-      romaji: 'Shokunin',
-      title: 'Obsessive Craftsmanship',
-      num: 'PILLAR 03',
-      icon: ShieldCheck,
-      tag: 'Deep Code Integrity & Care',
-      description:
-        'The craftsman’s obligation to perform one’s best work for the social welfare. Rigorous test coverage, deterministic API contracts, and fine joinery in every line of TypeScript and Python.',
-      watermark: (
-        <div className="absolute -right-4 -bottom-4 w-28 h-40 opacity-25 dark:opacity-15 pointer-events-none">
-          <BambooArt className="w-full h-full" sway={false} opacity={0.8} />
-        </div>
-      ),
-    },
-  ];
+  const { pillars: rawPillars } = useSiteData();
+  const displayPillars =
+    Array.isArray(rawPillars) && rawPillars.length > 0 ? rawPillars : DEFAULT_PILLARS;
 
   return (
     <section id="philosophy" className="relative w-full overflow-hidden py-16 lg:py-24">
@@ -157,21 +144,28 @@ export const PhilosophyBento: React.FC = () => {
           </p>
         </div>
 
-        {/* 3 Core Philosophy Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
-          {pillars.map((pillar, idx) => {
-            const Icon = pillar.icon;
+        {/* Dynamic Philosophy Cards */}
+        <div
+          className={`grid grid-cols-1 ${
+            displayPillars.length === 1
+              ? 'max-w-xl mx-auto'
+              : displayPillars.length === 2
+              ? 'md:grid-cols-2 max-w-4xl mx-auto'
+              : 'md:grid-cols-3'
+          } gap-6 lg:gap-8`}
+        >
+          {displayPillars.map((pillar, idx) => {
+            const config = PILLAR_CONFIGS[idx % PILLAR_CONFIGS.length];
+            const Icon = config.icon;
+            const num = `PILLAR ${String(pillar.position || idx + 1).padStart(2, '0')}`;
+
             return (
               <div
-                key={idx}
+                key={pillar.position || idx}
                 className="interactive-card bg-light-surface-card/95 dark:bg-[#1B1C22]/95 backdrop-blur-sm border border-light-border dark:border-[#2D3039] rounded-xl p-7 sm:p-8 flex flex-col justify-between shadow-sm relative overflow-visible group hover:bg-light-surface dark:hover:bg-[#202229] transition-all duration-300 hover:shadow-akari dark:hover:shadow-night-glow classical-card-frame"
               >
                 {/* Celestial Ensō Orbital Circle: appears ONLY on the hovered card */}
-                <EnsoOrbital
-                  placement="top-left"
-                  size={112}
-                  hoverOnly={true}
-                />
+                <EnsoOrbital placement="top-left" size={112} hoverOnly={true} />
 
                 {/* Corner Hairline Brackets */}
                 <div className="corner-bracket corner-bracket-tl absolute top-2.5 left-2.5 w-3 h-3 border-t border-l border-ochre/40 dark:border-ochre/30 pointer-events-none" />
@@ -187,7 +181,7 @@ export const PhilosophyBento: React.FC = () => {
                     </span>
                     <div className="flex items-center gap-2">
                       <span className="font-sans text-[10px] font-semibold text-light-ink-subtle dark:text-dark-ink-subtle uppercase tracking-widest">
-                        {pillar.num}
+                        {num}
                       </span>
                       <div className="w-7 h-7 rounded-full bg-light-surface-raised dark:bg-[#14151A] border border-light-border dark:border-[#2D3039] flex items-center justify-center">
                         <Icon className="w-3.5 h-3.5 text-terracotta" />
@@ -198,9 +192,11 @@ export const PhilosophyBento: React.FC = () => {
                   <div>
                     <h3 className="font-serif text-xl sm:text-2xl text-light-ink dark:text-dark-ink font-normal tracking-tight group-hover:text-terracotta transition-colors">
                       {pillar.romaji}{' '}
-                      <span className="text-light-ink-muted dark:text-dark-ink-muted text-base font-light">
-                        ({pillar.title})
-                      </span>
+                      {pillar.title && (
+                        <span className="text-light-ink-muted dark:text-dark-ink-muted text-base font-light">
+                          ({pillar.title})
+                        </span>
+                      )}
                     </h3>
                     <p className="font-sans text-xs sm:text-sm text-light-ink-muted dark:text-dark-ink-muted mt-3 leading-relaxed font-light">
                       {pillar.description}
@@ -209,15 +205,17 @@ export const PhilosophyBento: React.FC = () => {
                 </div>
 
                 {/* Bottom Tag */}
-                <div className="relative z-10 pt-6 mt-6 border-t border-light-border/40 dark:border-[#2D3039]/40 flex items-center gap-2 text-light-ink-subtle dark:text-dark-ink-subtle">
-                  <span className="w-1.5 h-1.5 rounded-full bg-terracotta" />
-                  <span className="font-sans text-[10px] uppercase tracking-[0.18em] font-medium">
-                    {pillar.tag}
-                  </span>
-                </div>
+                {pillar.tag && (
+                  <div className="relative z-10 pt-6 mt-6 border-t border-light-border/40 dark:border-[#2D3039]/40 flex items-center gap-2 text-light-ink-subtle dark:text-dark-ink-subtle">
+                    <span className="w-1.5 h-1.5 rounded-full bg-terracotta" />
+                    <span className="font-sans text-[10px] uppercase tracking-[0.18em] font-medium">
+                      {pillar.tag}
+                    </span>
+                  </div>
+                )}
 
                 {/* Thematic Watermark Motif behind card content */}
-                {pillar.watermark}
+                {config.watermark}
               </div>
             );
           })}
