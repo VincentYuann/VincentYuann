@@ -1,7 +1,10 @@
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
+const supabaseUrl =
+  import.meta.env.VITE_SUPABASE_URL || 'https://pqowefuwzxcrfzmnubvo.supabase.co';
+const supabaseAnonKey =
+  import.meta.env.VITE_SUPABASE_ANON_KEY ||
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBxb3dlZnV3enhjcmZ6bW51YnZvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk2NjMyNTcsImV4cCI6MjEwNTIzOTI1N30.k2eQfW7tPSL-cWJq1GRH8qYe7CLrh3HmXgVOKY18FiY';
 
 // S3 Storage endpoint & region (public metadata, no secrets leaked)
 export const S3_STORAGE_ENDPOINT =
