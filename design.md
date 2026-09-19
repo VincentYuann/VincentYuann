@@ -581,12 +581,23 @@ Cards provide containment, quiet architectural framing, and serene focus:
 
 ### Tags and filters
 
-Technology tags should be informative but visually quiet.
+Technology tags should be informative, crisp, and visually restrained:
 
-- Use `tag-light` / `tag-dark` as outlined neutral pills.
-- Use uppercase labels such as React, Next.js, Python, AWS, Docker, PostgreSQL, Supabase, n8n, LlamaIndex, or Qdrant.
-- Tags should remain neutral in both themes. Do not color-code individual technologies.
-- Use terracotta only for a selected filter state if a clear selected state is needed; otherwise use a dark fill in light mode or light fill in dark mode.
+- **Component**: `<TechTag />` (`src/components/TechTag.tsx`).
+- **Neutral Monochrome Styling**: Use `tag-light` / `tag-dark` as outlined neutral pills. In Day mode, tags use warm washi surface (`#F7F0E3`) with deep charcoal ink (`#2B2E3A`) and tan border (`#D9C9AE`). In Night mode, tags use obsidian charcoal (`#16171D`) with warm off-white ink (`#EDEAE4`) and slate border (`#333640`).
+- **Architectural Micro-Icons (`lucide-react`)**: Each tag displays a clean monochrome domain icon (e.g., `Sparkles` for AI/LLMs, `Terminal` for CLI & languages, `Code2` for React/Next.js/TS, `Box` for Docker/K8s, `Database` for PostgreSQL/Supabase, `Workflow` for Streams/WebSockets, `Server` for Cloud/Linux, `Layers` for WebGL/3D).
+- **Strict Anti-Rainbow Rule**: Tags must NEVER be color-coded with random rainbow tints (no pastel green, blue, purple, yellow badges). They remain strictly monochrome and harmonious with the theme.
+- **Micro-Interactions**: Clean terracotta border and text transition on hover (`hover:border-terracotta hover:text-terracotta`).
+
+### Notifications and toasts (Sonner)
+
+Toasts provide instant, non-intrusive feedback with high-contrast inverse theming:
+
+- **Component**: `<ThemedToaster />` (`src/components/ThemedToaster.tsx`).
+- **Inverse Theme Contrast**:
+  - **Day Mode Canvas**: Toasts render in **Night Theme** (Deep Obsidian Charcoal `#16171D` with crisp off-white text `#EDEAE4`, slate border `#3A3D44`, and luminous terracotta icon `#FFB5A7`) to achieve maximum pop and contrast against light paper backgrounds.
+  - **Night Mode Canvas**: Toasts render in **Day Theme** (Warm Washi Parchment `#FFFDF9` with deep sumi ink `#1E1F24`, tan border `#BDAA89`, and cinnabar terracotta icon `#C83C23`) to stand out luminously against dark obsidian surfaces.
+- **No Generic Alert Colors**: Avoid generic bootstrap pastel greens or yellows. All toasts use the brand palette (Terracotta, Ochre, Sumi Charcoal, and Washi Parchment).
 
 ### Tabs, pagination, and status
 
