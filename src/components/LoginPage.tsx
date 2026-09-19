@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { supabase, formatErrorMessage } from '../lib/supabase';
+import { supabase, formatErrorMessage, getOAuthRedirectUrl } from '../lib/supabase';
 import { toast } from 'sonner';
 
 interface LoginPageProps {
@@ -19,10 +19,11 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate }) => {
     }
     setLoading(true);
     setError('');
+    const redirectUrl = getOAuthRedirectUrl();
     const { error: authError } = await supabase.auth.signInWithOAuth({
       provider: 'github',
       options: {
-        redirectTo: window.location.origin,
+        redirectTo: redirectUrl,
       },
     });
     if (authError) {

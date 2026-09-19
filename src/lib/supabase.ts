@@ -22,6 +22,31 @@ export const RESUME_BUCKET = 'portfolio-assets';
 export const RESUME_PDF_FILENAME = 'resumes/vincent-yuan-cv.pdf';
 
 /**
+ * Resolves the correct OAuth callback redirect URL depending on environment
+ * (e.g. 'https://vincentyuann.github.io/VincentYuann/' on GitHub Pages,
+ * or 'http://localhost:5173/' on local dev).
+ */
+export function getOAuthRedirectUrl(): string {
+  if (typeof window !== 'undefined') {
+    const origin = window.location.origin;
+    let pathname = window.location.pathname;
+
+    // Strip trailing html filenames like index.html
+    if (pathname.endsWith('.html') || pathname.endsWith('.htm')) {
+      pathname = pathname.substring(0, pathname.lastIndexOf('/') + 1);
+    }
+
+    // Ensure trailing slash
+    if (!pathname.endsWith('/')) {
+      pathname += '/';
+    }
+
+    return `${origin}${pathname}`;
+  }
+  return 'https://vincentyuann.github.io/VincentYuann/';
+}
+
+/**
  * Extracts a human-readable error message from any error object, Supabase response, or string.
  * Prevents "[object Object]" from ever showing to users.
  */
