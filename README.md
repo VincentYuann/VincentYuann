@@ -1,5 +1,3 @@
-# Vincent Yuann
-
 Software & AI Engineer — building full-stack systems and applied AI tools.
 
 **Portfolio →** [vincentyuann.github.io/VincentYuann](https://vincentyuann.github.io/VincentYuann)
