@@ -35,7 +35,7 @@ type SaveState = 'idle' | 'saving' | 'success' | 'error';
 export const ExperienceEditor: React.FC = () => {
   const { experiences: contextExperiences, refresh } = useSiteData();
   const [entries, setEntries] = useState<ExperienceEntry[]>(() => {
-    if (contextExperiences && contextExperiences.length > 0) {
+    if (Array.isArray(contextExperiences) && contextExperiences.length > 0) {
       return contextExperiences.map((row) => ({
         id: row.id || crypto.randomUUID(),
         title: row.title || '',
@@ -46,14 +46,14 @@ export const ExperienceEditor: React.FC = () => {
         description: row.description || '',
       }));
     }
-    return [newEntry()];
+    return [];
   });
   const [saveState, setSaveState] = useState<SaveState>('idle');
   const [errorMsg, setErrorMsg] = useState('');
 
   // Sync from SiteDataContext when context data updates or background sync completes
   useEffect(() => {
-    if (contextExperiences && contextExperiences.length > 0) {
+    if (Array.isArray(contextExperiences)) {
       setEntries(
         contextExperiences.map((row) => ({
           id: row.id || crypto.randomUUID(),

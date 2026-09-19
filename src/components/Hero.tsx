@@ -3,7 +3,7 @@ import { ArrowRight, Sparkles } from 'lucide-react';
 import { BambooArt } from './BambooArt';
 import { EnsoOrbital } from './EnsoOrbital';
 import { HankoStamp } from './HankoStamp';
-import { useSiteData, DEFAULT_PROFILE } from '../context/SiteDataContext';
+import { useSiteData } from '../context/SiteDataContext';
 
 interface HeroProps {
   onNavigate?: (view: 'home' | 'projects' | 'resume', sectionId?: string) => void;
@@ -12,14 +12,14 @@ interface HeroProps {
 export const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
   const { profile } = useSiteData();
 
-  const headline = profile?.headline || DEFAULT_PROFILE.headline;
-  const tagline = profile?.tagline || DEFAULT_PROFILE.tagline;
-  const displayName = profile?.name || DEFAULT_PROFILE.name;
-  const displayRole = profile?.role || DEFAULT_PROFILE.role;
+  const headline = profile?.headline || '';
+  const tagline = profile?.tagline || '';
+  const displayName = profile?.name || '';
+  const displayRole = profile?.role || '';
   const capabilityPillars =
     Array.isArray(profile?.capability_pillars) && profile.capability_pillars.length > 0
       ? profile.capability_pillars
-      : DEFAULT_PROFILE.capability_pillars;
+      : [];
 
   return (
     <section id="home" className="relative w-full overflow-hidden pt-28 pb-16 lg:pt-36 lg:pb-24">

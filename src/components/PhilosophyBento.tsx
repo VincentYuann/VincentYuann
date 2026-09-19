@@ -3,7 +3,7 @@ import { Compass, Feather, ShieldCheck } from 'lucide-react';
 import { BambooArt } from './BambooArt';
 import { EnsoOrbital } from './EnsoOrbital';
 import { CornerBrackets } from './CornerBrackets';
-import { useSiteData, DEFAULT_PILLARS } from '../context/SiteDataContext';
+import { useSiteData } from '../context/SiteDataContext';
 
 const PILLAR_CONFIGS = [
   {
@@ -48,8 +48,11 @@ const PILLAR_CONFIGS = [
 
 export const PhilosophyBento: React.FC = () => {
   const { pillars: rawPillars } = useSiteData();
-  const displayPillars =
-    Array.isArray(rawPillars) && rawPillars.length > 0 ? rawPillars : DEFAULT_PILLARS;
+  const displayPillars = Array.isArray(rawPillars) ? rawPillars : [];
+
+  if (displayPillars.length === 0) {
+    return null;
+  }
 
   return (
     <section id="philosophy" className="relative w-full overflow-hidden py-16 lg:py-24">

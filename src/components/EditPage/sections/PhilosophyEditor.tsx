@@ -21,10 +21,10 @@ interface PillarEntry {
 
 const newPillar = (pos: number): PillarEntry => ({
   position: pos,
-  kanji: '禅',
-  romaji: 'Zen',
-  title: 'Simplicity',
-  tag: 'Clear Focus',
+  kanji: '',
+  romaji: '',
+  title: '',
+  tag: '',
   description: '',
 });
 
@@ -33,14 +33,14 @@ type SaveState = 'idle' | 'saving' | 'success' | 'error';
 export const PhilosophyEditor: React.FC = () => {
   const { pillars: contextPillars, refresh } = useSiteData();
   const [pillars, setPillars] = useState<PillarEntry[]>(() => {
-    if (contextPillars && contextPillars.length > 0) {
+    if (Array.isArray(contextPillars) && contextPillars.length > 0) {
       return contextPillars.map((p) => ({
         position: p.position,
-        kanji: p.kanji,
-        romaji: p.romaji,
-        title: p.title,
-        tag: p.tag,
-        description: p.description,
+        kanji: p.kanji || '',
+        romaji: p.romaji || '',
+        title: p.title || '',
+        tag: p.tag || '',
+        description: p.description || '',
       }));
     }
     return [];
@@ -50,15 +50,15 @@ export const PhilosophyEditor: React.FC = () => {
 
   // Sync from SiteDataContext when context data changes
   useEffect(() => {
-    if (contextPillars && contextPillars.length > 0) {
+    if (Array.isArray(contextPillars)) {
       setPillars(
         contextPillars.map((p) => ({
           position: p.position,
-          kanji: p.kanji,
-          romaji: p.romaji,
-          title: p.title,
-          tag: p.tag,
-          description: p.description,
+          kanji: p.kanji || '',
+          romaji: p.romaji || '',
+          title: p.title || '',
+          tag: p.tag || '',
+          description: p.description || '',
         })),
       );
     }

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Briefcase, ArrowRight, MapPin, Calendar } from 'lucide-react';
 import { CornerBrackets } from './CornerBrackets';
-import { useSiteData, DEFAULT_EXPERIENCES } from '../context/SiteDataContext';
+import { useSiteData } from '../context/SiteDataContext';
 import { Badge } from './ui/badge';
 
 interface ExperienceSectionProps {
@@ -9,11 +9,10 @@ interface ExperienceSectionProps {
 }
 
 export const ExperienceSection: React.FC<ExperienceSectionProps> = ({ onNavigate }) => {
-  const { experiences: rawExperiences } = useSiteData();
-  const experiences =
-    Array.isArray(rawExperiences) && rawExperiences.length > 0
-      ? rawExperiences
-      : DEFAULT_EXPERIENCES;
+  const { experiences } = useSiteData();
+  const list = Array.isArray(experiences) ? experiences : [];
+
+  if (list.length === 0) return null;
 
   return (
     <section id="experience" className="relative w-full overflow-hidden py-14 lg:py-20">

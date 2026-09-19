@@ -19,6 +19,10 @@ export const ProjectsShowcase: React.FC<ProjectsShowcaseProps> = ({ onNavigate }
   const featured = allProjects.filter((p) => p.isFeatured);
   const displayedProjects = (featured.length > 0 ? featured : allProjects).slice(0, 3);
 
+  if (displayedProjects.length === 0) {
+    return null;
+  }
+
   return (
     <section id="featured-works" className="relative w-full overflow-hidden py-14 lg:py-20">
       {/* Subtle Japanese Sumi-e Arts in Left & Right Empty Margins */}

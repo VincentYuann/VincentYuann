@@ -5,7 +5,7 @@ import { BambooArt } from './BambooArt';
 import { EnsoOrbital } from './EnsoOrbital';
 import { HankoStamp } from './HankoStamp';
 import { CornerBrackets } from './CornerBrackets';
-import { useSiteData, DEFAULT_PROFILE } from '../context/SiteDataContext';
+import { useSiteData } from '../context/SiteDataContext';
 
 export const ContactSection: React.FC = () => {
   const [name, setName] = useState('');
@@ -69,13 +69,13 @@ export const ContactSection: React.FC = () => {
   };
 
   const { profile } = useSiteData();
-  const contactEmail = profile?.email || DEFAULT_PROFILE.email;
-  const contactGithub = profile?.github || DEFAULT_PROFILE.github;
-  const contactLinkedin = profile?.linkedin || DEFAULT_PROFILE.linkedin;
+  const contactEmail = profile?.email || '';
+  const contactGithub = profile?.github || '';
+  const contactLinkedin = profile?.linkedin || '';
 
-  const mailtoHref = `mailto:${contactEmail}?subject=${encodeURIComponent(
+  const mailtoHref = contactEmail ? `mailto:${contactEmail}?subject=${encodeURIComponent(
     `[Portfolio Contact] - ${name.trim() || 'Direct Inquiry'}`
-  )}`;
+  )}` : '#';
 
   return (
     <section id="contact" className="relative w-full overflow-hidden py-14 lg:py-20 mb-8">
@@ -158,35 +158,43 @@ export const ContactSection: React.FC = () => {
               </p>
 
               {/* Direct Contact Links */}
-              <div className="pt-2 flex flex-wrap items-center gap-3">
-                <a
-                  href={mailtoHref}
-                  className="btn-bloom inline-flex items-center gap-2 px-6 py-3.5 bg-terracotta hover:bg-terracotta-hover text-white font-sans text-xs uppercase tracking-widest rounded-lg shadow-sm"
-                >
-                  <Mail className="w-4 h-4" />
-                  <span>{contactEmail}</span>
-                </a>
+              {(contactEmail || contactGithub || contactLinkedin) && (
+                <div className="pt-2 flex flex-wrap items-center gap-3">
+                  {contactEmail && (
+                    <a
+                      href={mailtoHref}
+                      className="btn-bloom inline-flex items-center gap-2 px-6 py-3.5 bg-terracotta hover:bg-terracotta-hover text-white font-sans text-xs uppercase tracking-widest rounded-lg shadow-sm"
+                    >
+                      <Mail className="w-4 h-4" />
+                      <span>{contactEmail}</span>
+                    </a>
+                  )}
 
-                <a
-                  href={contactGithub}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex items-center gap-2 px-5 py-3.5 bg-light-surface-raised dark:bg-[#1B1C22] border border-light-border dark:border-[#2D3039] hover:bg-light-surface dark:hover:bg-[#252831] hover:border-ochre/50 text-light-ink dark:text-[#EDEAE4] font-sans text-xs uppercase tracking-widest rounded-lg shadow-xs transition-all duration-200"
-                >
-                  <Github className="w-4 h-4" />
-                  <span className="tracking-widest">Github</span>
-                </a>
+                  {contactGithub && (
+                    <a
+                      href={contactGithub}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex items-center gap-2 px-5 py-3.5 bg-light-surface-raised dark:bg-[#1B1C22] border border-light-border dark:border-[#2D3039] hover:bg-light-surface dark:hover:bg-[#252831] hover:border-ochre/50 text-light-ink dark:text-[#EDEAE4] font-sans text-xs uppercase tracking-widest rounded-lg shadow-xs transition-all duration-200"
+                    >
+                      <Github className="w-4 h-4" />
+                      <span className="tracking-widest">Github</span>
+                    </a>
+                  )}
 
-                <a
-                  href={contactLinkedin}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex items-center gap-2 px-5 py-3.5 bg-light-surface-raised dark:bg-[#1B1C22] border border-light-border dark:border-[#2D3039] hover:bg-light-surface dark:hover:bg-[#252831] hover:border-ochre/50 text-light-ink dark:text-[#EDEAE4] font-sans text-xs uppercase tracking-widest rounded-lg shadow-xs transition-all duration-200"
-                >
-                  <Linkedin className="w-4 h-4" />
-                  <span className="tracking-widest">Linkedin</span>
-                </a>
-              </div>
+                  {contactLinkedin && (
+                    <a
+                      href={contactLinkedin}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex items-center gap-2 px-5 py-3.5 bg-light-surface-raised dark:bg-[#1B1C22] border border-light-border dark:border-[#2D3039] hover:bg-light-surface dark:hover:bg-[#252831] hover:border-ochre/50 text-light-ink dark:text-[#EDEAE4] font-sans text-xs uppercase tracking-widest rounded-lg shadow-xs transition-all duration-200"
+                    >
+                      <Linkedin className="w-4 h-4" />
+                      <span className="tracking-widest">Linkedin</span>
+                    </a>
+                  )}
+                </div>
+              )}
             </div>
 
             {/* Right Column: Inquiries Form */}

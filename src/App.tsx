@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ThemeProvider } from './context/ThemeContext';
-import { SiteDataProvider } from './context/SiteDataContext';
+import { SiteDataProvider, useSiteData } from './context/SiteDataContext';
 import { Header } from './components/Header';
 import { Hero } from './components/Hero';
 import { SectionDivider } from './components/SectionDivider';
@@ -27,6 +27,39 @@ const getInitialView = (): ViewMode => {
   if (hash === '#login') return 'login';
   if (hash === '#edit') return 'edit';
   return 'home';
+};
+
+const HomeView: React.FC<{ onNavigate: (view: ViewMode, sectionId?: string) => void }> = ({ onNavigate }) => {
+  const { experiences, projects, pillars } = useSiteData();
+  const hasExperiences = Array.isArray(experiences) && experiences.length > 0;
+  const hasProjects = Array.isArray(projects) && projects.length > 0;
+  const hasPillars = Array.isArray(pillars) && pillars.length > 0;
+
+  return (
+    <>
+      <Hero onNavigate={onNavigate} />
+      {hasExperiences && (
+        <>
+          <SectionDivider label="CAREER TRAJECTORY · 職歴 · MILESTONES" />
+          <ExperienceSection onNavigate={onNavigate} />
+        </>
+      )}
+      {hasProjects && (
+        <>
+          <SectionDivider label="MA · WABI-SABI · CRAFT" />
+          <ProjectsShowcase onNavigate={onNavigate} />
+        </>
+      )}
+      {hasPillars && (
+        <>
+          <SectionDivider label="PHILOSOPHY · SHOKUNIN · MA" />
+          <PhilosophyBento />
+        </>
+      )}
+      <SectionDivider label="INITIATE A DIALOGUE · 対話" />
+      <ContactSection />
+    </>
+  );
 };
 
 export const App: React.FC = () => {
@@ -239,17 +272,7 @@ export const App: React.FC = () => {
             )}
 
             {currentView === 'home' && (
-              <>
-                <Hero onNavigate={handleNavigate} />
-                <SectionDivider label="CAREER TRAJECTORY · 職歴 · MILESTONES" />
-                <ExperienceSection onNavigate={handleNavigate} />
-                <SectionDivider label="MA · WABI-SABI · CRAFT" />
-                <ProjectsShowcase onNavigate={handleNavigate} />
-                <SectionDivider label="PHILOSOPHY · SHOKUNIN · MA" />
-                <PhilosophyBento />
-                <SectionDivider label="INITIATE A DIALOGUE · 対話" />
-                <ContactSection />
-              </>
+              <HomeView onNavigate={handleNavigate} />
             )}
           </main>
 

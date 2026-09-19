@@ -22,14 +22,9 @@ export const IntroEditor: React.FC = () => {
     github: contextProfile?.github || '',
     linkedin: contextProfile?.linkedin || '',
     capability_pillars:
-      Array.isArray(contextProfile?.capability_pillars) &&
-      contextProfile.capability_pillars.length > 0
+      Array.isArray(contextProfile?.capability_pillars)
         ? contextProfile.capability_pillars
-        : [
-            { label: 'SYSTEMS', items: 'Rust · Docker · Linux' },
-            { label: 'AI & RUNTIME', items: 'PyTorch · llama.cpp · Local LLMs' },
-            { label: 'FULL-STACK', items: 'Next.js · TypeScript · PostgreSQL' },
-          ],
+        : [],
   }));
 
   const [saveState, setSaveState] = useState<SaveState>('idle');
@@ -47,14 +42,9 @@ export const IntroEditor: React.FC = () => {
         github: contextProfile.github || '',
         linkedin: contextProfile.linkedin || '',
         capability_pillars:
-          Array.isArray(contextProfile.capability_pillars) &&
-          contextProfile.capability_pillars.length > 0
+          Array.isArray(contextProfile.capability_pillars)
             ? contextProfile.capability_pillars
-            : [
-                { label: 'SYSTEMS', items: 'Rust · Docker · Linux' },
-                { label: 'AI & RUNTIME', items: 'PyTorch · llama.cpp · Local LLMs' },
-                { label: 'FULL-STACK', items: 'Next.js · TypeScript · PostgreSQL' },
-              ],
+            : [],
       });
     }
   }, [contextProfile]);
@@ -76,7 +66,7 @@ export const IntroEditor: React.FC = () => {
       ...prev,
       capability_pillars: [
         ...prev.capability_pillars,
-        { label: 'NEW PILLAR', items: 'Tool 1 · Tool 2 · Tool 3' },
+        { label: '', items: '' },
       ],
     }));
   };
