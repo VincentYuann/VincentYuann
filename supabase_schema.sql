@@ -1,6 +1,6 @@
 -- ==============================================================================
--- Portfolio Supabase Database Schema & Tight RLS Security Policies
--- Execute this script in your Supabase SQL Editor:
+-- Portfolio Supabase Database Schema, Grants, & RLS Security Policies
+-- Execute this entire script in your Supabase SQL Editor:
 -- Dashboard > SQL Editor > New query > Paste & Run
 -- ==============================================================================
 
@@ -123,7 +123,20 @@ CREATE TABLE IF NOT EXISTS public.contact_messages (
 );
 
 -- ==============================================================================
--- 3. Enable Row Level Security (RLS) on all tables
+-- 3. Grants: Expose Tables & Routines to PostgREST Data API
+-- ==============================================================================
+
+GRANT USAGE ON SCHEMA public TO anon, authenticated, service_role;
+GRANT ALL ON ALL TABLES IN SCHEMA public TO anon, authenticated, service_role;
+GRANT ALL ON ALL SEQUENCES IN SCHEMA public TO anon, authenticated, service_role;
+GRANT ALL ON ALL ROUTINES IN SCHEMA public TO anon, authenticated, service_role;
+
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO anon, authenticated, service_role;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON SEQUENCES TO anon, authenticated, service_role;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON ROUTINES TO anon, authenticated, service_role;
+
+-- ==============================================================================
+-- 4. Enable Row Level Security (RLS) on all tables
 -- ==============================================================================
 
 ALTER TABLE public.profile ENABLE ROW LEVEL SECURITY;
@@ -134,7 +147,7 @@ ALTER TABLE public.resume_latex ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.contact_messages ENABLE ROW LEVEL SECURITY;
 
 -- ==============================================================================
--- 4. Policies: Public Read Access (All Visitors)
+-- 5. Policies: Public Read Access (All Visitors)
 -- ==============================================================================
 
 DROP POLICY IF EXISTS "Allow public read on profile" ON public.profile;
@@ -168,8 +181,7 @@ CREATE POLICY "Allow public insert on contact_messages"
   WITH CHECK (true);
 
 -- ==============================================================================
--- 5. Policies: Strict Admin Write Access (Only vincentyuan1020@gmail.com)
--- Even if an attacker signs in with another GitHub account, PostgreSQL rejects writes!
+-- 6. Policies: Strict Admin Write Access (Only vincentyuan1020@gmail.com)
 -- ==============================================================================
 
 DROP POLICY IF EXISTS "Allow authenticated admin full access on profile" ON public.profile;
@@ -220,7 +232,7 @@ CREATE POLICY "Allow only admin to read contact_messages"
   USING (public.is_admin());
 
 -- ==============================================================================
--- 6. Storage Security Policies for 'portfolio-assets' Bucket
+-- 7. Storage Security Policies for 'portfolio-assets' Bucket
 -- ==============================================================================
 
 DROP POLICY IF EXISTS "Allow public read on portfolio-assets" ON storage.objects;
@@ -246,3 +258,9 @@ CREATE POLICY "Allow only admin to delete portfolio-assets"
   ON storage.objects FOR DELETE
   TO authenticated
   USING (bucket_id = 'portfolio-assets' AND public.is_admin());
+
+-- ==============================================================================
+-- 8. Force PostgREST to Immediately Reload Schema Cache
+-- ==============================================================================
+
+NOTIFY pgrst, 'reload schema';
