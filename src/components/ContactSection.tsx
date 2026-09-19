@@ -122,15 +122,15 @@ export const ContactSection: React.FC = () => {
           <div className="corner-bracket corner-bracket-bl absolute bottom-3 left-3 w-3.5 h-3.5 border-b border-l border-ochre/40 dark:border-ochre/30 pointer-events-none" />
           <div className="corner-bracket corner-bracket-br absolute bottom-3 right-3 w-3.5 h-3.5 border-b border-r border-ochre/40 dark:border-ochre/30 pointer-events-none" />
 
-          {/* Komorebi Japanese Landscape Mask Backdrop with Ambient Drift — Anchored to Left */}
-          <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-full sm:w-3/5 select-none overflow-hidden opacity-45 dark:opacity-40 mix-blend-multiply dark:mix-blend-screen dark:invert animate-gentle-drift rounded-l-2xl">
+          {/* Komorebi Japanese Landscape Mask Backdrop — Anchored Strictly to Left Side */}
+          <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-full lg:w-[48%] select-none overflow-hidden opacity-55 dark:opacity-40 mix-blend-multiply dark:mix-blend-screen dark:invert animate-gentle-drift rounded-l-2xl">
             <img
               src="./images/komorebi-spatial.jpg"
-              alt="Komorebi Japanese misty landscape backdrop"
+              alt="Komorebi Japanese landscape backdrop"
               className="w-full h-full object-cover object-left-bottom sm:object-left"
               style={{
-                maskImage: 'linear-gradient(to right, black 35%, transparent 88%)',
-                WebkitMaskImage: 'linear-gradient(to right, black 35%, transparent 88%)',
+                maskImage: 'linear-gradient(to right, black 45%, transparent 95%)',
+                WebkitMaskImage: 'linear-gradient(to right, black 45%, transparent 95%)',
               }}
             />
           </div>

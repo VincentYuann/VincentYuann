@@ -14,8 +14,9 @@ export const supabase = (supabaseUrl && supabaseAnonKey)
   ? createClient(supabaseUrl, supabaseAnonKey)
   : null;
 
-export const RESUME_BUCKET = 'resume';
-export const RESUME_PDF_FILENAME = 'vincent-yuan-cv.pdf';
+// Matches your Supabase public bucket: 'portfolio-assets' -> folder 'resumes'
+export const RESUME_BUCKET = 'portfolio-assets';
+export const RESUME_PDF_FILENAME = 'resumes/vincent-yuan-cv.pdf';
 
 /**
  * Extracts a human-readable error message from any error object, Supabase response, or string.
@@ -43,8 +44,7 @@ export function formatErrorMessage(err: unknown): string {
 }
 
 /**
- * Returns the public URL for the resume PDF.
- * Uses the Supabase Storage public URL or S3 public endpoint, with local fallback.
+ * Returns the public URL for the resume PDF from the Supabase 'portfolio-assets' bucket (or S3 endpoint).
  */
 export function getResumePdfUrl(): string {
   if (import.meta.env.VITE_RESUME_PDF_URL) {
@@ -58,7 +58,7 @@ export function getResumePdfUrl(): string {
     if (data?.publicUrl) return data.publicUrl;
   }
 
-  // S3 direct endpoint format fallback
+  // S3 / Supabase public direct URL fallback
   if (supabaseUrl) {
     const projectRef = supabaseUrl.replace('https://', '').split('.')[0];
     if (projectRef) {
@@ -70,13 +70,14 @@ export function getResumePdfUrl(): string {
 }
 
 /**
- * Uploads a resume PDF to Supabase Storage bucket with RLS protection and auto-bucket creation attempt.
+ * Uploads a resume PDF directly into 'portfolio-assets/resumes/' with S3-backed Supabase Storage.
  */
 export async function uploadResumePdf(file: File) {
   if (!supabase) {
     throw new Error('Supabase client is not configured.');
   }
 
+  // 1. Primary upload to 'portfolio-assets/resumes/vincent-yuan-cv.pdf'
   let res = await supabase.storage
     .from(RESUME_BUCKET)
     .upload(RESUME_PDF_FILENAME, file, {
@@ -85,40 +86,25 @@ export async function uploadResumePdf(file: File) {
       cacheControl: '3600',
     });
 
-  // If bucket is not found, attempt to auto-create it
+  // 2. Fallback to 'resume' bucket if portfolio-assets is not found
   if (res.error) {
     const rawMsg = formatErrorMessage(res.error).toLowerCase();
     if (rawMsg.includes('bucket not found') || rawMsg.includes('not found')) {
-      try {
-        const createRes = await supabase.storage.createBucket(RESUME_BUCKET, {
-          public: true,
-          fileSizeLimit: 10485760, // 10MB
-          allowedMimeTypes: ['application/pdf'],
+      const fallbackRes = await supabase.storage
+        .from('resume')
+        .upload('vincent-yuan-cv.pdf', file, {
+          upsert: true,
+          contentType: 'application/pdf',
+          cacheControl: '3600',
         });
-        if (!createRes.error) {
-          // Retry upload after creating bucket
-          res = await supabase.storage
-            .from(RESUME_BUCKET)
-            .upload(RESUME_PDF_FILENAME, file, {
-              upsert: true,
-              contentType: 'application/pdf',
-              cacheControl: '3600',
-            });
-        }
-      } catch (e) {
-        console.warn('Attempted to auto-create storage bucket:', e);
+      if (!fallbackRes.error) {
+        return fallbackRes.data;
       }
     }
   }
 
   if (res.error) {
-    const errMsg = formatErrorMessage(res.error);
-    if (errMsg.toLowerCase().includes('bucket not found')) {
-      throw new Error(
-        `Bucket "${RESUME_BUCKET}" not found. Please create a public bucket named "${RESUME_BUCKET}" in your Supabase Dashboard > Storage.`
-      );
-    }
-    throw new Error(errMsg);
+    throw new Error(formatErrorMessage(res.error));
   }
 
   return res.data;
