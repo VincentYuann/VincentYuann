@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, Trash2, Save, CheckCircle2, AlertCircle, GripVertical, Loader2 } from 'lucide-react';
 import { supabase, formatErrorMessage } from '../../../lib/supabase';
+import { toast } from 'sonner';
 
 interface ExperienceEntry {
   id: string;
@@ -81,11 +82,13 @@ export const ExperienceEditor: React.FC = () => {
 
       if (error) throw error;
       setSaveState('success');
+      toast.success('Experience entries saved to Supabase!');
       setTimeout(() => setSaveState('idle'), 4000);
     } catch (err: unknown) {
       const msg = formatErrorMessage(err);
       setErrorMsg(msg);
       setSaveState('error');
+      toast.error(msg || 'Failed to save experience entries.');
       setTimeout(() => setSaveState('idle'), 6000);
     }
   };

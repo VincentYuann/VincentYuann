@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { supabase, formatErrorMessage } from '../../../lib/supabase';
 import { useSiteData } from '../../../context/SiteDataContext';
+import { toast } from 'sonner';
 
 /* ─── Types ──────────────────────────────────────────────────────────── */
 
@@ -372,11 +373,13 @@ export const ProjectsEditor: React.FC = () => {
 
       await refresh();
       setSaveState('success');
+      toast.success('Projects updated & saved to Supabase!');
       setTimeout(() => setSaveState('idle'), 4000);
     } catch (err: unknown) {
       const msg = formatErrorMessage(err);
       setErrorMsg(msg);
       setSaveState('error');
+      toast.error(msg || 'Failed to save projects.');
       setTimeout(() => setSaveState('idle'), 6000);
     }
   };

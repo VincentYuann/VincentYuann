@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Save, CheckCircle2, AlertCircle, Loader2, Plus, Trash2 } from 'lucide-react';
 import { supabase, formatErrorMessage } from '../../../lib/supabase';
+import { toast } from 'sonner';
 import { useSiteData, CapabilityPillar, DEFAULT_PROFILE } from '../../../context/SiteDataContext';
 
 interface IntroData {
@@ -87,11 +88,13 @@ export const IntroEditor: React.FC = () => {
 
       await refresh();
       setSaveState('success');
+      toast.success('Intro & profile changes saved to Supabase!');
       setTimeout(() => setSaveState('idle'), 4000);
     } catch (err: unknown) {
       const msg = formatErrorMessage(err);
       setErrorMsg(msg);
       setSaveState('error');
+      toast.error(msg || 'Failed to save intro & profile.');
       setTimeout(() => setSaveState('idle'), 6000);
     }
   };

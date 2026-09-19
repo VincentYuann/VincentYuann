@@ -18,6 +18,7 @@ import {
   saveResumeLatex,
   formatErrorMessage,
 } from '../../../lib/supabase';
+import { toast } from 'sonner';
 
 type SaveState = 'idle' | 'saving' | 'success' | 'error';
 type Tab = 'upload' | 'editor';
@@ -159,11 +160,13 @@ export const ResumeEditor: React.FC = () => {
       await saveResumeLatex(latex);
 
       setSaveState('success');
+      toast.success('Resume PDF & LaTeX saved to Supabase!');
       setTimeout(() => setSaveState('idle'), 4000);
     } catch (err: unknown) {
       const msg = formatErrorMessage(err);
       setErrorMsg(msg);
       setSaveState('error');
+      toast.error(msg || 'Failed to save resume.');
       setTimeout(() => setSaveState('idle'), 8000);
     }
   };

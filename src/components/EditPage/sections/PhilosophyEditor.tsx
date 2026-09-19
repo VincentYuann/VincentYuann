@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, Trash2, Save, CheckCircle2, AlertCircle, Loader2 } from 'lucide-react';
 import { supabase, formatErrorMessage } from '../../../lib/supabase';
+import { toast } from 'sonner';
 import { useSiteData, PhilosophyPillar, DEFAULT_PILLARS } from '../../../context/SiteDataContext';
 
 type SaveState = 'idle' | 'saving' | 'success' | 'error';
@@ -86,11 +87,13 @@ export const PhilosophyEditor: React.FC = () => {
 
       await refresh();
       setSaveState('success');
+      toast.success('Philosophy pillars updated & synced to homepage!');
       setTimeout(() => setSaveState('idle'), 4000);
     } catch (err: unknown) {
       const msg = formatErrorMessage(err);
       setErrorMsg(msg);
       setSaveState('error');
+      toast.error(msg || 'Failed to save philosophy pillars.');
       setTimeout(() => setSaveState('idle'), 6000);
     }
   };
