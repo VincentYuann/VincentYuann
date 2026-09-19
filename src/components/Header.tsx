@@ -64,6 +64,7 @@ export const Header: React.FC<HeaderProps> = ({
     { id: 'philosophy', num: '03', label: 'Philosophy', href: '#philosophy', view: 'home' as const },
     { id: 'contact', num: '04', label: 'Contact', href: '#contact', view: 'home' as const },
     { id: 'resume', num: '05', label: 'Resume', href: '#resume', view: 'resume' as const },
+    ...(isAdmin ? [{ id: 'edit', num: '06', label: 'Edit', href: '#edit', view: 'edit' as const }] : []),
   ];
 
   const handleNavClick = (
@@ -105,11 +106,13 @@ export const Header: React.FC<HeaderProps> = ({
           </a>
         </div>
 
-        {/* Center: Desktop Navigation — 01–05 only, no edit in nav */}
+        {/* Center: Desktop Navigation — 01–05 (and 06 Edit for admin) */}
         <nav className="hidden md:flex items-center gap-6 lg:gap-8">
           {navItems.map((item) => {
             const isActive =
-              currentView === 'resume'
+              currentView === 'edit'
+                ? item.id === 'edit'
+                : currentView === 'resume'
                 ? item.id === 'resume'
                 : currentView === 'projects'
                 ? item.id === 'featured-works'
@@ -122,7 +125,7 @@ export const Header: React.FC<HeaderProps> = ({
                 onClick={(e) => handleNavClick(e, item)}
                 className={`group relative font-sans text-xs uppercase tracking-widest transition-colors flex items-center gap-1.5 py-1 ${
                   isActive
-                    ? 'text-terracotta'
+                    ? 'text-terracotta font-semibold'
                     : 'text-light-ink-muted dark:text-dark-ink-muted hover:text-light-ink dark:hover:text-dark-ink'
                 }`}
               >
@@ -254,10 +257,11 @@ export const Header: React.FC<HeaderProps> = ({
                 href={item.href}
                 onClick={(e) => handleNavClick(e, item)}
                 className={`flex items-center justify-between py-2 text-sm font-sans ${
+                  (currentView === 'edit' && item.id === 'edit') ||
                   (currentView === 'resume' && item.id === 'resume') ||
                   (currentView === 'projects' && item.id === 'featured-works') ||
                   (currentView === 'home' && activeSection === item.id)
-                    ? 'text-terracotta'
+                    ? 'text-terracotta font-semibold'
                     : 'text-light-ink-muted dark:text-dark-ink-muted'
                 }`}
               >

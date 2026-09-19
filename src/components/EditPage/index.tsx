@@ -3,8 +3,9 @@ import { IntroEditor } from './sections/IntroEditor';
 import { ExperienceEditor } from './sections/ExperienceEditor';
 import { ProjectsEditor } from './sections/ProjectsEditor';
 import { ResumeEditor } from './sections/ResumeEditor';
+import { PhilosophyEditor } from './sections/PhilosophyEditor';
 
-type EditSection = 'intro' | 'experience' | 'projects' | 'resume';
+type EditSection = 'intro' | 'experience' | 'projects' | 'resume' | 'philosophy';
 
 interface EditPageProps {
   onNavigate: (view: 'home' | 'projects' | 'resume' | 'login' | 'edit') => void;
@@ -15,6 +16,7 @@ const SECTIONS: { id: EditSection; label: string; num: string }[] = [
   { id: 'experience', label: 'Experience', num: '02' },
   { id: 'projects', label: 'Projects', num: '03' },
   { id: 'resume', label: 'Resume', num: '04' },
+  { id: 'philosophy', label: 'Philosophy', num: '05' },
 ];
 
 export const EditPage: React.FC<EditPageProps> = ({ onNavigate }) => {
@@ -64,6 +66,7 @@ export const EditPage: React.FC<EditPageProps> = ({ onNavigate }) => {
         {activeSection === 'experience' && <ExperienceEditor />}
         {activeSection === 'projects' && <ProjectsEditor />}
         {activeSection === 'resume' && <ResumeEditor />}
+        {activeSection === 'philosophy' && <PhilosophyEditor />}
       </div>
     </div>
   );

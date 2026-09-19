@@ -30,25 +30,26 @@ const getInitialView = (): ViewMode => {
 export const App: React.FC = () => {
   const [currentView, setCurrentView] = useState<ViewMode>(getInitialView);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [authReady, setAuthReady] = useState(false);
 
-  // Stable refs so hash routing effect never needs to re-run on isAdmin changes
+  // Stable refs so hash routing effect never needs to re-run on state changes
   const isAdminRef = useRef(false);
+  const authReadyRef = useRef(false);
   const setViewRef = useRef(setCurrentView);
   setViewRef.current = setCurrentView;
 
-  // Only navigate home on the very first successful sign-in, not on every token refresh
-  const hasNavigatedAfterLoginRef = useRef(false);
-
-  const ADMIN_EMAIL = (import.meta.env.VITE_ADMIN_EMAIL || 'vincentyuan1020@gmail.com').toLowerCase();
+  const ADMIN_EMAIL = (import.meta.env.VITE_ADMIN_EMAIL || 'vincentyuan1020@gmail.com').toLowerCase().trim();
 
   const isOwnerSession = (session: any): boolean => {
-    const email = session?.user?.email?.toLowerCase();
+    const email = session?.user?.email?.toLowerCase()?.trim();
     return !!email && email === ADMIN_EMAIL;
   };
 
   /* ── Supabase auth listener — single subscription, strict admin verification ── */
   useEffect(() => {
     if (!supabase) {
+      authReadyRef.current = true;
+      setAuthReady(true);
       if (getInitialView() === 'edit') {
         setCurrentView('home');
         window.history.replaceState(null, '', '#home');
@@ -60,18 +61,23 @@ export const App: React.FC = () => {
       const isOwner = isOwnerSession(session);
       isAdminRef.current = isOwner;
       setIsAdmin(isOwner);
+      authReadyRef.current = true;
+      setAuthReady(true);
 
       if (event === 'INITIAL_SESSION') {
-        // If unauthenticated or unauthorized user attempted to load / refresh on #edit, boot back to home
-        if (!isOwner && window.location.hash.toLowerCase() === '#edit') {
-          setViewRef.current('home');
-          window.history.replaceState(null, '', '#home');
+        const hash = window.location.hash.toLowerCase();
+        if (hash === '#edit') {
+          if (isOwner) {
+            setViewRef.current('edit');
+          } else {
+            setViewRef.current('home');
+            window.history.replaceState(null, '', '#home');
+          }
         }
       } else if (event === 'SIGNED_IN') {
         if (isOwner) {
           // If the user signed in directly from the login page, take them to home
           if (window.location.hash.toLowerCase() === '#login') {
-            hasNavigatedAfterLoginRef.current = true;
             setViewRef.current('home');
             window.history.replaceState(null, '', '#home');
             window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -85,8 +91,13 @@ export const App: React.FC = () => {
           }
           alert('Access Denied: Only the portfolio owner is authorized to access the edit dashboard.');
         }
+      } else if (event === 'TOKEN_REFRESHED') {
+        // Token refreshed in background: update admin flags without interfering with active view
+        isAdminRef.current = isOwner;
+        setIsAdmin(isOwner);
       } else if (event === 'SIGNED_OUT') {
-        hasNavigatedAfterLoginRef.current = false;
+        isAdminRef.current = false;
+        setIsAdmin(false);
         setViewRef.current((prev) => {
           if (prev === 'edit') {
             window.history.replaceState(null, '', '#home');
@@ -120,14 +131,16 @@ export const App: React.FC = () => {
         setViewRef.current('login');
         window.scrollTo({ top: 0, behavior: 'smooth' });
       } else if (hash === '#edit') {
-        // Use the ref — not state — so this effect has zero dependencies
         if (isAdminRef.current) {
           setViewRef.current('edit');
           window.scrollTo({ top: 0, behavior: 'smooth' });
-        } else {
-          // If not admin and visiting #edit, redirect to home
+        } else if (authReadyRef.current) {
+          // Only boot to home if auth check has finished and user is not admin
           setViewRef.current('home');
           window.history.replaceState(null, '', '#home');
+        } else {
+          // Auth is still hydrating: keep 'edit' view and let auth listener decide
+          setViewRef.current('edit');
         }
       } else if (hash === '' || hash === '#home' || hash === '#') {
         setViewRef.current('home');
@@ -141,8 +154,8 @@ export const App: React.FC = () => {
   }, []); // ← empty deps: no re-runs from state changes
 
   const handleNavigate = (view: ViewMode, sectionId?: string) => {
-    // Guard: edit is only accessible when admin
-    if (view === 'edit' && !isAdminRef.current) return;
+    // Guard: edit is only accessible when admin (or while auth check is in flight)
+    if (view === 'edit' && authReadyRef.current && !isAdminRef.current) return;
 
     setCurrentView(view);
 
@@ -178,7 +191,6 @@ export const App: React.FC = () => {
   const handleLogout = async () => {
     if (!supabase) return;
     await supabase.auth.signOut();
-    // SIGNED_OUT event handles state cleanup
   };
 
   return (
@@ -198,8 +210,16 @@ export const App: React.FC = () => {
               <LoginPage onNavigate={handleNavigate} />
             )}
 
-            {currentView === 'edit' && isAdmin && (
-              <EditPage onNavigate={handleNavigate} />
+            {currentView === 'edit' && (
+              isAdmin ? (
+                <EditPage onNavigate={handleNavigate} />
+              ) : !authReady ? (
+                <div className="min-h-screen flex items-center justify-center pt-20">
+                  <div className="text-center font-sans text-xs text-light-ink-muted dark:text-dark-ink-muted">
+                    Verifying authorization…
+                  </div>
+                </div>
+              ) : null
             )}
 
             {currentView === 'resume' && (
