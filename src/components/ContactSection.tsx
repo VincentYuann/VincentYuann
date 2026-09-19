@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { Mail, Github, Linkedin, Send, CheckCircle2, AlertCircle } from 'lucide-react';
 import { sendContactMessage } from '../lib/supabase';
 import { BambooArt } from './BambooArt';
+import { EnsoOrbital } from './EnsoOrbital';
+import { HankoStamp } from './HankoStamp';
 
 export const ContactSection: React.FC = () => {
   const [name, setName] = useState('');
@@ -42,26 +44,64 @@ export const ContactSection: React.FC = () => {
   };
 
   return (
-    <section id="contact" className="w-full max-w-7xl mx-auto px-6 py-12 lg:py-16 mb-8">
-      <div className="relative bg-light-surface-card dark:bg-[#181920] border border-light-border dark:border-[#2D3039] rounded-2xl p-8 sm:p-12 overflow-hidden shadow-akari dark:shadow-night-glow classical-card-frame hover:border-terracotta/40 transition-colors duration-500">
-        {/* Corner Hairline Brackets */}
-        <div className="corner-bracket corner-bracket-tl absolute top-3 left-3 w-3.5 h-3.5 border-t border-l border-ochre/40 dark:border-ochre/30 pointer-events-none" />
-        <div className="corner-bracket corner-bracket-tr absolute top-3 right-3 w-3.5 h-3.5 border-t border-r border-ochre/40 dark:border-ochre/30 pointer-events-none" />
-        <div className="corner-bracket corner-bracket-bl absolute bottom-3 left-3 w-3.5 h-3.5 border-b border-l border-ochre/40 dark:border-ochre/30 pointer-events-none" />
-        <div className="corner-bracket corner-bracket-br absolute bottom-3 right-3 w-3.5 h-3.5 border-b border-r border-ochre/40 dark:border-ochre/30 pointer-events-none" />
-
-        {/* Sumi-e Mountain Landscape Mask Backdrop with Ambient Drift */}
-        <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-3/5 select-none overflow-hidden opacity-30 dark:opacity-25 mix-blend-multiply dark:mix-blend-screen animate-gentle-drift">
+    <section id="contact" className="relative w-full overflow-hidden py-14 lg:py-20 mb-8">
+      {/* Background Japanese Sumi-e Arts in Left & Right Empty Margins */}
+      <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden select-none">
+        {/* Left Margin Bamboo */}
+        <div className="absolute left-0 xl:left-4 bottom-0 top-12 w-32 xl:w-48 pointer-events-none z-0 hidden lg:block">
           <img
-            src="/images/contact-sumie-mountain.png"
-            alt="Sumi-e misty mountain backdrop"
-            className="w-full h-full object-cover object-center"
+            src="/images/sumie-tall-vertical-bamboo.jpg"
+            alt="Sumi-e bamboo contact flank"
+            className="w-full h-full object-contain object-bottom opacity-35 dark:opacity-20 mix-blend-multiply dark:mix-blend-screen dark:invert animate-bamboo-sway"
             style={{
-              maskImage: 'linear-gradient(to left, black 25%, transparent 85%)',
-              WebkitMaskImage: 'linear-gradient(to left, black 25%, transparent 85%)',
+              maskImage: 'radial-gradient(ellipse 85% 85% at 40% 60%, black 40%, transparent 85%)',
+              WebkitMaskImage: 'radial-gradient(ellipse 85% 85% at 40% 60%, black 40%, transparent 85%)',
             }}
           />
         </div>
+
+        {/* Right Margin Bamboo */}
+        <div className="absolute right-0 xl:right-4 bottom-0 top-12 w-32 xl:w-48 pointer-events-none z-0 hidden lg:block">
+          <img
+            src="/images/sumie-tall-vertical-bamboo.jpg"
+            alt="Sumi-e bamboo contact flank"
+            className="w-full h-full object-contain object-bottom opacity-35 dark:opacity-20 mix-blend-multiply dark:mix-blend-screen dark:invert scale-x-[-1]"
+            style={{
+              maskImage: 'radial-gradient(ellipse 85% 85% at 60% 60%, black 40%, transparent 85%)',
+              WebkitMaskImage: 'radial-gradient(ellipse 85% 85% at 60% 60%, black 40%, transparent 85%)',
+            }}
+          />
+        </div>
+      </div>
+
+      <div className="w-full max-w-7xl mx-auto px-6 relative z-10">
+        <div className="interactive-card group relative bg-light-surface-card dark:bg-[#181920] border border-light-border dark:border-[#2D3039] rounded-2xl p-8 sm:p-12 overflow-visible shadow-akari dark:shadow-night-glow classical-card-frame hover:border-terracotta/40 transition-colors duration-500">
+          {/* Celestial Ensō Orbital Circle covering the card's top-left corner */}
+          <EnsoOrbital
+            placement="top-left"
+            size={120}
+            interactive={true}
+            className="opacity-75 group-hover:opacity-100 transition-opacity"
+          />
+
+          {/* Corner Hairline Brackets */}
+          <div className="corner-bracket corner-bracket-tl absolute top-3 left-3 w-3.5 h-3.5 border-t border-l border-ochre/40 dark:border-ochre/30 pointer-events-none" />
+          <div className="corner-bracket corner-bracket-tr absolute top-3 right-3 w-3.5 h-3.5 border-t border-r border-ochre/40 dark:border-ochre/30 pointer-events-none" />
+          <div className="corner-bracket corner-bracket-bl absolute bottom-3 left-3 w-3.5 h-3.5 border-b border-l border-ochre/40 dark:border-ochre/30 pointer-events-none" />
+          <div className="corner-bracket corner-bracket-br absolute bottom-3 right-3 w-3.5 h-3.5 border-b border-r border-ochre/40 dark:border-ochre/30 pointer-events-none" />
+
+          {/* Sumi-e Mountain Landscape Mask Backdrop with Ambient Drift */}
+          <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-3/5 select-none overflow-hidden opacity-30 dark:opacity-25 mix-blend-multiply dark:mix-blend-screen animate-gentle-drift rounded-r-2xl">
+            <img
+              src="/images/contact-sumie-mountain.png"
+              alt="Sumi-e misty mountain backdrop"
+              className="w-full h-full object-cover object-center"
+              style={{
+                maskImage: 'linear-gradient(to left, black 25%, transparent 85%)',
+                WebkitMaskImage: 'linear-gradient(to left, black 25%, transparent 85%)',
+              }}
+            />
+          </div>
 
         {/* Architectural Corner Bamboo Art with Gentle Sway */}
         <div className="absolute top-4 left-4 w-10 h-14 opacity-35 dark:opacity-25 pointer-events-none">
@@ -72,11 +112,7 @@ export const ContactSection: React.FC = () => {
           {/* Left Column: Narrative & Direct Links */}
           <div className="lg:col-span-6 flex flex-col space-y-6">
             <div className="flex items-center gap-2.5">
-              <img
-                src="/stitch/hanko-stamp.svg"
-                alt="Hanko Seal"
-                className="h-6 w-6 object-contain animate-seal-breathe"
-              />
+              <HankoStamp className="h-6 w-6 animate-seal-breathe" />
               <span className="font-serif text-terracotta text-sm">03 // 原</span>
               <span className="font-sans text-[11px] font-semibold text-light-ink-subtle dark:text-dark-ink-subtle uppercase tracking-widest">
                 INITIATE A DIALOGUE
@@ -231,6 +267,7 @@ export const ContactSection: React.FC = () => {
             )}
           </div>
         </div>
+      </div>
       </div>
     </section>
   );

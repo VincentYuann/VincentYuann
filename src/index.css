@@ -173,6 +173,49 @@
 .mote-2 { animation: dust-float 15s linear infinite 3.5s; }
 .mote-3 { animation: dust-float 13s linear infinite 7s; }
 
+@keyframes orbital-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes dash-flow {
+  from {
+    stroke-dashoffset: 0;
+  }
+  to {
+    stroke-dashoffset: -40;
+  }
+}
+
+@keyframes ruby-pulse {
+  0%, 100% {
+    filter: drop-shadow(0 0 3px rgba(234, 74, 42, 0.6)) drop-shadow(0 0 8px rgba(200, 60, 35, 0.4));
+    transform: scale(1);
+  }
+  50% {
+    filter: drop-shadow(0 0 6px rgba(234, 74, 42, 0.95)) drop-shadow(0 0 14px rgba(200, 60, 35, 0.7));
+    transform: scale(1.22);
+  }
+}
+
+.animate-orbital-spin {
+  animation: orbital-spin 22s linear infinite;
+  transform-origin: center center;
+}
+
+.animate-dash-flow {
+  animation: dash-flow 8s linear infinite;
+}
+
+.animate-ruby-pulse {
+  animation: ruby-pulse 2.6s ease-in-out infinite;
+  transform-origin: center center;
+}
+
 /* Classical Japanese Double Hairline Frame from Night Design */
 .double-hairline-frame {
   box-shadow: 0 0 0 1px #E4D7C3, inset 0 0 0 1px #E4D7C3, inset 0 0 0 4px #F7F0E3, inset 0 0 0 5px rgba(212, 155, 106, 0.25);

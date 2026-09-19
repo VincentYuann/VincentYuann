@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTheme } from '../context/ThemeContext';
 import { Menu, X, Sun, Moon, Sparkles } from 'lucide-react';
+import { HankoStamp } from './HankoStamp';
 
 interface HeaderProps {
   onOpenContact?: () => void;
@@ -57,11 +58,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenContact }) => {
           >
             {/* Hanko Stamp Logo */}
             <div className="relative flex items-center justify-center -rotate-1 transition-transform duration-300 group-hover:rotate-0">
-              <img
-                src="/stitch/hanko-stamp.svg"
-                alt="Hanko Stamp Logo 原"
-                className="h-9 w-9 object-contain drop-shadow-sm rounded-sm transition-all duration-300 group-hover:scale-105"
-              />
+              <HankoStamp className="h-9 w-9 transition-all duration-300 group-hover:scale-105" />
             </div>
             <div className="flex flex-col">
               <span className="font-serif text-lg font-medium tracking-tight text-light-ink dark:text-dark-ink leading-tight">

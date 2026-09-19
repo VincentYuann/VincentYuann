@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { PROJECTS, Project } from '../data/projects';
 import { ArrowRight, Sparkles } from 'lucide-react';
 import { ProjectDetailModal } from './ProjectDetailModal';
+import { EnsoOrbital } from './EnsoOrbital';
 
 export const ProjectsShowcase: React.FC = () => {
   const [activeCategory, setActiveCategory] = useState<string>('All');
@@ -14,7 +15,41 @@ export const ProjectsShowcase: React.FC = () => {
     : PROJECTS.filter((p) => p.category === activeCategory);
 
   return (
-    <section id="featured-works" className="w-full max-w-7xl mx-auto px-6 py-12 lg:py-16">
+    <section id="featured-works" className="relative w-full overflow-hidden py-14 lg:py-20">
+      {/* Subtle Japanese Sumi-e Arts in Left & Right Empty Margins */}
+      <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden select-none">
+        {/* Left Margin Flank Bamboo */}
+        <div className="absolute -left-6 xl:left-2 bottom-12 top-24 w-32 xl:w-48 pointer-events-none z-0 hidden lg:block">
+          <img
+            src="/images/sumie-tall-vertical-bamboo.jpg"
+            alt="Sumi-e bamboo margin accent"
+            className="w-full h-full object-contain object-bottom opacity-30 dark:opacity-15 mix-blend-multiply dark:mix-blend-screen dark:invert animate-bamboo-sway"
+            style={{
+              maskImage: 'radial-gradient(ellipse 85% 85% at 30% 60%, black 35%, transparent 85%)',
+              WebkitMaskImage: 'radial-gradient(ellipse 85% 85% at 30% 60%, black 35%, transparent 85%)',
+            }}
+          />
+        </div>
+
+        {/* Right Margin Flank Bamboo */}
+        <div className="absolute -right-6 xl:right-2 bottom-12 top-24 w-32 xl:w-48 pointer-events-none z-0 hidden lg:block">
+          <img
+            src="/images/sumie-tall-vertical-bamboo.jpg"
+            alt="Sumi-e bamboo margin accent"
+            className="w-full h-full object-contain object-bottom opacity-30 dark:opacity-15 mix-blend-multiply dark:mix-blend-screen dark:invert scale-x-[-1]"
+            style={{
+              maskImage: 'radial-gradient(ellipse 85% 85% at 70% 60%, black 35%, transparent 85%)',
+              WebkitMaskImage: 'radial-gradient(ellipse 85% 85% at 70% 60%, black 35%, transparent 85%)',
+            }}
+          />
+        </div>
+
+        {/* Top and Bottom Fades */}
+        <div className="absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-light-canvas via-light-canvas/70 to-transparent dark:from-dark-canvas dark:via-dark-canvas/70 z-10 pointer-events-none" />
+        <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-light-canvas via-light-canvas/70 to-transparent dark:from-dark-canvas dark:via-dark-canvas/70 z-10 pointer-events-none" />
+      </div>
+
+      <div className="w-full max-w-7xl mx-auto px-6 relative z-10">
       {/* Section Header */}
       <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
         <div>
@@ -75,8 +110,16 @@ export const ProjectsShowcase: React.FC = () => {
               onMouseLeave={(e) => {
                 e.currentTarget.style.backgroundImage = '';
               }}
-              className="interactive-card group relative w-full bg-light-surface-card dark:bg-[#1B1C22] hover:bg-light-surface dark:hover:bg-[#202229] border border-light-border dark:border-[#2D3039] rounded-xl p-6 sm:p-8 transition-all duration-300 shadow-sm hover:shadow-akari dark:hover:shadow-night-glow cursor-pointer classical-card-frame"
+              className="interactive-card group relative w-full bg-light-surface-card dark:bg-[#1B1C22] hover:bg-light-surface dark:hover:bg-[#202229] border border-light-border dark:border-[#2D3039] rounded-xl p-6 sm:p-8 transition-all duration-300 shadow-sm hover:shadow-akari dark:hover:shadow-night-glow cursor-pointer classical-card-frame overflow-visible"
             >
+              {/* Celestial Ensō Orbital Circle covering the top-left corner */}
+              <EnsoOrbital
+                placement="top-left"
+                size={96}
+                interactive={true}
+                className="opacity-50 group-hover:opacity-100 transition-opacity"
+              />
+
               {/* Corner Hairline Brackets */}
               <div className="corner-bracket corner-bracket-tl absolute top-2.5 left-2.5 w-3 h-3 border-t border-l border-ochre/40 dark:border-ochre/30 pointer-events-none" />
               <div className="corner-bracket corner-bracket-tr absolute top-2.5 right-2.5 w-3 h-3 border-t border-r border-ochre/40 dark:border-ochre/30 pointer-events-none" />
@@ -170,6 +213,7 @@ export const ProjectsShowcase: React.FC = () => {
         project={selectedProject}
         onClose={() => setSelectedProject(null)}
       />
+      </div>
     </section>
   );
 };

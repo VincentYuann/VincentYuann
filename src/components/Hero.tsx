@@ -1,6 +1,8 @@
 import React from 'react';
 import { ArrowRight, Sparkles, MapPin } from 'lucide-react';
 import { BambooArt } from './BambooArt';
+import { EnsoOrbital } from './EnsoOrbital';
+import { HankoStamp } from './HankoStamp';
 
 export const Hero: React.FC = () => {
   const coreStacks = [
@@ -21,19 +23,32 @@ export const Hero: React.FC = () => {
         <img
           src="/images/hero-sumie-landscape-bamboo-banner.jpg"
           alt="Panoramic sumi-e landscape and bamboo ink wash painting backdrop"
-          className="absolute inset-0 w-full h-full object-cover object-right sm:object-center opacity-75 dark:opacity-25 mix-blend-multiply dark:mix-blend-screen animate-gentle-drift"
+          className="absolute inset-0 w-full h-full object-cover object-right sm:object-center opacity-85 dark:opacity-50 mix-blend-multiply dark:mix-blend-screen dark:invert animate-gentle-drift"
           style={{
-            maskImage: 'radial-gradient(ellipse 95% 85% at 60% 45%, black 35%, transparent 88%)',
-            WebkitMaskImage: 'radial-gradient(ellipse 95% 85% at 60% 45%, black 35%, transparent 88%)',
+            maskImage: 'radial-gradient(ellipse 98% 90% at 50% 50%, black 50%, transparent 95%)',
+            WebkitMaskImage: 'radial-gradient(ellipse 98% 90% at 50% 50%, black 50%, transparent 95%)',
           }}
         />
+
+        {/* Dedicated Japanese Sumi-e Pine Tree (Matsu 松) prominently anchoring the left */}
+        <div className="absolute left-0 sm:left-2 lg:left-6 bottom-0 h-4/5 max-h-[720px] w-auto max-w-lg hidden sm:block pointer-events-none z-0">
+          <img
+            src="/images/sumie-pine-tree-left.jpg"
+            alt="Sumi-e pine tree art"
+            className="w-full h-full object-contain object-bottom-left opacity-80 dark:opacity-55 mix-blend-multiply dark:mix-blend-screen dark:invert transition-opacity duration-300"
+            style={{
+              maskImage: 'radial-gradient(ellipse 92% 90% at 35% 65%, black 50%, transparent 90%)',
+              WebkitMaskImage: 'radial-gradient(ellipse 92% 90% at 35% 65%, black 50%, transparent 90%)',
+            }}
+          />
+        </div>
 
         {/* Dedicated Sumi-e Bamboo Art rising in the background behind the seal area */}
         <div className="absolute right-4 sm:right-12 lg:right-28 bottom-6 h-4/5 max-h-[700px] w-auto max-w-md hidden sm:block animate-bamboo-sway pointer-events-none z-0">
           <img
             src="/images/sumie-bamboo-bg.jpg"
             alt="Sumi-e bamboo background"
-            className="w-full h-full object-contain object-bottom opacity-45 dark:opacity-25 mix-blend-multiply dark:mix-blend-screen dark:invert"
+            className="w-full h-full object-contain object-bottom opacity-55 dark:opacity-35 mix-blend-multiply dark:mix-blend-screen dark:invert"
             style={{
               maskImage: 'radial-gradient(ellipse 80% 80% at 50% 50%, black 40%, transparent 85%)',
               WebkitMaskImage: 'radial-gradient(ellipse 80% 80% at 50% 50%, black 40%, transparent 85%)',
@@ -41,8 +56,8 @@ export const Hero: React.FC = () => {
           />
         </div>
 
-        {/* Left atmospheric gradient for crystal-clear editorial typography legibility */}
-        <div className="absolute inset-y-0 left-0 w-full sm:w-3/5 lg:w-1/2 bg-gradient-to-r from-light-canvas via-light-canvas/85 to-transparent dark:from-dark-canvas dark:via-dark-canvas/85 z-10 pointer-events-none" />
+        {/* Soft atmospheric gradient for crisp typography legibility without washing out the pine tree */}
+        <div className="absolute inset-y-0 left-0 w-full sm:w-1/2 lg:w-2/5 bg-gradient-to-r from-light-canvas/75 via-light-canvas/30 to-transparent dark:from-dark-canvas/70 dark:via-dark-canvas/25 to-transparent z-10 pointer-events-none" />
 
         {/* Top atmospheric fade under fixed appbar */}
         <div className="absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-light-canvas via-light-canvas/70 to-transparent dark:from-dark-canvas dark:via-dark-canvas/70 z-10 pointer-events-none" />
@@ -136,13 +151,8 @@ export const Hero: React.FC = () => {
           </div>
 
           <div className="relative z-10 w-full max-w-sm bg-light-surface-card/95 dark:bg-dark-surface/95 backdrop-blur-md double-hairline-frame p-6 rounded-xl shadow-lg flex flex-col items-center text-center transition-all duration-300 hover:shadow-2xl group">
-            {/* Ensō brushstroke accent positioned elegantly behind seal with ambient breathe */}
-            <div className="absolute -top-10 -right-8 w-36 h-36 opacity-30 pointer-events-none select-none z-0 animate-enso-breathe">
-              <svg className="w-full h-full" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M 50,12 C 68,11 86,22 91,42 C 96,62 89,82 72,92 C 54,101 30,97 17,81 C 4,63 7,37 24,20 C 31,13 41,10 51,12 C 47,15 36,21 30,28 C 15,44 13,67 25,82 C 37,97 59,98 74,88 C 88,77 92,57 86,41 C 81,25 65,16 50,15 Z" fill="#e5b882" opacity="0.65" />
-                <path d="M 53,10 C 70,11 88,23 92,44 C 95,57 91,72 82,83" fill="none" opacity="0.8" stroke="#c83c23" strokeLinecap="round" strokeWidth="2.5" />
-              </svg>
-            </div>
+            {/* Celestial Ensō Orbital Circle: positioned on card top-left with rotating golden arc and pulsing ruby */}
+            <EnsoOrbital placement="top-left" size={136} interactive={true} />
 
             {/* Box Header */}
             <div className="w-full flex items-center justify-between pb-2 mb-4 border-b border-light-border/60 dark:border-dark-border/60 relative z-10">
@@ -157,11 +167,7 @@ export const Hero: React.FC = () => {
 
             {/* Hanko Seal Mark with Breathing Pulse */}
             <div className="relative p-2 flex items-center justify-center animate-seal-breathe z-10">
-              <img
-                src="/stitch/hanko-stamp.svg"
-                alt="Hanko Stamp Logo 原"
-                className="w-20 h-20 object-contain drop-shadow-sm transition-transform duration-300 group-hover:scale-105"
-              />
+              <HankoStamp className="w-20 h-20 transition-transform duration-300 group-hover:scale-105" />
             </div>
 
             <div className="mt-3 text-center relative z-10">
