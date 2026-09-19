@@ -14,38 +14,50 @@ export const Hero: React.FC = () => {
   ];
 
   return (
-    <section id="home" className="relative w-full max-w-7xl mx-auto px-6 pt-28 pb-16 lg:py-28 overflow-hidden">
-      {/* Landscape Hero Banner: Authentic Sumi-e Mountain Ink Wash Painting with Atmospheric Drift */}
+    <section id="home" className="relative w-full overflow-hidden pt-28 pb-16 lg:py-28">
+      {/* Full-Bleed Stretched Landscape Hero Banner with Sumi-e Mountains & Bamboo Art */}
       <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden select-none">
-        {/* Soft atmospheric gradient transitioning into washi canvas */}
-        <div className="absolute inset-0 bg-gradient-to-r from-light-canvas via-light-canvas/75 to-transparent dark:from-dark-canvas dark:via-dark-canvas/80 w-3/5 z-10" />
-
-
-        {/* High-Resolution Sumi-e Landscape Hero Banner */}
+        {/* Stretched Panoramic Sumi-e Landscape & Bamboo Masterpiece Banner */}
         <img
-          src="/images/hero-sumie-landscape-banner.jpg"
-          alt="Sumi-e ink mountain landscape painting backdrop"
-          className="absolute right-0 top-0 h-full w-full sm:w-4/5 lg:w-3/4 max-w-6xl object-cover object-right opacity-65 dark:opacity-25 mix-blend-multiply dark:mix-blend-screen animate-gentle-drift"
+          src="/images/hero-sumie-landscape-bamboo-banner.jpg"
+          alt="Panoramic sumi-e landscape and bamboo ink wash painting backdrop"
+          className="absolute inset-0 w-full h-full object-cover object-right sm:object-center opacity-75 dark:opacity-25 mix-blend-multiply dark:mix-blend-screen animate-gentle-drift"
           style={{
-            maskImage: 'radial-gradient(ellipse at 70% 50%, black 45%, transparent 90%)',
-            WebkitMaskImage: 'radial-gradient(ellipse at 70% 50%, black 45%, transparent 90%)',
+            maskImage: 'radial-gradient(ellipse 95% 85% at 60% 45%, black 35%, transparent 88%)',
+            WebkitMaskImage: 'radial-gradient(ellipse 95% 85% at 60% 45%, black 35%, transparent 88%)',
           }}
         />
 
-        {/* Subtle Washi Texture Grain */}
-        <img
-          src="/images/washi-paper-texture.jpg"
-          alt="Washi paper texture"
-          className="w-full h-full object-cover opacity-15 dark:opacity-5 mix-blend-overlay"
-        />
+        {/* Dedicated Sumi-e Bamboo Art rising in the background behind the seal area */}
+        <div className="absolute right-4 sm:right-12 lg:right-28 bottom-6 h-4/5 max-h-[700px] w-auto max-w-md hidden sm:block animate-bamboo-sway pointer-events-none z-0">
+          <img
+            src="/images/sumie-bamboo-bg.jpg"
+            alt="Sumi-e bamboo background"
+            className="w-full h-full object-contain object-bottom opacity-45 dark:opacity-25 mix-blend-multiply dark:mix-blend-screen dark:invert"
+            style={{
+              maskImage: 'radial-gradient(ellipse 80% 80% at 50% 50%, black 40%, transparent 85%)',
+              WebkitMaskImage: 'radial-gradient(ellipse 80% 80% at 50% 50%, black 40%, transparent 85%)',
+            }}
+          />
+        </div>
+
+        {/* Left atmospheric gradient for crystal-clear editorial typography legibility */}
+        <div className="absolute inset-y-0 left-0 w-full sm:w-3/5 lg:w-1/2 bg-gradient-to-r from-light-canvas via-light-canvas/85 to-transparent dark:from-dark-canvas dark:via-dark-canvas/85 z-10 pointer-events-none" />
+
+        {/* Top atmospheric fade under fixed appbar */}
+        <div className="absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-light-canvas via-light-canvas/70 to-transparent dark:from-dark-canvas dark:via-dark-canvas/70 z-10 pointer-events-none" />
+
+        {/* Bottom atmospheric fade: Guarantees 100% seamless blend into canvas with zero harsh line */}
+        <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-light-canvas via-light-canvas/90 to-transparent dark:from-dark-canvas dark:via-dark-canvas/90 z-10 pointer-events-none" />
 
         {/* Ambient Ink Dust Motes floating gently */}
-        <div className="absolute right-1/4 bottom-12 w-1.5 h-1.5 rounded-full bg-terracotta/40 mote-1 blur-[0.5px]" />
-        <div className="absolute right-1/3 bottom-24 w-2 h-2 rounded-full bg-ochre/30 mote-2 blur-[0.5px]" />
-        <div className="absolute right-1/2 bottom-8 w-1 h-1 rounded-full bg-light-ink-muted/30 dark:bg-[#edeae4]/35 mote-3 blur-[0.5px]" />
+        <div className="absolute right-1/4 bottom-16 w-1.5 h-1.5 rounded-full bg-terracotta/40 mote-1 blur-[0.5px] z-20" />
+        <div className="absolute right-1/3 bottom-28 w-2 h-2 rounded-full bg-ochre/30 mote-2 blur-[0.5px] z-20" />
+        <div className="absolute right-1/2 bottom-12 w-1 h-1 rounded-full bg-light-ink-muted/30 dark:bg-[#edeae4]/35 mote-3 blur-[0.5px] z-20" />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start relative z-10">
+      <div className="w-full max-w-7xl mx-auto px-6 relative z-10">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
         {/* Main Content Column (8 cols) */}
         <div className="lg:col-span-8 flex flex-col space-y-6">
           {/* Status & Location Pills */}
@@ -182,6 +194,7 @@ export const Hero: React.FC = () => {
           </div>
         </div>
 
+        </div>
       </div>
     </section>
   );
