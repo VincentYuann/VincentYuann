@@ -25,9 +25,11 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     if (theme === 'night') {
       root.classList.add('dark');
       root.style.colorScheme = 'dark';
+      root.style.backgroundColor = '#121317';
     } else {
       root.classList.remove('dark');
       root.style.colorScheme = 'light';
+      root.style.backgroundColor = '#FCF9F8';
     }
     localStorage.setItem('profolio-theme', theme);
   }, [theme]);

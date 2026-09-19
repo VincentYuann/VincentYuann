@@ -6,6 +6,36 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <title>Vincent Yuan — Software & AI Engineer (Akari Wabi-Sabi Portfolio)</title>
     <meta name="description" content="Portfolio of Vincent Yuan — Software & AI Engineer. Crafting thoughtful digital experiences with algorithmic clarity and Japanese Wabi-Sabi harmony." />
+    
+    <!-- Zero-flash theme initialization before first paint -->
+    <style>
+      html, body {
+        background-color: #121317;
+      }
+      html:not(.dark) {
+        background-color: #FCF9F8;
+      }
+    </style>
+    <script>
+      (function() {
+        try {
+          var saved = localStorage.getItem('profolio-theme');
+          var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+          // Default to night if saved === 'night', or if no saved preference and system prefers dark (or default)
+          var isNight = saved === 'night' || (!saved && prefersDark) || (!saved && saved !== 'day');
+          if (isNight) {
+            document.documentElement.classList.add('dark');
+            document.documentElement.style.backgroundColor = '#121317';
+            document.documentElement.style.colorScheme = 'dark';
+          } else {
+            document.documentElement.classList.remove('dark');
+            document.documentElement.style.backgroundColor = '#FCF9F8';
+            document.documentElement.style.colorScheme = 'light';
+          }
+        } catch (e) {}
+      })();
+    </script>
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link

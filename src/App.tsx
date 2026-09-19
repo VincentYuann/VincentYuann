@@ -17,8 +17,18 @@ import { Toaster } from 'sonner';
 
 export type ViewMode = 'home' | 'projects' | 'resume' | 'login' | 'edit';
 
+const getInitialView = (): ViewMode => {
+  if (typeof window === 'undefined') return 'home';
+  const hash = window.location.hash.toLowerCase();
+  if (hash === '#resume' || hash === '#cv') return 'resume';
+  if (hash === '#all-projects' || hash === '#projects' || hash === '#archive') return 'projects';
+  if (hash === '#login') return 'login';
+  if (hash === '#edit') return 'edit';
+  return 'home';
+};
+
 export const App: React.FC = () => {
-  const [currentView, setCurrentView] = useState<ViewMode>('home');
+  const [currentView, setCurrentView] = useState<ViewMode>(getInitialView);
   const [isAdmin, setIsAdmin] = useState(false);
 
   // Stable refs so hash routing effect never needs to re-run on isAdmin changes
@@ -38,40 +48,52 @@ export const App: React.FC = () => {
 
   /* ── Supabase auth listener — single subscription, strict admin verification ── */
   useEffect(() => {
-    if (!supabase) return;
+    if (!supabase) {
+      if (getInitialView() === 'edit') {
+        setCurrentView('home');
+        window.history.replaceState(null, '', '#home');
+      }
+      return;
+    }
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       const isOwner = isOwnerSession(session);
+      isAdminRef.current = isOwner;
+      setIsAdmin(isOwner);
 
       if (event === 'INITIAL_SESSION') {
-        isAdminRef.current = isOwner;
-        setIsAdmin(isOwner);
-        if (isOwner) hasNavigatedAfterLoginRef.current = true;
+        // If unauthenticated or unauthorized user attempted to load / refresh on #edit, boot back to home
+        if (!isOwner && window.location.hash.toLowerCase() === '#edit') {
+          setViewRef.current('home');
+          window.history.replaceState(null, '', '#home');
+        }
       } else if (event === 'SIGNED_IN') {
         if (isOwner) {
-          isAdminRef.current = true;
-          setIsAdmin(true);
-          if (!hasNavigatedAfterLoginRef.current) {
+          // If the user signed in directly from the login page, take them to home
+          if (window.location.hash.toLowerCase() === '#login') {
             hasNavigatedAfterLoginRef.current = true;
             setViewRef.current('home');
             window.history.replaceState(null, '', '#home');
             window.scrollTo({ top: 0, behavior: 'smooth' });
           }
         } else {
-          // Unauthorized GitHub user logged in — revoke and reject
-          isAdminRef.current = false;
-          setIsAdmin(false);
+          // Unauthorized user logged in — revoke and reject
           supabase?.auth.signOut();
+          if (window.location.hash.toLowerCase() === '#edit') {
+            setViewRef.current('home');
+            window.history.replaceState(null, '', '#home');
+          }
           alert('Access Denied: Only the portfolio owner is authorized to access the edit dashboard.');
         }
       } else if (event === 'SIGNED_OUT') {
-        isAdminRef.current = false;
-        setIsAdmin(false);
         hasNavigatedAfterLoginRef.current = false;
-        setViewRef.current((prev) => (prev === 'edit' ? 'home' : prev));
-      } else if (event === 'TOKEN_REFRESHED') {
-        isAdminRef.current = isOwner;
-        setIsAdmin(isOwner);
+        setViewRef.current((prev) => {
+          if (prev === 'edit') {
+            window.history.replaceState(null, '', '#home');
+            return 'home';
+          }
+          return prev;
+        });
       }
     });
 
@@ -102,6 +124,10 @@ export const App: React.FC = () => {
         if (isAdminRef.current) {
           setViewRef.current('edit');
           window.scrollTo({ top: 0, behavior: 'smooth' });
+        } else {
+          // If not admin and visiting #edit, redirect to home
+          setViewRef.current('home');
+          window.history.replaceState(null, '', '#home');
         }
       } else if (hash === '' || hash === '#home' || hash === '#') {
         setViewRef.current('home');
