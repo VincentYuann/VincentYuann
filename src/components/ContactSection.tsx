@@ -50,7 +50,7 @@ export const ContactSection: React.FC = () => {
         {/* Left Margin Bamboo */}
         <div className="absolute left-0 xl:left-4 bottom-0 top-12 w-32 xl:w-48 pointer-events-none z-0 hidden lg:block">
           <img
-            src="/images/sumie-tall-vertical-bamboo.jpg"
+            src="./images/sumie-tall-vertical-bamboo.jpg"
             alt="Sumi-e bamboo contact flank"
             className="w-full h-full object-contain object-bottom opacity-35 dark:opacity-20 mix-blend-multiply dark:mix-blend-screen dark:invert animate-bamboo-sway"
             style={{
@@ -63,7 +63,7 @@ export const ContactSection: React.FC = () => {
         {/* Right Margin Bamboo */}
         <div className="absolute right-0 xl:right-4 bottom-0 top-12 w-32 xl:w-48 pointer-events-none z-0 hidden lg:block">
           <img
-            src="/images/sumie-tall-vertical-bamboo.jpg"
+            src="./images/sumie-tall-vertical-bamboo.jpg"
             alt="Sumi-e bamboo contact flank"
             className="w-full h-full object-contain object-bottom opacity-35 dark:opacity-20 mix-blend-multiply dark:mix-blend-screen dark:invert scale-x-[-1]"
             style={{
@@ -92,7 +92,7 @@ export const ContactSection: React.FC = () => {
           {/* Sumi-e Mountain Landscape Mask Backdrop with Ambient Drift */}
           <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-3/5 select-none overflow-hidden opacity-30 dark:opacity-25 mix-blend-multiply dark:mix-blend-screen animate-gentle-drift rounded-r-2xl">
             <img
-              src="/images/contact-sumie-mountain.png"
+              src="./images/contact-sumie-mountain.png"
               alt="Sumi-e misty mountain backdrop"
               className="w-full h-full object-cover object-center"
               style={{

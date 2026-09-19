@@ -21,7 +21,7 @@ export const Hero: React.FC = () => {
       <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden select-none">
         {/* Stretched Panoramic Sumi-e Landscape & Bamboo Masterpiece Banner */}
         <img
-          src="/images/hero-sumie-landscape-bamboo-banner.jpg"
+          src="./images/hero-sumie-landscape-bamboo-banner.jpg"
           alt="Panoramic sumi-e landscape and bamboo ink wash painting backdrop"
           className="absolute inset-0 w-full h-full object-cover object-right sm:object-center opacity-85 dark:opacity-50 mix-blend-multiply dark:mix-blend-screen dark:invert animate-gentle-drift"
           style={{
@@ -33,7 +33,7 @@ export const Hero: React.FC = () => {
         {/* Dedicated Japanese Sumi-e Pine Tree (Matsu 松) prominently anchoring the left */}
         <div className="absolute left-0 sm:left-2 lg:left-6 bottom-0 h-4/5 max-h-[720px] w-auto max-w-lg hidden sm:block pointer-events-none z-0">
           <img
-            src="/images/sumie-pine-tree-left.jpg"
+            src="./images/sumie-pine-tree-left.jpg"
             alt="Sumi-e pine tree art"
             className="w-full h-full object-contain object-bottom-left opacity-80 dark:opacity-55 mix-blend-multiply dark:mix-blend-screen dark:invert transition-opacity duration-300"
             style={{
@@ -46,7 +46,7 @@ export const Hero: React.FC = () => {
         {/* Dedicated Sumi-e Bamboo Art rising in the background behind the seal area */}
         <div className="absolute right-4 sm:right-12 lg:right-28 bottom-6 h-4/5 max-h-[700px] w-auto max-w-md hidden sm:block animate-bamboo-sway pointer-events-none z-0">
           <img
-            src="/images/sumie-bamboo-bg.jpg"
+            src="./images/sumie-bamboo-bg.jpg"
             alt="Sumi-e bamboo background"
             className="w-full h-full object-contain object-bottom opacity-55 dark:opacity-35 mix-blend-multiply dark:mix-blend-screen dark:invert"
             style={{

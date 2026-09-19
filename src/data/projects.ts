@@ -31,7 +31,7 @@ export const PROJECTS: Project[] = [
     subtitle: 'Contemplative Digital Environment & Local Intelligence',
     description:
       'A distraction-free digital environment engineered around local privacy-first LLMs, e-paper display emulation, and ambient notifications governed by user attention telemetry.',
-    image: '/images/sumi-os-workspace.jpg',
+    image: './images/sumi-os-workspace.jpg',
     tags: ['React', 'Next.js', 'Python', 'Docker', 'Llama-3 Local', 'WebSockets'],
     metrics: [
       { label: 'Privacy', value: '100% On-Device' },
@@ -73,7 +73,7 @@ export const PROJECTS: Project[] = [
     subtitle: 'Sensory Intelligence & Environmental Synthesis',
     description:
       'Spatial intelligence platform synthesizing environmental sensor telemetry into real-time generative audio-visual ambiance. Transforms raw architectural air quality, acoustic resonance, and sunlight data into organic responsive art.',
-    image: '/images/komorebi-spatial.jpg',
+    image: './images/komorebi-spatial.jpg',
     tags: ['FastAPI', 'PyTorch', 'Three.js / WebGL', 'PostgreSQL', 'MQTT', 'TimescaleDB'],
     metrics: [
       { label: 'Framerate', value: '60 FPS WebGL' },
@@ -115,7 +115,7 @@ export const PROJECTS: Project[] = [
     subtitle: 'Artisan Lighting Showcase & Interactive 3D Configurator',
     description:
       'Headless bespoke commerce experience celebrating handcrafted Japanese washi paper lighting fixtures and artisan provenance. Features sub-second global page loads, dynamic currency hedging, and custom interactive 3D configurator.',
-    image: '/images/akari-commerce.jpg',
+    image: './images/akari-commerce.jpg',
     tags: ['Next.js 14', 'Tailwind CSS', 'Stripe Engine', 'Supabase', 'Edge Cache', 'Three.js'],
     metrics: [
       { label: 'TTI Global', value: '240 ms' },
@@ -157,7 +157,7 @@ export const PROJECTS: Project[] = [
     subtitle: 'High-Precision Pruned In-Memory HNSW Indexer',
     description:
       'Minimalist, highly pruned hierarchical navigable small world (HNSW) vector search indexer written in Rust & Python. Designed for edge AI devices with tight memory budgets and microsecond search bounds.',
-    image: '/images/botanical-ink-accent.jpg',
+    image: './images/botanical-ink-accent.jpg',
     tags: ['Rust', 'Python C-API', 'HNSW', 'AVX-512', 'Vector Embeddings'],
     metrics: [
       { label: 'Memory Savings', value: '7.8x' },

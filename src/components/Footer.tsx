@@ -1,4 +1,5 @@
 import React from 'react';
+import { HankoStamp } from './HankoStamp';
 
 export const Footer: React.FC = () => {
   return (
@@ -8,11 +9,7 @@ export const Footer: React.FC = () => {
           {/* Brand & Narrative */}
           <div className="flex flex-col items-center md:items-start text-center md:text-left">
             <div className="flex items-center gap-3 mb-2">
-              <img
-                src="/stitch/hanko-stamp.svg"
-                alt="Hanko Seal"
-                className="h-6 w-6 object-contain"
-              />
+              <HankoStamp className="h-6 w-6" />
               <span className="font-serif text-lg font-medium text-light-ink dark:text-dark-ink">
                 Vincent Yuann
               </span>

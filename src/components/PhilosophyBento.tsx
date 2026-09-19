@@ -39,7 +39,7 @@ export const PhilosophyBento: React.FC = () => {
       watermark: (
         <div className="absolute -right-4 -bottom-4 w-32 h-36 opacity-20 dark:opacity-10 pointer-events-none">
           <img
-            src="/images/sumie-pine-tree-left.jpg"
+            src="./images/sumie-pine-tree-left.jpg"
             alt="Pine motif"
             className="w-full h-full object-contain object-bottom-right mix-blend-multiply dark:mix-blend-screen dark:invert"
           />
@@ -69,7 +69,7 @@ export const PhilosophyBento: React.FC = () => {
       <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden select-none">
         {/* Panoramic Mist Landscape backdrop spanning across the section */}
         <img
-          src="/images/hero-sumie-landscape-bamboo-banner.jpg"
+          src="./images/hero-sumie-landscape-bamboo-banner.jpg"
           alt="Sumi-e landscape behind philosophy cards"
           className="absolute inset-0 w-full h-full object-cover opacity-25 dark:opacity-15 mix-blend-multiply dark:mix-blend-screen dark:invert"
           style={{
@@ -81,7 +81,7 @@ export const PhilosophyBento: React.FC = () => {
         {/* Left Flank Art: Long Tall Sumi-e Bamboo Rising in Left Empty Space */}
         <div className="absolute left-0 lg:left-4 xl:left-8 bottom-0 top-12 w-36 sm:w-48 lg:w-64 pointer-events-none z-0 hidden md:block">
           <img
-            src="/images/sumie-tall-vertical-bamboo.jpg"
+            src="./images/sumie-tall-vertical-bamboo.jpg"
             alt="Sumi-e bamboo art left flank"
             className="w-full h-full object-contain object-bottom opacity-40 dark:opacity-25 mix-blend-multiply dark:mix-blend-screen dark:invert animate-bamboo-sway"
             style={{
@@ -94,7 +94,7 @@ export const PhilosophyBento: React.FC = () => {
         {/* Right Flank Art: Long Tall Sumi-e Bamboo Rising in Right Empty Space */}
         <div className="absolute right-0 lg:right-4 xl:right-8 bottom-0 top-12 w-36 sm:w-48 lg:w-64 pointer-events-none z-0 hidden md:block">
           <img
-            src="/images/sumie-tall-vertical-bamboo.jpg"
+            src="./images/sumie-tall-vertical-bamboo.jpg"
             alt="Sumi-e bamboo art right flank"
             className="w-full h-full object-contain object-bottom opacity-40 dark:opacity-25 mix-blend-multiply dark:mix-blend-screen dark:invert scale-x-[-1]"
             style={{

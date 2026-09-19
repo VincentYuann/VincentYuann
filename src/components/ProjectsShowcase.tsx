@@ -21,7 +21,7 @@ export const ProjectsShowcase: React.FC = () => {
         {/* Left Margin Flank Bamboo */}
         <div className="absolute -left-6 xl:left-2 bottom-12 top-24 w-32 xl:w-48 pointer-events-none z-0 hidden lg:block">
           <img
-            src="/images/sumie-tall-vertical-bamboo.jpg"
+            src="./images/sumie-tall-vertical-bamboo.jpg"
             alt="Sumi-e bamboo margin accent"
             className="w-full h-full object-contain object-bottom opacity-30 dark:opacity-15 mix-blend-multiply dark:mix-blend-screen dark:invert animate-bamboo-sway"
             style={{
@@ -34,7 +34,7 @@ export const ProjectsShowcase: React.FC = () => {
         {/* Right Margin Flank Bamboo */}
         <div className="absolute -right-6 xl:right-2 bottom-12 top-24 w-32 xl:w-48 pointer-events-none z-0 hidden lg:block">
           <img
-            src="/images/sumie-tall-vertical-bamboo.jpg"
+            src="./images/sumie-tall-vertical-bamboo.jpg"
             alt="Sumi-e bamboo margin accent"
             className="w-full h-full object-contain object-bottom opacity-30 dark:opacity-15 mix-blend-multiply dark:mix-blend-screen dark:invert scale-x-[-1]"
             style={{
