@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, Trash2, Save, CheckCircle2, AlertCircle, Loader2 } from 'lucide-react';
-import { supabase } from '../../../lib/supabase';
+import { supabase, formatErrorMessage } from '../../../lib/supabase';
 import { useSiteData, PhilosophyPillar, DEFAULT_PILLARS } from '../../../context/SiteDataContext';
 
 type SaveState = 'idle' | 'saving' | 'success' | 'error';
@@ -88,7 +88,7 @@ export const PhilosophyEditor: React.FC = () => {
       setSaveState('success');
       setTimeout(() => setSaveState('idle'), 4000);
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : String(err);
+      const msg = formatErrorMessage(err);
       setErrorMsg(msg);
       setSaveState('error');
       setTimeout(() => setSaveState('idle'), 6000);

@@ -11,7 +11,7 @@ import {
   GripVertical,
   Loader2,
 } from 'lucide-react';
-import { supabase } from '../../../lib/supabase';
+import { supabase, formatErrorMessage } from '../../../lib/supabase';
 import { useSiteData } from '../../../context/SiteDataContext';
 
 /* ─── Types ──────────────────────────────────────────────────────────── */
@@ -374,7 +374,7 @@ export const ProjectsEditor: React.FC = () => {
       setSaveState('success');
       setTimeout(() => setSaveState('idle'), 4000);
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : String(err);
+      const msg = formatErrorMessage(err);
       setErrorMsg(msg);
       setSaveState('error');
       setTimeout(() => setSaveState('idle'), 6000);

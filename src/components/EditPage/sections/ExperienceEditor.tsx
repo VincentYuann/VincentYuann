@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Plus, Trash2, Save, CheckCircle2, AlertCircle, GripVertical, Loader2 } from 'lucide-react';
-import { supabase } from '../../../lib/supabase';
+import { supabase, formatErrorMessage } from '../../../lib/supabase';
 
 interface ExperienceEntry {
   id: string;
@@ -34,6 +34,30 @@ export const ExperienceEditor: React.FC = () => {
   const [saveState, setSaveState] = useState<SaveState>('idle');
   const [errorMsg, setErrorMsg] = useState('');
 
+  // Load existing experience from Supabase on mount
+  useEffect(() => {
+    if (!supabase) return;
+    supabase
+      .from('experience')
+      .select('*')
+      .order('created_at')
+      .then(({ data }) => {
+        if (data && data.length > 0) {
+          setEntries(
+            data.map((row: any) => ({
+              id: crypto.randomUUID(),
+              title: row.title || '',
+              company: row.company || '',
+              location: row.location || '',
+              startDate: row.start_date || row.startDate || '',
+              endDate: row.end_date || row.endDate || '',
+              description: row.description || '',
+            })),
+          );
+        }
+      });
+  }, []);
+
   const updateEntry = (id: string, patch: Partial<ExperienceEntry>) =>
     setEntries((prev) => prev.map((e) => (e.id === id ? { ...e, ...patch } : e)));
 
@@ -43,17 +67,23 @@ export const ExperienceEditor: React.FC = () => {
     setErrorMsg('');
 
     try {
-      if (!supabase) throw new Error('Supabase not configured');
-      const rows = entries.map(({ id: _localId, ...rest }) => ({
+      if (!supabase) throw new Error('Supabase client is not configured.');
+      const rows = entries.map(({ id: _localId, startDate, endDate, ...rest }) => ({
         ...rest,
+        start_date: startDate,
+        end_date: endDate,
         updated_at: new Date().toISOString(),
       }));
-      const { error } = await supabase.from('experience').upsert(rows, { onConflict: 'title,company' });
+
+      const { error } = await supabase
+        .from('experience')
+        .upsert(rows, { onConflict: 'title,company' });
+
       if (error) throw error;
       setSaveState('success');
       setTimeout(() => setSaveState('idle'), 4000);
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : String(err);
+      const msg = formatErrorMessage(err);
       setErrorMsg(msg);
       setSaveState('error');
       setTimeout(() => setSaveState('idle'), 6000);

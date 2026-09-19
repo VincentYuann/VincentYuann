@@ -4,7 +4,6 @@ import { Project } from '../data/projects';
 import { ProjectDetailModal } from './ProjectDetailModal';
 import { EnsoOrbital } from './EnsoOrbital';
 import { HankoStamp } from './HankoStamp';
-import { JapaneseWaveScenery } from './JapaneseWaveScenery';
 import { useSiteData } from '../context/SiteDataContext';
 
 interface ProjectsPageProps {
@@ -32,16 +31,12 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({ onNavigate }) => {
   });
 
   return (
-    <div className="relative w-full min-h-screen">
-      {/* 🌊 Transparent Japanese Wave Scenery Cutouts (Flanks & Center Overlap) */}
-      <JapaneseWaveScenery />
-
-      <div className="relative z-10 w-full pt-28 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        {/* Detail Modal */}
-        <ProjectDetailModal
-          project={selectedProject}
-          onClose={() => setSelectedProject(null)}
-        />
+    <div className="w-full pt-28 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto min-h-screen">
+      {/* Detail Modal */}
+      <ProjectDetailModal
+        project={selectedProject}
+        onClose={() => setSelectedProject(null)}
+      />
 
       {/* Header Section */}
       <div className="mb-10 pb-6 border-b border-light-border dark:border-dark-border">
@@ -233,7 +228,6 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({ onNavigate }) => {
           ))}
         </div>
       )}
-      </div>
     </div>
   );
 };

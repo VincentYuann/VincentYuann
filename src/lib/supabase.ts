@@ -18,6 +18,31 @@ export const RESUME_BUCKET = 'resume';
 export const RESUME_PDF_FILENAME = 'vincent-yuan-cv.pdf';
 
 /**
+ * Extracts a human-readable error message from any error object, Supabase response, or string.
+ * Prevents "[object Object]" from ever showing to users.
+ */
+export function formatErrorMessage(err: unknown): string {
+  if (!err) return 'An unknown error occurred.';
+  if (typeof err === 'string') return err;
+  if (err instanceof Error) return err.message;
+  if (typeof err === 'object') {
+    const anyErr = err as Record<string, any>;
+    if (typeof anyErr.message === 'string' && anyErr.message) return anyErr.message;
+    if (typeof anyErr.error_description === 'string' && anyErr.error_description) return anyErr.error_description;
+    if (typeof anyErr.error === 'string' && anyErr.error) return anyErr.error;
+    if (typeof anyErr.msg === 'string' && anyErr.msg) return anyErr.msg;
+    if (typeof anyErr.statusText === 'string' && anyErr.statusText) return anyErr.statusText;
+    try {
+      const json = JSON.stringify(err);
+      if (json && json !== '{}') return json;
+    } catch {
+      // ignore
+    }
+  }
+  return String(err);
+}
+
+/**
  * Returns the public URL for the resume PDF.
  * Uses the Supabase Storage public URL or S3 public endpoint, with local fallback.
  */
@@ -45,14 +70,14 @@ export function getResumePdfUrl(): string {
 }
 
 /**
- * Uploads a resume PDF to Supabase Storage bucket with RLS protection.
+ * Uploads a resume PDF to Supabase Storage bucket with RLS protection and auto-bucket creation attempt.
  */
 export async function uploadResumePdf(file: File) {
   if (!supabase) {
     throw new Error('Supabase client is not configured.');
   }
 
-  const { data, error } = await supabase.storage
+  let res = await supabase.storage
     .from(RESUME_BUCKET)
     .upload(RESUME_PDF_FILENAME, file, {
       upsert: true,
@@ -60,8 +85,43 @@ export async function uploadResumePdf(file: File) {
       cacheControl: '3600',
     });
 
-  if (error) throw error;
-  return data;
+  // If bucket is not found, attempt to auto-create it
+  if (res.error) {
+    const rawMsg = formatErrorMessage(res.error).toLowerCase();
+    if (rawMsg.includes('bucket not found') || rawMsg.includes('not found')) {
+      try {
+        const createRes = await supabase.storage.createBucket(RESUME_BUCKET, {
+          public: true,
+          fileSizeLimit: 10485760, // 10MB
+          allowedMimeTypes: ['application/pdf'],
+        });
+        if (!createRes.error) {
+          // Retry upload after creating bucket
+          res = await supabase.storage
+            .from(RESUME_BUCKET)
+            .upload(RESUME_PDF_FILENAME, file, {
+              upsert: true,
+              contentType: 'application/pdf',
+              cacheControl: '3600',
+            });
+        }
+      } catch (e) {
+        console.warn('Attempted to auto-create storage bucket:', e);
+      }
+    }
+  }
+
+  if (res.error) {
+    const errMsg = formatErrorMessage(res.error);
+    if (errMsg.toLowerCase().includes('bucket not found')) {
+      throw new Error(
+        `Bucket "${RESUME_BUCKET}" not found. Please create a public bucket named "${RESUME_BUCKET}" in your Supabase Dashboard > Storage.`
+      );
+    }
+    throw new Error(errMsg);
+  }
+
+  return res.data;
 }
 
 /**
@@ -97,7 +157,9 @@ export async function saveResumeLatex(content: string) {
     .from('resume_latex')
     .upsert({ id: 1, content, updated_at: new Date().toISOString() });
 
-  if (error) throw error;
+  if (error) {
+    throw new Error(formatErrorMessage(error));
+  }
 }
 
 export interface ContactMessage {
@@ -129,12 +191,12 @@ export async function sendContactMessage(payload: ContactMessage) {
 
     if (error) {
       console.error('Supabase contact insert error:', error);
-      return { success: true, simulated: true, error: error.message };
+      return { success: true, simulated: true, error: formatErrorMessage(error) };
     }
 
     return { success: true, data };
   } catch (err) {
     console.error('Failed to submit contact message:', err);
-    return { success: true, simulated: true, error: String(err) };
+    return { success: true, simulated: true, error: formatErrorMessage(err) };
   }
 }

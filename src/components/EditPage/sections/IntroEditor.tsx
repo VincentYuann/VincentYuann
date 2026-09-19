@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Save, CheckCircle2, AlertCircle, Loader2, Plus, Trash2 } from 'lucide-react';
-import { supabase } from '../../../lib/supabase';
+import { supabase, formatErrorMessage } from '../../../lib/supabase';
 import { useSiteData, CapabilityPillar, DEFAULT_PROFILE } from '../../../context/SiteDataContext';
 
 interface IntroData {
@@ -89,7 +89,7 @@ export const IntroEditor: React.FC = () => {
       setSaveState('success');
       setTimeout(() => setSaveState('idle'), 4000);
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : String(err);
+      const msg = formatErrorMessage(err);
       setErrorMsg(msg);
       setSaveState('error');
       setTimeout(() => setSaveState('idle'), 6000);

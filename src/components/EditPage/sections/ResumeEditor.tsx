@@ -16,6 +16,7 @@ import {
   uploadResumePdf,
   fetchResumeLatex,
   saveResumeLatex,
+  formatErrorMessage,
 } from '../../../lib/supabase';
 
 type SaveState = 'idle' | 'saving' | 'success' | 'error';
@@ -160,10 +161,10 @@ export const ResumeEditor: React.FC = () => {
       setSaveState('success');
       setTimeout(() => setSaveState('idle'), 4000);
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : String(err);
+      const msg = formatErrorMessage(err);
       setErrorMsg(msg);
       setSaveState('error');
-      setTimeout(() => setSaveState('idle'), 6000);
+      setTimeout(() => setSaveState('idle'), 8000);
     }
   };
 
