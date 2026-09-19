@@ -32,12 +32,23 @@ type SaveState = 'idle' | 'saving' | 'success' | 'error';
 
 export const PhilosophyEditor: React.FC = () => {
   const { pillars: contextPillars, refresh } = useSiteData();
-  const [pillars, setPillars] = useState<PillarEntry[]>([]);
+  const [pillars, setPillars] = useState<PillarEntry[]>(() => {
+    if (contextPillars && contextPillars.length > 0) {
+      return contextPillars.map((p) => ({
+        position: p.position,
+        kanji: p.kanji,
+        romaji: p.romaji,
+        title: p.title,
+        tag: p.tag,
+        description: p.description,
+      }));
+    }
+    return [];
+  });
   const [saveState, setSaveState] = useState<SaveState>('idle');
   const [errorMsg, setErrorMsg] = useState('');
-  const [loading, setLoading] = useState(true);
 
-  // Sync from SiteDataContext
+  // Sync from SiteDataContext when context data changes
   useEffect(() => {
     if (contextPillars && contextPillars.length > 0) {
       setPillars(
@@ -50,7 +61,6 @@ export const PhilosophyEditor: React.FC = () => {
           description: p.description,
         })),
       );
-      setLoading(false);
     }
   }, [contextPillars]);
 
@@ -115,14 +125,6 @@ export const PhilosophyEditor: React.FC = () => {
       setTimeout(() => setSaveState('idle'), 6000);
     }
   };
-
-  if (loading) {
-    return (
-      <div className="py-20 text-center font-sans text-sm text-light-ink-muted dark:text-dark-ink-muted">
-        Loading philosophy pillars from database…
-      </div>
-    );
-  }
 
   return (
     <div className="space-y-8">

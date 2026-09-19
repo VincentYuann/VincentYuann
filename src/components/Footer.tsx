@@ -63,6 +63,18 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                 01 // Home Overview
               </a>
               <a
+                href="#experience"
+                onClick={(e) => {
+                  if (onNavigate) {
+                    e.preventDefault();
+                    onNavigate('home', 'experience');
+                  }
+                }}
+                className="hover:text-terracotta transition-colors"
+              >
+                02 // Work Experience
+              </a>
+              <a
                 href="#featured-works"
                 onClick={(e) => {
                   if (onNavigate) {
@@ -72,7 +84,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                 }}
                 className="hover:text-terracotta transition-colors"
               >
-                02 // Selected Projects
+                03 // Selected Works
               </a>
               <a
                 href="#philosophy"
@@ -84,7 +96,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                 }}
                 className="hover:text-terracotta transition-colors"
               >
-                03 // Philosophy & Craft
+                04 // Philosophy &amp; Craft
               </a>
               <a
                 href="#contact"
@@ -96,7 +108,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                 }}
                 className="hover:text-terracotta transition-colors"
               >
-                04 // Initiate Dialogue
+                05 // Initiate Dialogue
               </a>
               <a
                 href="#resume"
@@ -108,7 +120,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                 }}
                 className="hover:text-terracotta transition-colors"
               >
-                05 // Curriculum Vitae (PDF/TeX)
+                06 // Curriculum Vitae (PDF/TeX)
               </a>
             </div>
           </div>

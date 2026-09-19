@@ -13,26 +13,29 @@ type SaveState = 'idle' | 'saving' | 'success' | 'error';
 
 export const IntroEditor: React.FC = () => {
   const { profile: contextProfile, refresh } = useSiteData();
-  const [data, setData] = useState({
-    name: '',
-    role: '',
-    headline: '',
-    tagline: '',
-    email: '',
-    github: '',
-    linkedin: '',
-    capability_pillars: [
-      { label: 'SYSTEMS', items: 'Rust · Docker · Linux' },
-      { label: 'AI & RUNTIME', items: 'PyTorch · llama.cpp · Local LLMs' },
-      { label: 'FULL-STACK', items: 'Next.js · TypeScript · PostgreSQL' },
-    ],
-  });
+  const [data, setData] = useState(() => ({
+    name: contextProfile?.name || '',
+    role: contextProfile?.role || '',
+    headline: contextProfile?.headline || '',
+    tagline: contextProfile?.tagline || '',
+    email: contextProfile?.email || '',
+    github: contextProfile?.github || '',
+    linkedin: contextProfile?.linkedin || '',
+    capability_pillars:
+      Array.isArray(contextProfile?.capability_pillars) &&
+      contextProfile.capability_pillars.length > 0
+        ? contextProfile.capability_pillars
+        : [
+            { label: 'SYSTEMS', items: 'Rust · Docker · Linux' },
+            { label: 'AI & RUNTIME', items: 'PyTorch · llama.cpp · Local LLMs' },
+            { label: 'FULL-STACK', items: 'Next.js · TypeScript · PostgreSQL' },
+          ],
+  }));
 
   const [saveState, setSaveState] = useState<SaveState>('idle');
   const [errorMsg, setErrorMsg] = useState('');
-  const [loading, setLoading] = useState(true);
 
-  // Sync from SiteDataContext
+  // Sync from SiteDataContext when context data changes
   useEffect(() => {
     if (contextProfile) {
       setData({
@@ -53,7 +56,6 @@ export const IntroEditor: React.FC = () => {
                 { label: 'FULL-STACK', items: 'Next.js · TypeScript · PostgreSQL' },
               ],
       });
-      setLoading(false);
     }
   }, [contextProfile]);
 
@@ -110,14 +112,6 @@ export const IntroEditor: React.FC = () => {
       setTimeout(() => setSaveState('idle'), 6000);
     }
   };
-
-  if (loading) {
-    return (
-      <div className="py-20 text-center font-sans text-sm text-light-ink-muted dark:text-dark-ink-muted">
-        Loading profile from database…
-      </div>
-    );
-  }
 
   return (
     <div className="space-y-8">

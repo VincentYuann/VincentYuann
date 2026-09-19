@@ -33,41 +33,40 @@ const newEntry = (): ExperienceEntry => ({
 type SaveState = 'idle' | 'saving' | 'success' | 'error';
 
 export const ExperienceEditor: React.FC = () => {
-  const { refresh } = useSiteData();
-  const [entries, setEntries] = useState<ExperienceEntry[]>([newEntry()]);
+  const { experiences: contextExperiences, refresh } = useSiteData();
+  const [entries, setEntries] = useState<ExperienceEntry[]>(() => {
+    if (contextExperiences && contextExperiences.length > 0) {
+      return contextExperiences.map((row) => ({
+        id: row.id || crypto.randomUUID(),
+        title: row.title || '',
+        company: row.company || '',
+        location: row.location || '',
+        startDate: row.startDate || '',
+        endDate: row.endDate || '',
+        description: row.description || '',
+      }));
+    }
+    return [newEntry()];
+  });
   const [saveState, setSaveState] = useState<SaveState>('idle');
   const [errorMsg, setErrorMsg] = useState('');
-  const [loading, setLoading] = useState(true);
 
-  // Load existing experience from Supabase on mount
+  // Sync from SiteDataContext when context data updates or background sync completes
   useEffect(() => {
-    if (!supabase) {
-      setLoading(false);
-      return;
+    if (contextExperiences && contextExperiences.length > 0) {
+      setEntries(
+        contextExperiences.map((row) => ({
+          id: row.id || crypto.randomUUID(),
+          title: row.title || '',
+          company: row.company || '',
+          location: row.location || '',
+          startDate: row.startDate || '',
+          endDate: row.endDate || '',
+          description: row.description || '',
+        })),
+      );
     }
-    supabase
-      .from('experience')
-      .select('*')
-      .order('created_at')
-      .then(({ data, error }) => {
-        if (error) {
-          console.error('Failed to load experience:', error);
-        } else if (data && data.length > 0) {
-          setEntries(
-            data.map((row: any) => ({
-              id: row.id || crypto.randomUUID(),
-              title: row.title || '',
-              company: row.company || '',
-              location: row.location || '',
-              startDate: row.start_date || row.startDate || '',
-              endDate: row.end_date || row.endDate || '',
-              description: row.description || '',
-            })),
-          );
-        }
-        setLoading(false);
-      });
-  }, []);
+  }, [contextExperiences]);
 
   const updateEntry = (id: string, patch: Partial<ExperienceEntry>) =>
     setEntries((prev) => prev.map((e) => (e.id === id ? { ...e, ...patch } : e)));
@@ -80,10 +79,17 @@ export const ExperienceEditor: React.FC = () => {
         const { error } = await supabase
           .from('experience')
           .delete()
-          .eq('title', entry.title)
-          .eq('company', entry.company);
+          .match({ id: entry.id });
 
-        if (error) throw error;
+        if (error) {
+          // Fallback to title & company if id was local UUID not yet in db
+          await supabase
+            .from('experience')
+            .delete()
+            .eq('title', entry.title)
+            .eq('company', entry.company);
+        }
+
         toast.info(`Removed "${entry.title}" at "${entry.company}" from database.`);
         await refresh();
       } catch (err) {
@@ -102,7 +108,8 @@ export const ExperienceEditor: React.FC = () => {
       
       const rows = entries
         .filter((e) => e.title.trim() && e.company.trim())
-        .map(({ id: _localId, startDate, endDate, ...rest }) => ({
+        .map(({ id, startDate, endDate, ...rest }) => ({
+          id,
           ...rest,
           start_date: startDate,
           end_date: endDate,
@@ -112,9 +119,15 @@ export const ExperienceEditor: React.FC = () => {
       if (rows.length > 0) {
         const { error } = await supabase
           .from('experience')
-          .upsert(rows, { onConflict: 'title,company' });
+          .upsert(rows, { onConflict: 'id' });
 
-        if (error) throw error;
+        if (error) {
+          // If onConflict 'id' encounters unique constraint on title/company, fallback to title,company
+          const { error: fallbackError } = await supabase
+            .from('experience')
+            .upsert(rows, { onConflict: 'title,company' });
+          if (fallbackError) throw fallbackError;
+        }
       }
 
       await refresh();
@@ -129,14 +142,6 @@ export const ExperienceEditor: React.FC = () => {
       setTimeout(() => setSaveState('idle'), 6000);
     }
   };
-
-  if (loading) {
-    return (
-      <div className="py-20 text-center font-sans text-sm text-light-ink-muted dark:text-dark-ink-muted">
-        Loading experience entries from database…
-      </div>
-    );
-  }
 
   return (
     <div className="space-y-8">

@@ -107,8 +107,8 @@ export const Header: React.FC<HeaderProps> = ({
           </a>
         </div>
 
-        {/* Center: Desktop Navigation — 01–05 (and 06 Edit for admin) */}
-        <nav className="hidden md:flex items-center gap-6 lg:gap-8">
+        {/* Center: Desktop Navigation — 01–06 (and 07 Edit for admin) */}
+        <nav className="hidden md:flex items-center gap-3.5 lg:gap-5 xl:gap-7">
           {navItems.map((item) => {
             const isActive =
               currentView === 'edit'
@@ -124,13 +124,13 @@ export const Header: React.FC<HeaderProps> = ({
                 key={item.id}
                 href={item.href}
                 onClick={(e) => handleNavClick(e, item)}
-                className={`group relative font-sans text-xs uppercase tracking-widest transition-colors flex items-center gap-1.5 py-1 ${
+                className={`group relative font-sans text-[11px] lg:text-xs uppercase tracking-wider lg:tracking-widest transition-colors flex items-center gap-1 lg:gap-1.5 py-1 whitespace-nowrap ${
                   isActive
                     ? 'text-terracotta font-semibold'
                     : 'text-light-ink-muted dark:text-dark-ink-muted hover:text-light-ink dark:hover:text-dark-ink'
                 }`}
               >
-                <span className="opacity-40 text-[10px] font-mono">{item.num}</span>
+                <span className="opacity-40 text-[9px] lg:text-[10px] font-mono">{item.num}</span>
                 <span>{item.label}</span>
                 <span
                   className={`absolute bottom-0 left-0 h-[1.5px] bg-terracotta rounded-full transition-all duration-300 ${
@@ -143,12 +143,12 @@ export const Header: React.FC<HeaderProps> = ({
         </nav>
 
         {/* Right side */}
-        <div className="flex items-center gap-3 sm:gap-4">
+        <div className="flex items-center gap-2.5 sm:gap-3 lg:gap-4 shrink-0">
           {/* Day / Night Toggle */}
           <div className="flex items-center bg-light-surface-muted/90 dark:bg-dark-surface/90 p-1 rounded-full border border-light-border dark:border-dark-border text-[11px]">
             <button
               onClick={() => setTheme('day')}
-              className={`flex items-center gap-1.5 px-3 py-1 rounded-full font-sans font-semibold tracking-wider transition-all duration-200 ${
+              className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1 rounded-full font-sans font-semibold tracking-wider transition-all duration-200 ${
                 theme === 'day'
                   ? 'bg-light-surface-raised text-light-ink shadow-sm'
                   : 'text-light-ink-muted hover:text-light-ink dark:text-dark-ink-muted dark:hover:text-dark-ink'
@@ -160,7 +160,7 @@ export const Header: React.FC<HeaderProps> = ({
             </button>
             <button
               onClick={() => setTheme('night')}
-              className={`flex items-center gap-1.5 px-3 py-1 rounded-full font-sans font-semibold tracking-wider transition-all duration-200 ${
+              className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1 rounded-full font-sans font-semibold tracking-wider transition-all duration-200 ${
                 theme === 'night'
                   ? 'bg-dark-surface-raised text-dark-ink shadow-sm'
                   : 'text-light-ink-muted hover:text-light-ink dark:text-dark-ink-muted dark:hover:text-dark-ink'
@@ -176,7 +176,7 @@ export const Header: React.FC<HeaderProps> = ({
           <a
             href="#contact"
             onClick={onOpenContact}
-            className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-md text-[12px] font-sans font-medium tracking-wide bg-light-button-dark dark:bg-dark-button-light text-light-on-dark dark:text-dark-on-light hover:opacity-90 transition-opacity"
+            className="hidden lg:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-md text-[12px] font-sans font-medium tracking-wide bg-light-button-dark dark:bg-dark-button-light text-light-on-dark dark:text-dark-on-light hover:opacity-90 transition-opacity"
           >
             <span>Hire Me</span>
           </a>

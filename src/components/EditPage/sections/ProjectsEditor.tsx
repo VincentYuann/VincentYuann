@@ -331,14 +331,41 @@ const SectionCardEditor: React.FC<{
 /* ─── Main ProjectsEditor Component ─────────────────────────────────── */
 export const ProjectsEditor: React.FC = () => {
   const { projects: contextProjects, refresh } = useSiteData();
-  const [projects, setProjects] = useState<ProjectEntry[]>([]);
+  const [projects, setProjects] = useState<ProjectEntry[]>(() => {
+    if (contextProjects && contextProjects.length > 0) {
+      return contextProjects.map((p, idx) => ({
+        id: p.id || crypto.randomUUID(),
+        title: p.title || '',
+        subtitle: p.subtitle || '',
+        category: p.category || 'Distributed Systems',
+        summary: p.description || '',
+        overview: p.overview || p.description || '',
+        kanji: p.kanji || '案',
+        badge: p.badge || 'ENGINEERING ARCHIVE',
+        image: p.image || './images/sumi-os-workspace.jpg',
+        sections:
+          p.architectureDetails && p.architectureDetails.length > 0
+            ? p.architectureDetails.map((a) => ({
+                id: crypto.randomUUID(),
+                heading: a.title,
+                bullets: a.points || [''],
+              }))
+            : [newSection()],
+        techStacks: p.tags || [],
+        githubLink: p.links?.github || '',
+        liveLink: p.links?.live || '',
+        isFeatured: typeof p.isFeatured === 'boolean' ? p.isFeatured : idx < 3,
+        displayOrder: typeof p.displayOrder === 'number' ? p.displayOrder : idx,
+      }));
+    }
+    return [];
+  });
   const [activeTab, setActiveTab] = useState<ProjectsTab>('featured');
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
   const [saveState, setSaveState] = useState<SaveState>('idle');
   const [errorMsg, setErrorMsg] = useState('');
-  const [loading, setLoading] = useState(true);
 
   // Sync from SiteDataContext
   useEffect(() => {
@@ -369,7 +396,6 @@ export const ProjectsEditor: React.FC = () => {
           displayOrder: typeof p.displayOrder === 'number' ? p.displayOrder : idx,
         })),
       );
-      setLoading(false);
     }
   }, [contextProjects]);
 
@@ -625,14 +651,6 @@ export const ProjectsEditor: React.FC = () => {
 
   const featuredProjects = projects.filter((p) => p.isFeatured);
   const displayedList = activeTab === 'featured' ? featuredProjects : projects;
-
-  if (loading) {
-    return (
-      <div className="py-20 text-center font-sans text-sm text-light-ink-muted dark:text-dark-ink-muted">
-        Loading engineering projects from database…
-      </div>
-    );
-  }
 
   return (
     <div className="space-y-8">
