@@ -13,7 +13,8 @@ import { ResumePage } from './components/ResumePage';
 import { LoginPage } from './components/LoginPage';
 import { EditPage } from './components/EditPage';
 import { supabase } from './lib/supabase';
-import { Toaster, toast } from 'sonner';
+import { toast } from 'sonner';
+import { ThemedToaster } from './components/ThemedToaster';
 
 export type ViewMode = 'home' | 'projects' | 'resume' | 'login' | 'edit';
 
@@ -251,13 +252,7 @@ export const App: React.FC = () => {
 
           {currentView === 'home' && <Footer onNavigate={handleNavigate} />}
         </div>
-        <Toaster
-          position="bottom-right"
-          toastOptions={{
-            className: 'font-sans text-xs bg-light-surface-card dark:bg-[#181920] text-light-ink dark:text-dark-ink border border-light-border dark:border-[#2D3039] shadow-lg rounded-xl',
-          }}
-          richColors
-        />
+        <ThemedToaster />
       </SiteDataProvider>
     </ThemeProvider>
   );
