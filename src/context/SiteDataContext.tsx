@@ -29,15 +29,56 @@ export interface PhilosophyPillar {
   description: string;
 }
 
+export interface ExperienceRecord {
+  id: string;
+  title: string;
+  company: string;
+  location: string;
+  startDate: string;
+  endDate: string;
+  description: string;
+}
+
 export interface SiteData {
   profile: SiteProfile;
   pillars: PhilosophyPillar[];
   projects: Project[];
+  experiences: ExperienceRecord[];
   loading: boolean;
   refresh: () => Promise<void>;
 }
 
 /* ─── Defaults (fallback when Supabase has no data) ──────────────── */
+
+export const DEFAULT_EXPERIENCES: ExperienceRecord[] = [
+  {
+    id: 'sumi-ai',
+    title: 'Full-Stack & AI Systems Engineer',
+    company: 'Sumi Intelligence Studio',
+    location: 'Tokyo / Remote',
+    startDate: 'May 2024',
+    endDate: 'Present',
+    description: 'Architected local low-latency inference runtimes with custom C++ llama.cpp socket daemons, achieving sub-18ms time-to-first-token. Engineered distributed WebSocket state synchronization engine processing 12,000 telemetry events/sec with TimescaleDB hypertables. Designed Japanese minimalist Wabi-Sabi interaction design system with 60 FPS WebGL GPU shaders and zero layout shifts.',
+  },
+  {
+    id: 'dakdan',
+    title: 'Software Engineer',
+    company: 'Dakdan Worldwide',
+    location: 'Remote',
+    startDate: 'September 2025',
+    endDate: 'March 2026',
+    description: 'Built a RAG-based website assistant using LlamaIndex, Qdrant, and Perplexity to classify user intent and route qualified inquiries to a lead-tracking dashboard. Developed Flask middleware for backend validation. Built Jenkins CI pipelines for automated testing and Docker builds. Automated HR email prioritization with n8n.',
+  },
+  {
+    id: 'auto-infra',
+    title: 'Software Engineering Intern',
+    company: 'Autonomous Infrastructure Labs',
+    location: 'San Francisco, CA',
+    startDate: 'January 2023',
+    endDate: 'August 2023',
+    description: 'Implemented high-throughput distributed message queues with Apache Kafka and Rust microservices, cutting end-to-end ingestion latency by 42%. Optimized React client render trees and Web Workers for real-time telemetry dashboards serving 100k+ active concurrent sessions.',
+  },
+];
 
 export const DEFAULT_PROFILE: SiteProfile = {
   name: 'Vincent Yuan',
@@ -67,6 +108,7 @@ const SiteDataContext = createContext<SiteData>({
   profile: DEFAULT_PROFILE,
   pillars: DEFAULT_PILLARS,
   projects: PROJECTS,
+  experiences: DEFAULT_EXPERIENCES,
   loading: true,
   refresh: async () => {},
 });
@@ -165,16 +207,29 @@ export const SiteDataProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     return PROJECTS;
   });
 
+  const [experiences, setExperiences] = useState<ExperienceRecord[]>(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const cached = localStorage.getItem('portfolio_experience_cache');
+        if (cached) return JSON.parse(cached);
+      } catch (e) {
+        console.warn('Experience cache parse error', e);
+      }
+    }
+    return DEFAULT_EXPERIENCES;
+  });
+
   const [loading, setLoading] = useState(true);
 
   const fetchAll = useCallback(async () => {
     if (!supabase) { setLoading(false); return; }
 
     try {
-      const [profileRes, pillarsRes, projectsRes] = await Promise.all([
+      const [profileRes, pillarsRes, projectsRes, expRes] = await Promise.all([
         supabase.from('profile').select('*').eq('id', 1).single(),
         supabase.from('philosophy_pillars').select('*').order('position').limit(3),
         supabase.from('projects').select('*').order('created_at'),
+        supabase.from('experience').select('*').order('created_at'),
       ]);
 
       if (profileRes.data) {
@@ -225,6 +280,22 @@ export const SiteDataProvider: React.FC<{ children: React.ReactNode }> = ({ chil
           localStorage.setItem('portfolio_projects_cache', JSON.stringify(mapped));
         } catch {}
       }
+
+      if (expRes.data && expRes.data.length > 0) {
+        const mappedExp: ExperienceRecord[] = expRes.data.map((row: any) => ({
+          id: row.id || crypto.randomUUID(),
+          title: row.title || '',
+          company: row.company || '',
+          location: row.location || '',
+          startDate: row.start_date || row.startDate || '',
+          endDate: row.end_date || row.endDate || '',
+          description: row.description || '',
+        }));
+        setExperiences(mappedExp);
+        try {
+          localStorage.setItem('portfolio_experience_cache', JSON.stringify(mappedExp));
+        } catch {}
+      }
     } catch (err) {
       console.warn('Error loading site data from Supabase:', err);
     } finally {
@@ -251,7 +322,7 @@ export const SiteDataProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   }, [fetchAll]);
 
   return (
-    <SiteDataContext.Provider value={{ profile, pillars, projects, loading, refresh: fetchAll }}>
+    <SiteDataContext.Provider value={{ profile, pillars, projects, experiences, loading, refresh: fetchAll }}>
       {children}
     </SiteDataContext.Provider>
   );

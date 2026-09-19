@@ -15,8 +15,8 @@ const SECTIONS: { id: EditSection; label: string; num: string }[] = [
   { id: 'intro', label: 'Intro & Profile', num: '01' },
   { id: 'experience', label: 'Experience', num: '02' },
   { id: 'projects', label: 'Projects', num: '03' },
-  { id: 'resume', label: 'Resume', num: '04' },
-  { id: 'philosophy', label: 'Philosophy', num: '05' },
+  { id: 'philosophy', label: 'Philosophy', num: '04' },
+  { id: 'resume', label: 'Resume', num: '05' },
 ];
 
 export const EditPage: React.FC<EditPageProps> = ({ onNavigate }) => {
@@ -80,8 +80,8 @@ export const EditPage: React.FC<EditPageProps> = ({ onNavigate }) => {
         {activeSection === 'intro' && <IntroEditor />}
         {activeSection === 'experience' && <ExperienceEditor />}
         {activeSection === 'projects' && <ProjectsEditor />}
-        {activeSection === 'resume' && <ResumeEditor />}
         {activeSection === 'philosophy' && <PhilosophyEditor />}
+        {activeSection === 'resume' && <ResumeEditor />}
       </div>
     </div>
   );

@@ -59,7 +59,7 @@ export const ProjectsShowcase: React.FC<ProjectsShowcaseProps> = ({ onNavigate }
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 pb-6 border-b border-light-border/70 dark:border-[#2D3039]/80 gap-6">
           <div>
             <div className="flex items-center gap-2 mb-2">
-              <span className="font-serif text-terracotta text-sm">02 //</span>
+              <span className="font-serif text-terracotta text-sm">03 //</span>
               <span className="font-sans text-[11px] font-semibold text-light-ink-subtle dark:text-dark-ink-subtle uppercase tracking-widest">
                 SELECTED PORTFOLIO
               </span>

@@ -31,7 +31,7 @@ export const Header: React.FC<HeaderProps> = ({
     const handleScroll = () => {
       setScrolled(window.scrollY > 20);
       if (currentView !== 'home') return;
-      const sections = ['home', 'featured-works', 'philosophy', 'contact'];
+      const sections = ['home', 'experience', 'featured-works', 'philosophy', 'contact'];
       for (const sectionId of sections) {
         const el = document.getElementById(sectionId);
         if (el) {
@@ -60,11 +60,12 @@ export const Header: React.FC<HeaderProps> = ({
 
   const navItems = [
     { id: 'home', num: '01', label: 'Home', href: '#home', view: 'home' as const },
-    { id: 'featured-works', num: '02', label: 'Projects', href: '#featured-works', view: 'home' as const },
-    { id: 'philosophy', num: '03', label: 'Philosophy', href: '#philosophy', view: 'home' as const },
-    { id: 'contact', num: '04', label: 'Contact', href: '#contact', view: 'home' as const },
-    { id: 'resume', num: '05', label: 'Resume', href: '#resume', view: 'resume' as const },
-    ...(isAdmin ? [{ id: 'edit', num: '06', label: 'Edit', href: '#edit', view: 'edit' as const }] : []),
+    { id: 'experience', num: '02', label: 'Experience', href: '#experience', view: 'home' as const },
+    { id: 'featured-works', num: '03', label: 'Projects', href: '#featured-works', view: 'home' as const },
+    { id: 'philosophy', num: '04', label: 'Philosophy', href: '#philosophy', view: 'home' as const },
+    { id: 'contact', num: '05', label: 'Contact', href: '#contact', view: 'home' as const },
+    { id: 'resume', num: '06', label: 'Resume', href: '#resume', view: 'resume' as const },
+    ...(isAdmin ? [{ id: 'edit', num: '07', label: 'Edit', href: '#edit', view: 'edit' as const }] : []),
   ];
 
   const handleNavClick = (

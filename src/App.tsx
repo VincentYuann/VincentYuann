@@ -4,6 +4,7 @@ import { SiteDataProvider } from './context/SiteDataContext';
 import { Header } from './components/Header';
 import { Hero } from './components/Hero';
 import { SectionDivider } from './components/SectionDivider';
+import { ExperienceSection } from './components/ExperienceSection';
 import { ProjectsShowcase } from './components/ProjectsShowcase';
 import { PhilosophyBento } from './components/PhilosophyBento';
 import { ContactSection } from './components/ContactSection';
@@ -240,6 +241,8 @@ export const App: React.FC = () => {
             {currentView === 'home' && (
               <>
                 <Hero onNavigate={handleNavigate} />
+                <SectionDivider label="CAREER TRAJECTORY · 職歴 · MILESTONES" />
+                <ExperienceSection onNavigate={handleNavigate} />
                 <SectionDivider label="MA · WABI-SABI · CRAFT" />
                 <ProjectsShowcase onNavigate={handleNavigate} />
                 <SectionDivider label="PHILOSOPHY · SHOKUNIN · MA" />

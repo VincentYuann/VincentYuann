@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, Trash2, Save, CheckCircle2, AlertCircle, GripVertical, Loader2 } from 'lucide-react';
 import { supabase, formatErrorMessage } from '../../../lib/supabase';
+import { useSiteData } from '../../../context/SiteDataContext';
 import { toast } from 'sonner';
 import { CornerBrackets } from '../../CornerBrackets';
 import { Button } from '../../ui/button';
@@ -32,6 +33,7 @@ const newEntry = (): ExperienceEntry => ({
 type SaveState = 'idle' | 'saving' | 'success' | 'error';
 
 export const ExperienceEditor: React.FC = () => {
+  const { refresh } = useSiteData();
   const [entries, setEntries] = useState<ExperienceEntry[]>([newEntry()]);
   const [saveState, setSaveState] = useState<SaveState>('idle');
   const [errorMsg, setErrorMsg] = useState('');
@@ -83,6 +85,7 @@ export const ExperienceEditor: React.FC = () => {
 
         if (error) throw error;
         toast.info(`Removed "${entry.title}" at "${entry.company}" from database.`);
+        await refresh();
       } catch (err) {
         console.warn('Delete warning:', err);
       }
@@ -114,6 +117,7 @@ export const ExperienceEditor: React.FC = () => {
         if (error) throw error;
       }
 
+      await refresh();
       setSaveState('success');
       toast.success('Experience entries saved and synchronized with database!');
       setTimeout(() => setSaveState('idle'), 4000);
