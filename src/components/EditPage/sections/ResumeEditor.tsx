@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Upload,
   FileText,
@@ -11,48 +11,99 @@ import {
   Eye,
   EyeOff,
 } from 'lucide-react';
-import { supabase } from '../../../lib/supabase';
+import {
+  supabase,
+  uploadResumePdf,
+  fetchResumeLatex,
+  saveResumeLatex,
+} from '../../../lib/supabase';
 
 type SaveState = 'idle' | 'saving' | 'success' | 'error';
 type Tab = 'upload' | 'editor';
 
-const PLACEHOLDER_LATEX = `% ── Vincent Yuan — Curriculum Vitae ──────────────────────────────────
-\\documentclass[11pt,a4paper]{article}
-\\usepackage[margin=1in]{geometry}
-\\usepackage{hyperref}
-\\usepackage{fontenc}
-\\usepackage{inputenc}
+const DEFAULT_LATEX_CV = `% ── Vincent Yuan — Curriculum Vitae ──────────────────────────────────
+\\documentclass[letterpaper,11pt]{article}
+\\usepackage{latexsym}
+\\usepackage[empty]{fullpage}
+\\usepackage{titlesec}
+\\usepackage{marvosym}
+\\usepackage[usenames,dvipsnames]{color}
+\\usepackage{verbatim}
+\\usepackage{enumitem}
+\\usepackage[hidelinks]{hyperref}
+\\usepackage{fancyhdr}
+\\usepackage[english]{babel}
+\\usepackage{tabularx}
+
+\\pagestyle{fancy}
+\\fancyhf{}
+\\fancyfoot{}
+\\renewcommand{\\headrulewidth}{0pt}
+\\renewcommand{\\footrulewidth}{0pt}
+
+% Adjust margins
+\\addtolength{\\oddsidemargin}{-0.5in}
+\\addtolength{\\evensidemargin}{-0.5in}
+\\addtolength{\\textwidth}{1in}
+\\addtolength{\\topmargin}{-.5in}
+\\addtolength{\\textheight}{1.0in}
+
+\\urlstyle{same}
+\\raggedbottom
+\\raggedright
+\\setlength{\\tabcolsep}{0in}
+
+% Sections formatting
+\\titleformat{\\section}{
+  \\vspace{-4pt}\\scshape\\raggedright\\large
+}{}{0em}{}[\\color{black}\\titlerule \\vspace{-5pt}]
 
 \\begin{document}
 
+%----------HEADING----------
 \\begin{center}
-  {\\LARGE \\textbf{Vincent Yuan}} \\\\[4pt]
-  Systems Engineer \\& AI Architect \\\\[2pt]
-  \\href{mailto:vincentyuan1020@gmail.com}{vincentyuan1020@gmail.com}
-  \\quad|\\quad
-  \\href{https://github.com/VincentYuann}{github.com/VincentYuann}
+    \\textbf{\\Huge \\scshape Vincent Yuan} \\\\ \\vspace{1pt}
+    \\small Distributed Systems $\\cdot$ Generative AI $\\cdot$ Creative Technologist \\\\ \\vspace{1pt}
+    \\href{mailto:vincentyuan1020@gmail.com}{\\underline{vincentyuan1020@gmail.com}} $|$ 
+    \\href{https://github.com/VincentYuann}{\\underline{github.com/VincentYuann}} $|$
+    \\href{https://linkedin.com}{\\underline{linkedin.com}}
 \\end{center}
 
-\\section*{Experience}
-% Add your experience here
+%-----------EDUCATION-----------
+\\section{Education}
+  \\resumeSubheading
+      {University of Waterloo}{Waterloo, ON, Canada}
+      {Bachelor of Applied Science in Computer Engineering}{Sept 2020 -- Apr 2025}
 
-\\section*{Projects}
-% Add your projects here
+%-----------EXPERIENCE-----------
+\\section{Experience}
+  \\resumeSubheading
+      {Full-Stack \\& AI Systems Engineer}{Remote}
+      {Sumi Intelligence Studio}{May 2024 -- Present}
 
-\\section*{Education}
-% Add your education here
+%-----------PROJECTS-----------
+\\section{Featured Engineering Projects}
+  \\resumeProjectHeading
+      {\\textbf{Sumi OS \\& Workspace} $|$ \\emph{React, Next.js, Python, Docker, Llama-3, WebSockets}}{}
 
 \\end{document}
 `;
 
 export const ResumeEditor: React.FC = () => {
   const [tab, setTab] = useState<Tab>('upload');
-  const [latex, setLatex] = useState(PLACEHOLDER_LATEX);
+  const [latex, setLatex] = useState(DEFAULT_LATEX_CV);
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [saveState, setSaveState] = useState<SaveState>('idle');
   const [errorMsg, setErrorMsg] = useState('');
   const [previewMode, setPreviewMode] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Load existing LaTeX source on mount
+  useEffect(() => {
+    fetchResumeLatex().then((content) => {
+      if (content) setLatex(content);
+    });
+  }, []);
 
   /* ── File upload handler ── */
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -66,8 +117,8 @@ export const ResumeEditor: React.FC = () => {
       setSaveState('error');
       return;
     }
-    if (file.size > 5 * 1024 * 1024) {
-      setErrorMsg('File must be under 5 MB.');
+    if (file.size > 10 * 1024 * 1024) {
+      setErrorMsg('File must be under 10 MB.');
       setSaveState('error');
       return;
     }
@@ -76,42 +127,35 @@ export const ResumeEditor: React.FC = () => {
     setErrorMsg('');
     setSaveState('idle');
 
-    // If it's a .tex or .txt, read contents into editor
+    // If it's a .tex or .txt, read contents directly into editor
     if (ext === '.tex' || ext === '.txt') {
       const reader = new FileReader();
       reader.onload = (ev) => {
         if (ev.target?.result) {
           setLatex(ev.target.result as string);
-          setTab('editor'); // Switch to editor so user can review/edit
+          setTab('editor');
         }
       };
       reader.readAsText(file);
     }
   };
 
-  /* ── Save to Supabase ── */
+  /* ── Save to Supabase Storage & Database ── */
   const handleSave = async () => {
     if (saveState === 'saving') return;
     setSaveState('saving');
     setErrorMsg('');
 
     try {
-      if (!supabase) throw new Error('Supabase not configured');
+      if (!supabase) throw new Error('Supabase client is not configured.');
 
-      if (tab === 'upload' && uploadedFile && uploadedFile.name.endsWith('.pdf')) {
-        // Upload PDF to Supabase Storage bucket `resume`
-        const filePath = `resume/vincent-yuan-cv.pdf`;
-        const { error: storageError } = await supabase.storage
-          .from('resume')
-          .upload(filePath, uploadedFile, { upsert: true });
-        if (storageError) throw storageError;
+      // 1. If a PDF is uploaded, push it to the S3-backed Supabase Storage bucket
+      if (tab === 'upload' && uploadedFile && uploadedFile.name.toLowerCase().endsWith('.pdf')) {
+        await uploadResumePdf(uploadedFile);
       }
 
-      // Always upsert the LaTeX source to the `resume_latex` table
-      const { error } = await supabase
-        .from('resume_latex')
-        .upsert({ id: 1, content: latex, updated_at: new Date().toISOString() });
-      if (error) throw error;
+      // 2. Always persist current LaTeX source to database
+      await saveResumeLatex(latex);
 
       setSaveState('success');
       setTimeout(() => setSaveState('idle'), 4000);
@@ -132,8 +176,8 @@ export const ResumeEditor: React.FC = () => {
             Resume / CV
           </h2>
           <p className="font-sans text-xs text-light-ink-muted dark:text-dark-ink-muted mt-1">
-            Upload a PDF to display, or write / paste LaTeX directly. Uploading a .tex file will
-            populate the editor automatically.
+            Upload a PDF to store in your Supabase S3 bucket, or write / paste LaTeX directly.
+            Uploading a .tex file will populate the editor automatically.
           </p>
         </div>
 
@@ -156,7 +200,13 @@ export const ResumeEditor: React.FC = () => {
             {saveState === 'success' && <CheckCircle2 className="w-4 h-4" />}
             {saveState === 'error' && <AlertCircle className="w-4 h-4" />}
             {saveState === 'idle' && <Save className="w-4 h-4" />}
-            {saveState === 'saving' ? 'Saving…' : saveState === 'success' ? 'Saved!' : saveState === 'error' ? 'Retry' : 'Save'}
+            {saveState === 'saving'
+              ? 'Saving…'
+              : saveState === 'success'
+              ? 'Saved!'
+              : saveState === 'error'
+              ? 'Retry'
+              : 'Save'}
           </button>
           {saveState === 'error' && (
             <p className="font-sans text-[11px] text-red-400 text-right max-w-xs">
@@ -235,7 +285,7 @@ export const ResumeEditor: React.FC = () => {
                   Drop your PDF or .tex here
                 </p>
                 <p className="font-sans text-xs text-light-ink-muted dark:text-dark-ink-muted mt-1">
-                  Accepts .pdf, .tex, .txt — max 5 MB
+                  Accepts .pdf, .tex, .txt — max 10 MB (stored in Supabase S3 bucket)
                 </p>
               </div>
             </button>
@@ -243,7 +293,7 @@ export const ResumeEditor: React.FC = () => {
 
           <p className="mt-4 font-sans text-xs text-light-ink-muted dark:text-dark-ink-muted">
             Uploading a <code className="font-mono">.tex</code> file will also populate the LaTeX
-            editor below for further editing.
+            editor for direct modification.
           </p>
         </div>
       )}
@@ -269,7 +319,6 @@ export const ResumeEditor: React.FC = () => {
           </div>
 
           {previewMode ? (
-            /* Raw preview — monospace rendering */
             <pre className="p-6 font-mono text-xs text-light-ink dark:text-dark-ink leading-relaxed overflow-x-auto whitespace-pre-wrap max-h-[60vh]">
               {latex}
             </pre>

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { FileText, Code2, Download, Copy, Check, ExternalLink, Maximize2, Minimize2, ArrowLeft } from 'lucide-react';
 import { tokenizeLatexLine, getTokenClassName } from '../lib/latexHighlight';
 import { HankoStamp } from './HankoStamp';
+import { getResumePdfUrl, fetchResumeLatex } from '../lib/supabase';
 
 interface ResumePageProps {
   onNavigate?: (view: 'home' | 'projects' | 'resume', sectionId?: string) => void;
@@ -120,26 +121,17 @@ export const ResumePage: React.FC<ResumePageProps> = ({ onNavigate }) => {
   const [copied, setCopied] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
 
-  // Supabase storage bucket URLs (with local / relative fallback)
-  const supabasePdfUrl = import.meta.env.VITE_RESUME_PDF_URL || './resume.pdf';
-  const supabaseTexUrl = import.meta.env.VITE_RESUME_TEX_URL || '';
+  // Supabase S3-backed storage bucket PDF URL (with local / relative fallback)
+  const supabasePdfUrl = getResumePdfUrl();
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 
-    // Fetch remote LaTeX if available from Supabase
-    if (supabaseTexUrl) {
-      fetch(supabaseTexUrl)
-        .then((res) => {
-          if (res.ok) return res.text();
-          throw new Error('Remote tex not found');
-        })
-        .then((text) => setLatexSource(text))
-        .catch(() => {
-          // Keep default LaTeX template
-        });
-    }
-  }, [supabaseTexUrl]);
+    // Fetch live LaTeX from Supabase if available
+    fetchResumeLatex().then((content) => {
+      if (content) setLatexSource(content);
+    });
+  }, []);
 
   const handleCopyLatex = () => {
     navigator.clipboard.writeText(latexSource);
