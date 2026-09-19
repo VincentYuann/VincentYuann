@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { Project } from '../data/projects';
 import { X, ExternalLink, Github, CheckCircle2, Layers } from 'lucide-react';
 
@@ -22,156 +23,158 @@ export const ProjectDetailModal: React.FC<ProjectDetailModalProps> = ({ project,
     };
   }, [project, onClose]);
 
-  if (!project) return null;
+  if (!project || typeof document === 'undefined') return null;
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 md:p-10 overflow-y-auto">
-      {/* Backdrop */}
+  return createPortal(
+    <div className="fixed inset-0 z-[9999] overflow-y-auto" role="dialog" aria-modal="true">
+      {/* Dimmed & Blurred Backdrop - Complete dimming so nothing behind bleeds through */}
       <div
         onClick={onClose}
-        className="fixed inset-0 bg-light-ink/40 dark:bg-black/75 backdrop-blur-sm transition-opacity"
+        aria-hidden="true"
+        className="fixed inset-0 bg-black/80 dark:bg-black/90 backdrop-blur-md transition-opacity cursor-pointer"
       />
 
-      {/* Modal Container */}
-      <div className="relative w-full max-w-3xl bg-light-surface dark:bg-dark-surface border border-light-border dark:border-dark-border rounded-lg shadow-akari-raised dark:shadow-night-glow z-10 overflow-hidden my-auto max-h-[90vh] flex flex-col">
-        {/* Modal Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-light-border dark:border-dark-border bg-light-surface-raised dark:bg-dark-surface-muted">
-          <div className="flex items-center gap-2.5">
-            <span className="font-serif text-terracotta text-lg">{project.kanji}</span>
-            <span className="font-sans text-xs uppercase font-semibold text-light-ink-muted dark:text-dark-ink-muted tracking-wider">
-              {project.badge}
-            </span>
-          </div>
-          <button
-            onClick={onClose}
-            className="p-1.5 rounded-md hover:bg-light-surface-muted dark:hover:bg-dark-surface text-light-ink-muted dark:text-dark-ink-muted hover:text-light-ink dark:hover:text-dark-ink transition-colors"
-            aria-label="Close modal"
-          >
-            <X className="w-5 h-5" />
-          </button>
-        </div>
-
-        {/* Scrollable Content */}
-        <div className="p-6 sm:p-8 overflow-y-auto space-y-6">
-          {/* Title & Subtitle */}
-          <div>
-            <h2 className="font-serif text-2xl sm:text-3xl text-light-ink dark:text-dark-ink">
-              {project.title}
-            </h2>
-            <p className="font-sans text-sm text-terracotta font-medium mt-1">
-              {project.subtitle}
-            </p>
+      {/* Modal Positioning Wrapper: guaranteed clearance at top and bottom */}
+      <div className="min-h-full flex items-center justify-center p-4 sm:p-6 pt-16 sm:pt-20 pb-12">
+        {/* Modal Container */}
+        <div
+          onClick={(e) => e.stopPropagation()}
+          className="relative w-full max-w-3xl bg-light-surface-card dark:bg-[#181920] border border-light-border dark:border-[#2D3039] rounded-2xl shadow-2xl z-10 overflow-hidden flex flex-col max-h-[calc(100dvh-5.5rem)] sm:max-h-[calc(100dvh-6.5rem)] my-auto"
+        >
+          {/* Modal Header */}
+          <div className="flex items-center justify-between px-5 sm:px-6 py-4 border-b border-light-border dark:border-[#2D3039] bg-light-surface-raised dark:bg-[#131418] shrink-0">
+            <div className="flex items-center gap-2.5">
+              <span className="font-serif text-terracotta text-lg sm:text-xl">{project.kanji}</span>
+              <span className="font-mono text-[11px] sm:text-xs uppercase font-semibold text-light-ink-muted dark:text-dark-ink-muted tracking-wider">
+                {project.badge}
+              </span>
+            </div>
+            <button
+              onClick={onClose}
+              className="p-1.5 rounded-md hover:bg-light-surface-muted dark:hover:bg-dark-surface text-light-ink-muted dark:text-dark-ink-muted hover:text-light-ink dark:hover:text-dark-ink transition-colors focus-visible:ring-2 focus-visible:ring-terracotta focus-visible:outline-none"
+              aria-label="Close modal"
+            >
+              <X className="w-5 h-5" />
+            </button>
           </div>
 
-          {/* Project Image */}
-          <div className="w-full h-56 sm:h-72 rounded-md overflow-hidden border border-light-border dark:border-dark-border relative bg-light-surface-muted dark:bg-dark-surface-muted">
-            <img
-              src={project.image}
-              alt={project.title}
-              className="w-full h-full object-cover"
-            />
-          </div>
+          {/* Scrollable Content */}
+          <div className="p-5 sm:p-8 overflow-y-auto space-y-6">
+            {/* Title & Subtitle */}
+            <div>
+              <h2 className="font-serif text-2xl sm:text-3xl text-light-ink dark:text-dark-ink font-normal tracking-tight">
+                {project.title}
+              </h2>
+              <p className="font-sans text-xs sm:text-sm text-terracotta font-medium uppercase tracking-wider mt-1">
+                {project.subtitle}
+              </p>
+            </div>
 
-          {/* Metrics Grid */}
-          <div className="grid grid-cols-3 gap-3">
-            {project.metrics.map((m, idx) => (
-              <div
-                key={idx}
-                className="bg-light-surface-raised dark:bg-dark-surface-muted p-3 rounded border border-light-border/70 dark:border-dark-border/70 text-center"
-              >
-                <div className="font-sans text-[11px] uppercase tracking-wider text-light-ink-muted dark:text-dark-ink-muted">
-                  {m.label}
-                </div>
-                <div className="font-mono text-sm sm:text-base font-semibold text-light-ink dark:text-dark-ink mt-0.5">
-                  {m.value}
-                </div>
-              </div>
-            ))}
-          </div>
+            {/* Project Image */}
+            <div className="w-full h-48 sm:h-72 rounded-xl overflow-hidden border border-light-border/70 dark:border-[#2D3039] relative bg-light-surface-muted dark:bg-[#121316]">
+              <img
+                src={project.image}
+                alt={project.title}
+                className="w-full h-full object-cover"
+              />
+            </div>
 
-          {/* Overview */}
-          <div className="space-y-2">
-            <h3 className="font-serif text-lg text-light-ink dark:text-dark-ink flex items-center gap-2">
-              <Layers className="w-4 h-4 text-terracotta" />
-              <span>Architectural Overview</span>
-            </h3>
-            <p className="font-sans text-sm sm:text-base text-light-ink-muted dark:text-dark-ink-muted leading-relaxed">
-              {project.overview}
-            </p>
-          </div>
+            {/* Architectural Overview */}
+            <div className="space-y-2">
+              <h3 className="font-serif text-lg text-light-ink dark:text-dark-ink flex items-center gap-2">
+                <Layers className="w-4 h-4 text-terracotta" />
+                <span>Architectural Overview</span>
+              </h3>
+              <p className="font-sans text-sm sm:text-base text-light-ink-muted dark:text-dark-ink-muted leading-relaxed font-light">
+                {project.overview}
+              </p>
+            </div>
 
-          {/* Deep Architectural Details */}
-          <div className="space-y-4">
-            <h3 className="font-serif text-lg text-light-ink dark:text-dark-ink">
-              System Highlights & Engineering Principles
-            </h3>
+            {/* Deep Architectural Details */}
             <div className="space-y-4">
-              {project.architectureDetails.map((section, idx) => (
-                <div
-                  key={idx}
-                  className="bg-light-surface-card dark:bg-dark-surface-raised p-4 rounded border border-light-border/60 dark:border-dark-border/60"
+              <h3 className="font-serif text-lg text-light-ink dark:text-dark-ink font-normal">
+                System Highlights &amp; Engineering Principles
+              </h3>
+              <div className="space-y-3">
+                {project.architectureDetails.map((section, idx) => (
+                  <div
+                    key={idx}
+                    className="bg-light-surface-raised dark:bg-[#1B1C22] p-4 sm:p-5 rounded-xl border border-light-border/60 dark:border-[#2D3039]/60"
+                  >
+                    <h4 className="font-sans text-sm font-semibold text-light-ink dark:text-dark-ink mb-2">
+                      {section.title}
+                    </h4>
+                    <ul className="space-y-1.5">
+                      {section.points.map((pt, pIdx) => (
+                        <li
+                          key={pIdx}
+                          className="font-sans text-xs sm:text-sm text-light-ink-muted dark:text-dark-ink-muted flex items-start gap-2"
+                        >
+                          <CheckCircle2 className="w-3.5 h-3.5 text-terracotta shrink-0 mt-0.5" />
+                          <span>{pt}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Tech Tags */}
+            <div>
+              <div className="font-sans text-[11px] uppercase tracking-wider font-semibold text-light-ink-subtle dark:text-dark-ink-subtle mb-2.5">
+                Technologies &amp; Infrastructure
+              </div>
+              <div className="flex flex-wrap gap-1.5 sm:gap-2">
+                {project.tags.map((tag) => (
+                  <span
+                    key={tag}
+                    className="px-2.5 py-1 text-xs font-mono rounded bg-light-surface-raised dark:bg-[#14151A] border border-light-border/70 dark:border-[#2D3039] text-light-ink dark:text-dark-ink"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Modal Footer Actions */}
+          <div className="px-5 sm:px-6 py-3.5 sm:py-4 border-t border-light-border dark:border-[#2D3039] bg-light-surface-raised dark:bg-[#131418] flex items-center justify-between gap-4 shrink-0">
+            <div className="flex items-center gap-2 sm:gap-3">
+              {project.links.github && (
+                <a
+                  href={project.links.github}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-sans font-medium rounded-lg border border-light-border dark:border-[#2D3039] hover:bg-light-surface dark:hover:bg-[#202229] text-light-ink dark:text-dark-ink transition-colors focus-visible:ring-2 focus-visible:ring-terracotta focus-visible:outline-none"
                 >
-                  <h4 className="font-sans text-sm font-semibold text-light-ink dark:text-dark-ink mb-2">
-                    {section.title}
-                  </h4>
-                  <ul className="space-y-1.5">
-                    {section.points.map((pt, pIdx) => (
-                      <li
-                        key={pIdx}
-                        className="font-sans text-xs sm:text-sm text-light-ink-muted dark:text-dark-ink-muted flex items-start gap-2"
-                      >
-                        <CheckCircle2 className="w-3.5 h-3.5 text-terracotta shrink-0 mt-0.5" />
-                        <span>{pt}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Tech Tags */}
-          <div>
-            <div className="font-sans text-xs uppercase tracking-wider font-semibold text-light-ink-subtle dark:text-dark-ink-subtle mb-2">
-              Technologies & Infrastructure
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {project.tags.map((tag) => (
-                <span
-                  key={tag}
-                  className="px-2.5 py-1 text-xs font-mono rounded bg-light-surface-raised dark:bg-dark-surface-raised border border-light-border dark:border-dark-border text-light-ink dark:text-dark-ink"
+                  <Github className="w-3.5 h-3.5" />
+                  <span>Repository</span>
+                </a>
+              )}
+              {project.links.live && project.links.live !== '#' && (
+                <a
+                  href={project.links.live}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-sans font-medium rounded-lg bg-terracotta hover:bg-terracotta-hover text-white transition-colors focus-visible:ring-2 focus-visible:ring-terracotta focus-visible:outline-none shadow-xs"
                 >
-                  {tag}
-                </span>
-              ))}
+                  <ExternalLink className="w-3.5 h-3.5" />
+                  <span>Live Demo</span>
+                </a>
+              )}
             </div>
-          </div>
-        </div>
 
-        {/* Modal Footer Actions */}
-        <div className="px-6 py-4 border-t border-light-border dark:border-dark-border bg-light-surface-raised dark:bg-dark-surface-muted flex items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            {project.links.github && (
-              <a
-                href={project.links.github}
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-sans font-medium rounded border border-light-border dark:border-dark-border hover:bg-light-surface dark:hover:bg-dark-surface text-light-ink dark:text-dark-ink transition-colors"
-              >
-                <Github className="w-3.5 h-3.5" />
-                <span>Repository</span>
-              </a>
-            )}
+            <button
+              onClick={onClose}
+              className="text-xs font-sans text-light-ink-muted dark:text-dark-ink-muted hover:text-light-ink dark:hover:text-dark-ink focus-visible:ring-2 focus-visible:ring-terracotta focus-visible:outline-none rounded px-2.5 py-1.5"
+            >
+              Close
+            </button>
           </div>
-
-          <button
-            onClick={onClose}
-            className="text-xs font-sans text-light-ink-muted dark:text-dark-ink-muted hover:text-light-ink dark:hover:text-dark-ink"
-          >
-            Close
-          </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };

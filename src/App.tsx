@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { ThemeProvider } from './context/ThemeContext';
 import { Header } from './components/Header';
 import { Hero } from './components/Hero';
@@ -9,39 +9,111 @@ import { ContactSection } from './components/ContactSection';
 import { Footer } from './components/Footer';
 import { ProjectsPage } from './components/ProjectsPage';
 import { ResumePage } from './components/ResumePage';
+import { LoginPage } from './components/LoginPage';
+import { EditPage } from './components/EditPage';
+import { supabase } from './lib/supabase';
 
-type ViewMode = 'home' | 'projects' | 'resume';
+export type ViewMode = 'home' | 'projects' | 'resume' | 'login' | 'edit';
 
 export const App: React.FC = () => {
   const [currentView, setCurrentView] = useState<ViewMode>('home');
+  const [isAdmin, setIsAdmin] = useState(false);
 
-  // Handle URL hash routing
+  // Stable refs so hash routing effect never needs to re-run on isAdmin changes
+  const isAdminRef = useRef(false);
+  const setViewRef = useRef(setCurrentView);
+  setViewRef.current = setCurrentView;
+
+  // Only navigate home on the very first successful sign-in, not on every token refresh
+  const hasNavigatedAfterLoginRef = useRef(false);
+
+  /* ── Supabase auth listener — single subscription, no duplicate getSession ── */
+  useEffect(() => {
+    if (!supabase) return;
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      const adminNow = !!session?.user;
+
+      if (event === 'INITIAL_SESSION') {
+        isAdminRef.current = adminNow;
+        setIsAdmin(adminNow);
+        if (adminNow) hasNavigatedAfterLoginRef.current = true;
+      } else if (event === 'SIGNED_IN') {
+        isAdminRef.current = true;
+        setIsAdmin(true);
+        if (!hasNavigatedAfterLoginRef.current) {
+          hasNavigatedAfterLoginRef.current = true;
+          setViewRef.current('home');
+          window.history.replaceState(null, '', '#home');
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+      } else if (event === 'SIGNED_OUT') {
+        isAdminRef.current = false;
+        setIsAdmin(false);
+        hasNavigatedAfterLoginRef.current = false;
+        setViewRef.current((prev) => (prev === 'edit' ? 'home' : prev));
+      } else if (event === 'TOKEN_REFRESHED') {
+        isAdminRef.current = adminNow;
+        setIsAdmin(adminNow);
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  /* ── URL hash routing ── */
   useEffect(() => {
     const handleHashChange = () => {
       const hash = window.location.hash.toLowerCase();
+
+      // Ignore OAuth callback hashes (contain access_token)
+      if (hash.includes('access_token') || hash.includes('type=signup') || hash.includes('type=recovery')) {
+        return;
+      }
+
       if (hash === '#resume' || hash === '#cv') {
-        setCurrentView('resume');
+        setViewRef.current('resume');
         window.scrollTo({ top: 0, behavior: 'smooth' });
       } else if (hash === '#all-projects' || hash === '#projects' || hash === '#archive') {
-        setCurrentView('projects');
+        setViewRef.current('projects');
         window.scrollTo({ top: 0, behavior: 'smooth' });
-      } else {
-        setCurrentView('home');
+      } else if (hash === '#login') {
+        setViewRef.current('login');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else if (hash === '#edit') {
+        // Use the ref — not state — so this effect has zero dependencies
+        if (isAdminRef.current) {
+          setViewRef.current('edit');
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+      } else if (hash === '' || hash === '#home' || hash === '#') {
+        setViewRef.current('home');
       }
+      // Any unrecognised hash (e.g. section anchors like #contact) — do nothing
     };
 
-    handleHashChange();
+    handleHashChange(); // Run once on mount
     window.addEventListener('hashchange', handleHashChange);
     return () => window.removeEventListener('hashchange', handleHashChange);
-  }, []);
+  }, []); // ← empty deps: no re-runs from state changes
 
   const handleNavigate = (view: ViewMode, sectionId?: string) => {
+    // Guard: edit is only accessible when admin
+    if (view === 'edit' && !isAdminRef.current) return;
+
     setCurrentView(view);
+
     if (view === 'resume') {
       window.location.hash = '#resume';
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } else if (view === 'projects') {
       window.location.hash = '#all-projects';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else if (view === 'login') {
+      window.location.hash = '#login';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else if (view === 'edit') {
+      window.location.hash = '#edit';
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } else {
       window.location.hash = sectionId ? `#${sectionId}` : '#home';
@@ -60,18 +132,32 @@ export const App: React.FC = () => {
     }
   };
 
+  const handleLogout = async () => {
+    if (!supabase) return;
+    await supabase.auth.signOut();
+    // SIGNED_OUT event handles state cleanup
+  };
+
   return (
     <ThemeProvider>
       <div className="min-h-screen bg-light-canvas dark:bg-dark-canvas text-light-ink dark:text-dark-ink washi-pattern transition-colors duration-300 flex flex-col selection:bg-terracotta/20 selection:text-terracotta">
-        {/* Fixed Navigation Header */}
         <Header
           currentView={currentView}
           onNavigate={handleNavigate}
           onOpenContact={() => handleNavigate('home', 'contact')}
+          isAdmin={isAdmin}
+          onLogout={handleLogout}
         />
 
-        {/* Dynamic Main View */}
         <main className="flex-1 w-full">
+          {currentView === 'login' && (
+            <LoginPage onNavigate={handleNavigate} />
+          )}
+
+          {currentView === 'edit' && isAdmin && (
+            <EditPage onNavigate={handleNavigate} />
+          )}
+
           {currentView === 'resume' && (
             <ResumePage onNavigate={handleNavigate} />
           )}
@@ -83,21 +169,17 @@ export const App: React.FC = () => {
           {currentView === 'home' && (
             <>
               <Hero onNavigate={handleNavigate} />
-
               <SectionDivider label="MA · WABI-SABI · CRAFT" />
               <ProjectsShowcase onNavigate={handleNavigate} />
-
               <SectionDivider label="PHILOSOPHY · SHOKUNIN · MA" />
               <PhilosophyBento />
-
               <SectionDivider label="INITIATE A DIALOGUE · 対話" />
               <ContactSection />
             </>
           )}
         </main>
 
-        {/* Footer */}
-        <Footer onNavigate={handleNavigate} />
+        {currentView === 'home' && <Footer onNavigate={handleNavigate} />}
       </div>
     </ThemeProvider>
   );

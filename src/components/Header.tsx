@@ -1,26 +1,36 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useTheme } from '../context/ThemeContext';
-import { Menu, X, Sun, Moon, Sparkles } from 'lucide-react';
+import { Menu, X, Sun, Moon } from 'lucide-react';
 import { HankoStamp } from './HankoStamp';
+
+export type ViewMode = 'home' | 'projects' | 'resume' | 'login' | 'edit';
 
 interface HeaderProps {
   onOpenContact?: () => void;
-  currentView?: 'home' | 'projects' | 'resume';
-  onNavigate?: (view: 'home' | 'projects' | 'resume', sectionId?: string) => void;
+  currentView?: ViewMode;
+  onNavigate?: (view: ViewMode, sectionId?: string) => void;
+  isAdmin?: boolean;
+  onLogout?: () => void;
 }
 
-export const Header: React.FC<HeaderProps> = ({ onOpenContact, currentView = 'home', onNavigate }) => {
+export const Header: React.FC<HeaderProps> = ({
+  onOpenContact,
+  currentView = 'home',
+  onNavigate,
+  isAdmin = false,
+  onLogout,
+}) => {
   const { theme, setTheme } = useTheme();
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [moreMenuOpen, setMoreMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
+  const moreMenuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 20);
-
       if (currentView !== 'home') return;
-
       const sections = ['home', 'featured-works', 'philosophy', 'contact'];
       for (const sectionId of sections) {
         const el = document.getElementById(sectionId);
@@ -33,10 +43,20 @@ export const Header: React.FC<HeaderProps> = ({ onOpenContact, currentView = 'ho
         }
       }
     };
-
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, [currentView]);
+
+  // Close more-menu on outside click
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (moreMenuRef.current && !moreMenuRef.current.contains(e.target as Node)) {
+        setMoreMenuOpen(false);
+      }
+    };
+    if (moreMenuOpen) document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [moreMenuOpen]);
 
   const navItems = [
     { id: 'home', num: '01', label: 'Home', href: '#home', view: 'home' as const },
@@ -46,7 +66,10 @@ export const Header: React.FC<HeaderProps> = ({ onOpenContact, currentView = 'ho
     { id: 'resume', num: '05', label: 'Resume', href: '#resume', view: 'resume' as const },
   ];
 
-  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, item: typeof navItems[0]) => {
+  const handleNavClick = (
+    e: React.MouseEvent<HTMLAnchorElement>,
+    item: (typeof navItems)[0],
+  ) => {
     if (onNavigate) {
       e.preventDefault();
       onNavigate(item.view, item.id);
@@ -63,7 +86,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenContact, currentView = 'ho
       }`}
     >
       <div className="h-20 w-full max-w-7xl mx-auto px-6 flex items-center justify-between gap-4">
-        {/* Left: Brand Identity — Hanko Seal Stamp Only (No Name Text) */}
+        {/* Left: Brand */}
         <div className="flex items-center gap-3">
           <a
             href="#home"
@@ -75,23 +98,22 @@ export const Header: React.FC<HeaderProps> = ({ onOpenContact, currentView = 'ho
             }}
             className="flex items-center group cursor-pointer"
             aria-label="Vincent Yuan — Home"
-            title="Vincent Yuan — Home"
           >
-            {/* Hanko Stamp Logo */}
             <div className="relative flex items-center justify-center -rotate-1 transition-transform duration-300 group-hover:rotate-0 group-hover:scale-105">
               <HankoStamp className="h-9 w-9 transition-all duration-300" />
             </div>
           </a>
         </div>
 
-        {/* Center: Desktop Navigation */}
+        {/* Center: Desktop Navigation — 01–05 only, no edit in nav */}
         <nav className="hidden md:flex items-center gap-6 lg:gap-8">
           {navItems.map((item) => {
-            const isActive = currentView === 'resume'
-              ? item.id === 'resume'
-              : currentView === 'projects'
-              ? item.id === 'featured-works'
-              : activeSection === item.id;
+            const isActive =
+              currentView === 'resume'
+                ? item.id === 'resume'
+                : currentView === 'projects'
+                ? item.id === 'featured-works'
+                : activeSection === item.id;
 
             return (
               <a
@@ -116,9 +138,9 @@ export const Header: React.FC<HeaderProps> = ({ onOpenContact, currentView = 'ho
           })}
         </nav>
 
-        {/* Right: Theme Toggle & Contact Button */}
+        {/* Right side */}
         <div className="flex items-center gap-3 sm:gap-4">
-          {/* Day / Night Segmented Switch */}
+          {/* Day / Night Toggle */}
           <div className="flex items-center bg-light-surface-muted/90 dark:bg-dark-surface/90 p-1 rounded-full border border-light-border dark:border-dark-border text-[11px]">
             <button
               onClick={() => setTheme('day')}
@@ -127,7 +149,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenContact, currentView = 'ho
                   ? 'bg-light-surface-raised text-light-ink shadow-sm'
                   : 'text-light-ink-muted hover:text-light-ink dark:text-dark-ink-muted dark:hover:text-dark-ink'
               }`}
-              title="Day Mode (Akari Warm Washi)"
+              title="Day Mode"
             >
               <Sun className="w-3 h-3" />
               <span>DAY</span>
@@ -139,14 +161,14 @@ export const Header: React.FC<HeaderProps> = ({ onOpenContact, currentView = 'ho
                   ? 'bg-dark-surface-raised text-dark-ink shadow-sm'
                   : 'text-light-ink-muted hover:text-light-ink dark:text-dark-ink-muted dark:hover:text-dark-ink'
               }`}
-              title="Night Mode (Charcoal Glow)"
+              title="Night Mode"
             >
               <Moon className="w-3 h-3" />
               <span>NIGHT</span>
             </button>
           </div>
 
-          {/* Quick Contact CTA */}
+          {/* Hire Me */}
           <a
             href="#contact"
             onClick={onOpenContact}
@@ -155,7 +177,63 @@ export const Header: React.FC<HeaderProps> = ({ onOpenContact, currentView = 'ho
             <span>Hire Me</span>
           </a>
 
-          {/* Mobile Menu Toggle */}
+          {/* 三 More-options menu — desktop only */}
+          <div className="relative hidden md:block" ref={moreMenuRef}>
+            <button
+              onClick={() => setMoreMenuOpen((v) => !v)}
+              className={`p-2 rounded-md text-base leading-none select-none transition-colors ${
+                moreMenuOpen
+                  ? 'bg-light-surface-raised dark:bg-dark-surface-raised text-terracotta'
+                  : 'text-light-ink-muted dark:text-dark-ink-muted hover:text-light-ink dark:hover:text-dark-ink hover:bg-light-surface-raised dark:hover:bg-dark-surface-raised'
+              }`}
+              aria-label="More options"
+            >
+              三
+            </button>
+
+            {moreMenuOpen && (
+              <div className="absolute right-0 top-full mt-2 w-40 bg-light-surface-card dark:bg-[#181920] border border-light-border dark:border-[#2D3039] rounded-xl shadow-lg overflow-hidden py-1.5 z-50">
+                {isAdmin ? (
+                  /* ── Logged in: Edit + Logout ── */
+                  <>
+                    <button
+                      onClick={() => {
+                        setMoreMenuOpen(false);
+                        onNavigate?.('edit');
+                      }}
+                      className="w-full text-left px-4 py-2.5 font-sans text-xs text-light-ink dark:text-dark-ink hover:bg-light-surface-raised dark:hover:bg-dark-surface-raised hover:text-terracotta transition-colors"
+                    >
+                      Edit Portfolio
+                    </button>
+                    <div className="mx-3 my-1 border-t border-light-border dark:border-dark-border" />
+                    <button
+                      onClick={() => {
+                        setMoreMenuOpen(false);
+                        onLogout?.();
+                      }}
+                      className="w-full text-left px-4 py-2.5 font-sans text-xs text-light-ink-muted dark:text-dark-ink-muted hover:bg-light-surface-raised dark:hover:bg-dark-surface-raised hover:text-red-400 transition-colors"
+                    >
+                      Logout
+                    </button>
+                  </>
+                ) : (
+                  /* ── Logged out: Login ── */
+                  <button
+                    onClick={() => {
+                      setMoreMenuOpen(false);
+                      onNavigate?.('login');
+                    }}
+                    className="w-full text-left px-4 py-2.5 font-sans text-xs text-light-ink-muted dark:text-dark-ink-muted hover:bg-light-surface-raised dark:hover:bg-dark-surface-raised hover:text-terracotta transition-colors"
+                    aria-label="Admin login"
+                  >
+                    Login
+                  </button>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* Mobile Toggle */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             className="md:hidden p-2 rounded-md border border-light-border dark:border-dark-border text-light-ink dark:text-dark-ink"
@@ -166,7 +244,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenContact, currentView = 'ho
         </div>
       </div>
 
-      {/* Mobile Drawer Navigation */}
+      {/* Mobile Drawer */}
       {mobileMenuOpen && (
         <div className="md:hidden px-6 py-5 bg-light-surface dark:bg-dark-surface border-b border-light-border dark:border-dark-border shadow-lg">
           <div className="flex flex-col space-y-3">
@@ -187,23 +265,40 @@ export const Header: React.FC<HeaderProps> = ({ onOpenContact, currentView = 'ho
                 <span className="font-mono text-xs opacity-50">{item.num}</span>
               </a>
             ))}
-            <div className="pt-3 border-t border-light-border dark:border-dark-border flex items-center justify-between">
-              <span className="text-xs font-sans text-light-ink-muted dark:text-dark-ink-muted">
-                Vincent Yuan · 侘寂
-              </span>
-              <a
-                href="#contact"
-                onClick={(e) => {
-                  setMobileMenuOpen(false);
-                  if (onNavigate) {
-                    e.preventDefault();
-                    onNavigate('home', 'contact');
-                  }
-                }}
-                className="text-xs font-sans font-medium text-terracotta"
-              >
-                Initiate a Dialogue →
-              </a>
+
+            <div className="pt-2 border-t border-light-border dark:border-dark-border space-y-2">
+              {isAdmin ? (
+                <>
+                  <button
+                    onClick={() => {
+                      setMobileMenuOpen(false);
+                      onNavigate?.('edit');
+                    }}
+                    className="w-full text-left py-2 text-sm font-sans text-light-ink dark:text-dark-ink hover:text-terracotta transition-colors"
+                  >
+                    Edit Portfolio
+                  </button>
+                  <button
+                    onClick={() => {
+                      setMobileMenuOpen(false);
+                      onLogout?.();
+                    }}
+                    className="w-full text-left py-2 text-sm font-sans text-light-ink-muted dark:text-dark-ink-muted hover:text-red-400 transition-colors"
+                  >
+                    Logout
+                  </button>
+                </>
+              ) : (
+                <button
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    onNavigate?.('login');
+                  }}
+                  className="w-full text-left py-2 text-sm font-sans text-light-ink-muted dark:text-dark-ink-muted hover:text-terracotta transition-colors"
+                >
+                  Login
+                </button>
+              )}
             </div>
           </div>
         </div>

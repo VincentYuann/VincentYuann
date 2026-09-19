@@ -116,15 +116,15 @@ export const ContactSection: React.FC = () => {
           <div className="corner-bracket corner-bracket-bl absolute bottom-3 left-3 w-3.5 h-3.5 border-b border-l border-ochre/40 dark:border-ochre/30 pointer-events-none" />
           <div className="corner-bracket corner-bracket-br absolute bottom-3 right-3 w-3.5 h-3.5 border-b border-r border-ochre/40 dark:border-ochre/30 pointer-events-none" />
 
-          {/* Sumi-e Mountain Landscape Mask Backdrop with Ambient Drift */}
-          <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-3/5 select-none overflow-hidden opacity-30 dark:opacity-25 mix-blend-multiply dark:mix-blend-screen animate-gentle-drift rounded-r-2xl">
+          {/* Sumi-e Mountain Landscape Mask Backdrop with Ambient Drift — Anchored to Left */}
+          <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-full sm:w-3/5 select-none overflow-hidden opacity-35 dark:opacity-30 mix-blend-multiply dark:mix-blend-screen animate-gentle-drift rounded-l-2xl">
             <img
               src="./images/contact-sumie-mountain.png"
               alt="Sumi-e misty mountain backdrop"
-              className="w-full h-full object-cover object-center"
+              className="w-full h-full object-cover object-left-bottom sm:object-left"
               style={{
-                maskImage: 'linear-gradient(to left, black 25%, transparent 85%)',
-                WebkitMaskImage: 'linear-gradient(to left, black 25%, transparent 85%)',
+                maskImage: 'linear-gradient(to right, black 30%, transparent 90%)',
+                WebkitMaskImage: 'linear-gradient(to right, black 30%, transparent 90%)',
               }}
             />
           </div>
@@ -170,7 +170,7 @@ export const ContactSection: React.FC = () => {
                   className="inline-flex items-center gap-2 px-5 py-3.5 bg-light-surface-raised dark:bg-[#1B1C22] border border-light-border dark:border-[#2D3039] hover:bg-light-surface dark:hover:bg-[#252831] hover:border-ochre/50 text-light-ink dark:text-[#EDEAE4] font-sans text-xs uppercase tracking-widest rounded-lg shadow-xs transition-all duration-200"
                 >
                   <Github className="w-4 h-4" />
-                  <span className="tracking-widest">GitHub</span>
+                  <span className="tracking-widest">Github</span>
                 </a>
 
                 <a
@@ -180,7 +180,7 @@ export const ContactSection: React.FC = () => {
                   className="inline-flex items-center gap-2 px-5 py-3.5 bg-light-surface-raised dark:bg-[#1B1C22] border border-light-border dark:border-[#2D3039] hover:bg-light-surface dark:hover:bg-[#252831] hover:border-ochre/50 text-light-ink dark:text-[#EDEAE4] font-sans text-xs uppercase tracking-widest rounded-lg shadow-xs transition-all duration-200"
                 >
                   <Linkedin className="w-4 h-4" />
-                  <span className="tracking-widest">LinkedIn</span>
+                  <span className="tracking-widest">Linkedin</span>
                 </a>
               </div>
             </div>
@@ -192,7 +192,7 @@ export const ContactSection: React.FC = () => {
               </h3>
 
               {status === 'success' ? (
-                <div className="p-5 rounded bg-bamboo/10 border border-bamboo/30 text-center space-y-2">
+                <div role="status" aria-live="polite" className="p-5 rounded bg-bamboo/10 border border-bamboo/30 text-center space-y-2">
                   <CheckCircle2 className="w-8 h-8 text-bamboo mx-auto" />
                   <h4 className="font-serif text-base text-light-ink dark:text-dark-ink">
                     Thank You for Reaching Out
@@ -202,7 +202,7 @@ export const ContactSection: React.FC = () => {
                   </p>
                 </div>
               ) : (
-                <form onSubmit={handleSubmit} className="space-y-4">
+                <form onSubmit={handleSubmit} className="space-y-4" noValidate>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <label htmlFor="contact-name" className="block font-sans text-xs font-medium text-light-ink dark:text-dark-ink mb-1">
@@ -216,7 +216,7 @@ export const ContactSection: React.FC = () => {
                         placeholder="e.g. Kenji Tanaka"
                         value={name}
                         onChange={(e) => setName(e.target.value)}
-                        className="w-full px-3 py-2 rounded text-sm bg-light-surface dark:bg-dark-surface border border-light-border dark:border-dark-border text-light-ink dark:text-dark-ink focus:outline-none focus:border-terracotta transition-colors"
+                        className="w-full px-3 py-2 rounded text-sm bg-light-surface dark:bg-dark-surface border border-light-border dark:border-dark-border text-light-ink dark:text-dark-ink focus:outline-none focus:border-terracotta focus-visible:ring-2 focus-visible:ring-terracotta/40 transition-colors"
                       />
                     </div>
                     <div>
@@ -231,7 +231,7 @@ export const ContactSection: React.FC = () => {
                         placeholder="e.g. kenji@studio.jp"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        className="w-full px-3 py-2 rounded text-sm bg-light-surface dark:bg-dark-surface border border-light-border dark:border-dark-border text-light-ink dark:text-dark-ink focus:outline-none focus:border-terracotta transition-colors"
+                        className="w-full px-3 py-2 rounded text-sm bg-light-surface dark:bg-dark-surface border border-light-border dark:border-dark-border text-light-ink dark:text-dark-ink focus:outline-none focus:border-terracotta focus-visible:ring-2 focus-visible:ring-terracotta/40 transition-colors"
                       />
                     </div>
                   </div>
@@ -248,7 +248,7 @@ export const ContactSection: React.FC = () => {
                       placeholder="Briefly describe what you would like to create or explore together..."
                       value={message}
                       onChange={(e) => setMessage(e.target.value)}
-                      className="w-full px-3 py-2 rounded text-sm bg-light-surface dark:bg-dark-surface border border-light-border dark:border-dark-border text-light-ink dark:text-dark-ink focus:outline-none focus:border-terracotta transition-colors resize-none"
+                      className="w-full px-3 py-2 rounded text-sm bg-light-surface dark:bg-dark-surface border border-light-border dark:border-dark-border text-light-ink dark:text-dark-ink focus:outline-none focus:border-terracotta focus-visible:ring-2 focus-visible:ring-terracotta/40 transition-colors resize-none"
                     />
                   </div>
 
@@ -277,8 +277,9 @@ export const ContactSection: React.FC = () => {
                         <button
                           type="button"
                           onClick={removeAttachment}
-                          className="p-1 text-light-ink-muted hover:text-terracotta transition-colors"
+                          className="p-1 text-light-ink-muted hover:text-terracotta transition-colors focus-visible:ring-2 focus-visible:ring-terracotta focus-visible:outline-none rounded"
                           title="Remove attachment"
+                          aria-label="Remove attachment"
                         >
                           <X className="w-3.5 h-3.5" />
                         </button>
@@ -287,7 +288,7 @@ export const ContactSection: React.FC = () => {
                       <button
                         type="button"
                         onClick={() => fileInputRef.current?.click()}
-                        className="w-full py-2 px-3 border border-dashed border-light-border dark:border-dark-border rounded text-xs font-sans text-light-ink-muted dark:text-dark-ink-muted hover:border-terracotta hover:text-light-ink dark:hover:text-dark-ink flex items-center justify-center gap-2 transition-colors bg-light-surface/50 dark:bg-dark-surface/50"
+                        className="w-full py-2 px-3 border border-dashed border-light-border dark:border-dark-border rounded text-xs font-sans text-light-ink-muted dark:text-dark-ink-muted hover:border-terracotta hover:text-light-ink dark:hover:text-dark-ink flex items-center justify-center gap-2 transition-colors bg-light-surface/50 dark:bg-dark-surface/50 focus-visible:ring-2 focus-visible:ring-terracotta focus-visible:outline-none"
                       >
                         <Paperclip className="w-3.5 h-3.5" />
                         <span>Attach Document or Specifications</span>
@@ -296,7 +297,7 @@ export const ContactSection: React.FC = () => {
                   </div>
 
                   {status === 'error' && (
-                    <div className="flex items-center gap-2 text-xs text-red-500">
+                    <div role="alert" aria-live="assertive" className="flex items-center gap-2 text-xs text-red-500">
                       <AlertCircle className="w-4 h-4" />
                       <span>{errorMessage}</span>
                     </div>
@@ -305,7 +306,7 @@ export const ContactSection: React.FC = () => {
                   <button
                     type="submit"
                     disabled={status === 'sending'}
-                    className="w-full py-2.5 px-4 rounded font-sans text-sm font-medium bg-light-button-dark dark:bg-dark-button-light text-light-on-dark dark:text-dark-on-light hover:opacity-90 transition-opacity flex items-center justify-center gap-2 disabled:opacity-50"
+                    className="w-full py-2.5 px-4 rounded font-sans text-sm font-medium bg-light-button-dark dark:bg-dark-button-light text-light-on-dark dark:text-dark-on-light hover:opacity-90 transition-opacity flex items-center justify-center gap-2 disabled:opacity-50 focus-visible:ring-2 focus-visible:ring-terracotta focus-visible:outline-none"
                   >
                     <Send className="w-3.5 h-3.5" />
                     <span>{status === 'sending' ? 'Transmitting...' : 'Send Message'}</span>

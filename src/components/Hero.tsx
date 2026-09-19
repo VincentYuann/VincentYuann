@@ -9,14 +9,10 @@ interface HeroProps {
 }
 
 export const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
-  const coreStacks = [
-    'TypeScript',
-    'Next.js / React',
-    'Python / PyTorch',
-    'PostgreSQL',
-    'FastAPI',
-    'Local LLMs',
-    'Docker',
+  const capabilityPillars = [
+    { label: 'SYSTEMS', items: 'Rust · Docker · Linux' },
+    { label: 'AI & RUNTIME', items: 'PyTorch · llama.cpp · Local LLMs' },
+    { label: 'FULL-STACK', items: 'Next.js · TypeScript · PostgreSQL' },
   ];
 
   return (
@@ -27,7 +23,7 @@ export const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
         <img
           src="./images/hero-sumie-landscape-bamboo-banner.jpg"
           alt="Panoramic sumi-e landscape and bamboo ink wash painting backdrop"
-          className="absolute inset-0 w-full h-full object-cover object-right sm:object-center opacity-85 dark:opacity-50 mix-blend-multiply dark:mix-blend-screen dark:invert animate-gentle-drift"
+          className="absolute inset-0 w-full h-full object-cover object-left sm:object-center opacity-85 dark:opacity-50 mix-blend-multiply dark:mix-blend-screen dark:invert animate-gentle-drift"
           style={{
             maskImage: 'radial-gradient(ellipse 98% 90% at 50% 50%, black 50%, transparent 95%)',
             WebkitMaskImage: 'radial-gradient(ellipse 98% 90% at 50% 50%, black 50%, transparent 95%)',
@@ -132,17 +128,23 @@ export const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
           </div>
 
           {/* Tech Capabilities Ribbon */}
-          <div className="pt-3 flex flex-wrap items-center gap-2 text-light-ink-muted dark:text-dark-ink-muted">
-            <span className="font-sans text-[11px] font-semibold uppercase tracking-widest text-light-ink-subtle dark:text-dark-ink-subtle mr-2">
-              Core Stacks
+          <div className="pt-3 flex flex-wrap items-center gap-2.5 text-light-ink-muted dark:text-dark-ink-muted">
+            <span className="font-sans text-[10px] font-semibold uppercase tracking-widest text-light-ink-subtle dark:text-dark-ink-subtle mr-1">
+              DOMAINS:
             </span>
-            {coreStacks.map((tech) => (
-              <span
-                key={tech}
-                className="px-2.5 py-1 text-[11px] font-sans font-medium tracking-wider rounded bg-light-surface-card dark:bg-dark-surface border border-light-border/70 dark:border-dark-border/80 text-light-ink dark:text-dark-ink hover:border-terracotta/40 hover:text-terracotta transition-colors"
+            {capabilityPillars.map((pillar) => (
+              <div
+                key={pillar.label}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded bg-light-surface-card dark:bg-dark-surface border border-light-border/80 dark:border-[#2D3039] hover:border-terracotta/40 transition-colors"
               >
-                {tech}
-              </span>
+                <span className="font-mono text-[10px] font-semibold text-terracotta uppercase tracking-wider">
+                  {pillar.label}
+                </span>
+                <span className="text-light-ink-subtle dark:text-dark-ink-subtle text-xs">/</span>
+                <span className="font-sans text-xs text-light-ink dark:text-dark-ink font-medium">
+                  {pillar.items}
+                </span>
+              </div>
             ))}
           </div>
         </div>

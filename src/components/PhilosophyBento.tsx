@@ -116,7 +116,7 @@ export const PhilosophyBento: React.FC = () => {
           空間の美学 // MA & WABI
         </div>
         <div className="w-2 h-2 rounded-full bg-terracotta/80 animate-ruby-pulse" />
-        <div className="writing-vertical-rl font-mono text-[9px] tracking-widest opacity-70">
+        <div className="writing-vertical-rl font-mono text-[10px] tracking-widest opacity-80">
           35°41'N · 139°46'E
         </div>
         <div className="w-px h-16 bg-gradient-to-b from-ochre/40 via-light-border dark:via-dark-border to-transparent" />
@@ -129,7 +129,7 @@ export const PhilosophyBento: React.FC = () => {
           職人の規矩 // CRAFT SPEC
         </div>
         <div className="w-2 h-2 rounded-full bg-bamboo/80 animate-status-glow" />
-        <div className="writing-vertical-rl font-mono text-[9px] tracking-widest opacity-70">
+        <div className="writing-vertical-rl font-mono text-[10px] tracking-widest opacity-80">
           KYOTO · HEIAN ARCHIVE
         </div>
         <div className="w-px h-16 bg-gradient-to-b from-ochre/40 via-light-border dark:via-dark-border to-transparent" />

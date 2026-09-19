@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { PROJECTS, Project } from '../data/projects';
-import { ArrowRight, Layers } from 'lucide-react';
+import { ArrowRight, Layers, Github, ExternalLink } from 'lucide-react';
 import { ProjectDetailModal } from './ProjectDetailModal';
 import { EnsoOrbital } from './EnsoOrbital';
 
@@ -88,8 +88,7 @@ export const ProjectsShowcase: React.FC<ProjectsShowcaseProps> = ({ onNavigate }
             return (
               <article
                 key={project.id}
-                onClick={() => setSelectedProject(project)}
-                className="interactive-card group relative w-full bg-light-surface-card dark:bg-[#1B1C22] hover:bg-light-surface dark:hover:bg-[#202229] border border-light-border dark:border-[#2D3039] rounded-xl p-6 sm:p-8 transition-all duration-300 shadow-sm hover:shadow-akari dark:hover:shadow-night-glow cursor-pointer classical-card-frame overflow-visible"
+                className="interactive-card group relative w-full bg-light-surface-card dark:bg-[#1B1C22] hover:bg-light-surface dark:hover:bg-[#202229] border border-light-border dark:border-[#2D3039] rounded-xl p-6 sm:p-8 transition-all duration-300 shadow-sm hover:shadow-akari dark:hover:shadow-night-glow classical-card-frame overflow-visible"
               >
                 {/* Celestial Ensō Orbital Circle: appears ONLY on the hovered project card */}
                 <EnsoOrbital
@@ -150,7 +149,7 @@ export const ProjectsShowcase: React.FC<ProjectsShowcaseProps> = ({ onNavigate }
                     </p>
 
                     {/* Minimalist Tech Tags */}
-                    <div className="flex flex-wrap gap-2 pt-1">
+                    <div className="flex flex-wrap gap-1.5 pt-1">
                       {project.tags.map((tag) => (
                         <span
                           key={tag}
@@ -161,14 +160,46 @@ export const ProjectsShowcase: React.FC<ProjectsShowcaseProps> = ({ onNavigate }
                       ))}
                     </div>
 
-                    {/* Action Foot Link */}
-                    <div className="pt-2 flex items-center justify-between">
-                      <span className="inline-flex items-center gap-2 font-sans text-xs uppercase tracking-widest text-light-ink dark:text-dark-ink font-medium group-hover:text-terracotta transition-colors">
+                    {/* Action Foot Link & Direct Repository / Live Triggers */}
+                    <div className="pt-3 border-t border-light-border/60 dark:border-[#2D3039]/80 flex items-center justify-between gap-4">
+                      <button
+                        type="button"
+                        onClick={() => setSelectedProject(project)}
+                        className="inline-flex items-center gap-1.5 font-sans text-xs uppercase tracking-widest text-light-ink dark:text-dark-ink font-medium hover:text-terracotta transition-colors focus-visible:ring-2 focus-visible:ring-terracotta focus-visible:outline-none rounded py-1 px-0.5 group/btn cursor-pointer"
+                      >
                         <span>
-                          {project.links.caseStudyText || 'View Project Architecture'}
+                          {project.links.caseStudyText || 'View Architecture'}
                         </span>
-                        <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1.5" />
-                      </span>
+                        <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover/btn:translate-x-1.5 text-terracotta" />
+                      </button>
+
+                      {/* Direct External Links */}
+                      <div className="flex items-center gap-1.5 text-light-ink-muted dark:text-dark-ink-muted">
+                        {project.links.github && (
+                          <a
+                            href={project.links.github}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="p-1.5 rounded-md hover:bg-light-surface-raised dark:hover:bg-dark-surface hover:text-light-ink dark:hover:text-dark-ink border border-transparent hover:border-light-border dark:hover:border-dark-border transition-colors focus-visible:ring-2 focus-visible:ring-terracotta focus-visible:outline-none"
+                            title="GitHub Repository"
+                            aria-label={`${project.title} GitHub Repository`}
+                          >
+                            <Github className="w-4 h-4" />
+                          </a>
+                        )}
+                        {project.links.live && project.links.live !== '#' && (
+                          <a
+                            href={project.links.live}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="p-1.5 rounded-md hover:bg-light-surface-raised dark:hover:bg-dark-surface hover:text-light-ink dark:hover:text-dark-ink border border-transparent hover:border-light-border dark:hover:border-dark-border transition-colors focus-visible:ring-2 focus-visible:ring-terracotta focus-visible:outline-none"
+                            title="Live Deployment"
+                            aria-label={`${project.title} Live Deployment`}
+                          >
+                            <ExternalLink className="w-4 h-4" />
+                          </a>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
